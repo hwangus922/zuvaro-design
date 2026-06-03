@@ -1,0 +1,2327 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Zuvaro — painted screens</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  html, body { margin: 0; padding: 0; background: #0a0a0c; color: #fff; font-family: 'Inter', system-ui, sans-serif; }
+  *, *::before, *::after { box-sizing: border-box; }
+  button { font-family: inherit; }
+  @keyframes zfade {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  /* hide scrollbars inside ios devices */
+  div::-webkit-scrollbar { display: none; }
+</style>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<!-- ZUVARO_BUNDLE_START -->
+<script type="text/babel" data-presets="react" id="zuvaro-modules-bundle">
+;// ── ios-frame.jsx ──
+
+// iOS.jsx — Simplified iOS 26 (Liquid Glass) device frame
+// Based on the iOS 26 UI Kit + Figma status bar spec. No assets, no deps.
+// Exports: IOSDevice, IOSStatusBar, IOSNavBar, IOSGlassPill, IOSList, IOSListRow, IOSKeyboard
+
+// ─────────────────────────────────────────────────────────────
+// Status bar
+// ─────────────────────────────────────────────────────────────
+function IOSStatusBar({ dark = false, time = '9:41' }) {
+  const c = dark ? '#fff' : '#000';
+  return (
+    <div style={{
+      display: 'flex', gap: 154, alignItems: 'center', justifyContent: 'center',
+      padding: '21px 24px 19px', boxSizing: 'border-box',
+      position: 'relative', zIndex: 20, width: '100%',
+    }}>
+      <div style={{ flex: 1, height: 22, display: 'flex', alignItems: 'center', justifyContent: 'center', paddingTop: 1.5 }}>
+        <span style={{
+          fontFamily: '-apple-system, "SF Pro", system-ui', fontWeight: 590,
+          fontSize: 17, lineHeight: '22px', color: c,
+        }}>{time}</span>
+      </div>
+      <div style={{ flex: 1, height: 22, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, paddingTop: 1, paddingRight: 1 }}>
+        <svg width="19" height="12" viewBox="0 0 19 12">
+          <rect x="0" y="7.5" width="3.2" height="4.5" rx="0.7" fill={c}/>
+          <rect x="4.8" y="5" width="3.2" height="7" rx="0.7" fill={c}/>
+          <rect x="9.6" y="2.5" width="3.2" height="9.5" rx="0.7" fill={c}/>
+          <rect x="14.4" y="0" width="3.2" height="12" rx="0.7" fill={c}/>
+        </svg>
+        <svg width="17" height="12" viewBox="0 0 17 12">
+          <path d="M8.5 3.2C10.8 3.2 12.9 4.1 14.4 5.6L15.5 4.5C13.7 2.7 11.2 1.5 8.5 1.5C5.8 1.5 3.3 2.7 1.5 4.5L2.6 5.6C4.1 4.1 6.2 3.2 8.5 3.2Z" fill={c}/>
+          <path d="M8.5 6.8C9.9 6.8 11.1 7.3 12 8.2L13.1 7.1C11.8 5.9 10.2 5.1 8.5 5.1C6.8 5.1 5.2 5.9 3.9 7.1L5 8.2C5.9 7.3 7.1 6.8 8.5 6.8Z" fill={c}/>
+          <circle cx="8.5" cy="10.5" r="1.5" fill={c}/>
+        </svg>
+        <svg width="27" height="13" viewBox="0 0 27 13">
+          <rect x="0.5" y="0.5" width="23" height="12" rx="3.5" stroke={c} strokeOpacity="0.35" fill="none"/>
+          <rect x="2" y="2" width="20" height="9" rx="2" fill={c}/>
+          <path d="M25 4.5V8.5C25.8 8.2 26.5 7.2 26.5 6.5C26.5 5.8 25.8 4.8 25 4.5Z" fill={c} fillOpacity="0.4"/>
+        </svg>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Liquid glass pill — blur + tint + shine
+// ─────────────────────────────────────────────────────────────
+function IOSGlassPill({ children, dark = false, style = {} }) {
+  return (
+    <div style={{
+      height: 44, minWidth: 44, borderRadius: 9999,
+      position: 'relative', overflow: 'hidden',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      boxShadow: dark
+        ? '0 2px 6px rgba(0,0,0,0.35), 0 6px 16px rgba(0,0,0,0.2)'
+        : '0 1px 3px rgba(0,0,0,0.07), 0 3px 10px rgba(0,0,0,0.06)',
+      ...style,
+    }}>
+      {/* blur + tint */}
+      <div style={{
+        position: 'absolute', inset: 0, borderRadius: 9999,
+        backdropFilter: 'blur(12px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(12px) saturate(180%)',
+        background: dark ? 'rgba(120,120,128,0.28)' : 'rgba(255,255,255,0.5)',
+      }} />
+      {/* shine */}
+      <div style={{
+        position: 'absolute', inset: 0, borderRadius: 9999,
+        boxShadow: dark
+          ? 'inset 1.5px 1.5px 1px rgba(255,255,255,0.15), inset -1px -1px 1px rgba(255,255,255,0.08)'
+          : 'inset 1.5px 1.5px 1px rgba(255,255,255,0.7), inset -1px -1px 1px rgba(255,255,255,0.4)',
+        border: dark ? '0.5px solid rgba(255,255,255,0.15)' : '0.5px solid rgba(0,0,0,0.06)',
+      }} />
+      <div style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', padding: '0 4px' }}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Navigation bar — glass pills + large title
+// ─────────────────────────────────────────────────────────────
+function IOSNavBar({ title = 'Title', dark = false, trailingIcon = true }) {
+  const muted = dark ? 'rgba(255,255,255,0.6)' : '#404040';
+  const text = dark ? '#fff' : '#000';
+  const pillIcon = (content) => (
+    <IOSGlassPill dark={dark}>
+      <div style={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        {content}
+      </div>
+    </IOSGlassPill>
+  );
+  return (
+    <div style={{
+      display: 'flex', flexDirection: 'column', gap: 10,
+      paddingTop: 62, paddingBottom: 10, position: 'relative', zIndex: 5,
+    }}>
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '0 16px',
+      }}>
+        {/* back chevron */}
+        {pillIcon(
+          <svg width="12" height="20" viewBox="0 0 12 20" fill="none" style={{ marginLeft: -1 }}>
+            <path d="M10 2L2 10l8 8" stroke={muted} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        )}
+        {/* trailing ellipsis */}
+        {trailingIcon && pillIcon(
+          <svg width="22" height="6" viewBox="0 0 22 6">
+            <circle cx="3" cy="3" r="2.5" fill={muted}/>
+            <circle cx="11" cy="3" r="2.5" fill={muted}/>
+            <circle cx="19" cy="3" r="2.5" fill={muted}/>
+          </svg>
+        )}
+      </div>
+      {/* large title */}
+      <div style={{
+        padding: '0 16px',
+        fontFamily: '-apple-system, system-ui',
+        fontSize: 34, fontWeight: 700, lineHeight: '41px',
+        color: text, letterSpacing: 0.4,
+      }}>{title}</div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Grouped list (inset card, r:26) + row (52px)
+// ─────────────────────────────────────────────────────────────
+function IOSListRow({ title, detail, icon, chevron = true, isLast = false, dark = false }) {
+  const text = dark ? '#fff' : '#000';
+  const sec = dark ? 'rgba(235,235,245,0.6)' : 'rgba(60,60,67,0.6)';
+  const ter = dark ? 'rgba(235,235,245,0.3)' : 'rgba(60,60,67,0.3)';
+  const sep = dark ? 'rgba(84,84,88,0.65)' : 'rgba(60,60,67,0.12)';
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'center', minHeight: 52,
+      padding: '0 16px', position: 'relative',
+      fontFamily: '-apple-system, system-ui', fontSize: 17,
+      letterSpacing: -0.43,
+    }}>
+      {icon && (
+        <div style={{
+          width: 30, height: 30, borderRadius: 7, background: icon,
+          marginRight: 12, flexShrink: 0,
+        }} />
+      )}
+      <div style={{ flex: 1, color: text }}>{title}</div>
+      {detail && <span style={{ color: sec, marginRight: 6 }}>{detail}</span>}
+      {chevron && (
+        <svg width="8" height="14" viewBox="0 0 8 14" style={{ flexShrink: 0 }}>
+          <path d="M1 1l6 6-6 6" stroke={ter} strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      )}
+      {!isLast && (
+        <div style={{
+          position: 'absolute', bottom: 0, right: 0,
+          left: icon ? 58 : 16, height: 0.5, background: sep,
+        }} />
+      )}
+    </div>
+  );
+}
+
+function IOSList({ header, children, dark = false }) {
+  const hc = dark ? 'rgba(235,235,245,0.6)' : 'rgba(60,60,67,0.6)';
+  const bg = dark ? '#1C1C1E' : '#fff';
+  return (
+    <div>
+      {header && (
+        <div style={{
+          fontFamily: '-apple-system, system-ui', fontSize: 13,
+          color: hc, textTransform: 'uppercase',
+          padding: '8px 36px 6px', letterSpacing: -0.08,
+        }}>{header}</div>
+      )}
+      <div style={{
+        background: bg, borderRadius: 26,
+        margin: '0 16px', overflow: 'hidden',
+      }}>{children}</div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Device frame
+// ─────────────────────────────────────────────────────────────
+function IOSDevice({
+  children, width = 402, height = 874, dark = false,
+  title, keyboard = false,
+}) {
+  return (
+    <div style={{
+      width, height, borderRadius: 48, overflow: 'hidden',
+      position: 'relative', background: dark ? '#000' : '#F2F2F7',
+      boxShadow: '0 40px 80px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.12)',
+      fontFamily: '-apple-system, system-ui, sans-serif',
+      WebkitFontSmoothing: 'antialiased',
+    }}>
+      {/* dynamic island */}
+      <div style={{
+        position: 'absolute', top: 11, left: '50%', transform: 'translateX(-50%)',
+        width: 126, height: 37, borderRadius: 24, background: '#000', zIndex: 50,
+      }} />
+      {/* status bar (absolute) */}
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 }}>
+        <IOSStatusBar dark={dark} />
+      </div>
+      {/* nav + content */}
+      <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+        {title !== undefined && <IOSNavBar title={title} dark={dark} />}
+        <div style={{ flex: 1, overflow: 'auto' }}>{children}</div>
+        {keyboard && <IOSKeyboard dark={dark} />}
+      </div>
+      {/* home indicator — always on top */}
+      <div style={{
+        position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 60,
+        height: 34, display: 'flex', justifyContent: 'center', alignItems: 'flex-end',
+        paddingBottom: 8, pointerEvents: 'none',
+      }}>
+        <div style={{
+          width: 139, height: 5, borderRadius: 100,
+          background: dark ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.25)',
+        }} />
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Keyboard — iOS 26 liquid glass
+// ─────────────────────────────────────────────────────────────
+function IOSKeyboard({ dark = false }) {
+  const glyph = dark ? 'rgba(255,255,255,0.7)' : '#595959';
+  const sugg = dark ? 'rgba(255,255,255,0.6)' : '#333';
+  const keyBg = dark ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.85)';
+
+  // special-key icons
+  const icons = {
+    shift: <svg width="19" height="17" viewBox="0 0 19 17"><path d="M9.5 1L1 9.5h4.5V16h8V9.5H18L9.5 1z" fill={glyph}/></svg>,
+    del: <svg width="23" height="17" viewBox="0 0 23 17"><path d="M7 1h13a2 2 0 012 2v11a2 2 0 01-2 2H7l-6-7.5L7 1z" fill="none" stroke={glyph} strokeWidth="1.6" strokeLinejoin="round"/><path d="M10 5l7 7M17 5l-7 7" stroke={glyph} strokeWidth="1.6" strokeLinecap="round"/></svg>,
+    ret: <svg width="20" height="14" viewBox="0 0 20 14"><path d="M18 1v6H4m0 0l4-4M4 7l4 4" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+  };
+
+  const key = (content, { w, flex, ret, fs = 25, k } = {}) => (
+    <div key={k} style={{
+      height: 42, borderRadius: 8.5,
+      flex: flex ? 1 : undefined, width: w, minWidth: 0,
+      background: ret ? '#08f' : keyBg,
+      boxShadow: '0 1px 0 rgba(0,0,0,0.075)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      fontFamily: '-apple-system, "SF Compact", system-ui',
+      fontSize: fs, fontWeight: 458, color: ret ? '#fff' : glyph,
+    }}>{content}</div>
+  );
+
+  const row = (keys, pad = 0) => (
+    <div style={{ display: 'flex', gap: 6.5, justifyContent: 'center', padding: `0 ${pad}px` }}>
+      {keys.map(l => key(l, { flex: true, k: l }))}
+    </div>
+  );
+
+  return (
+    <div style={{
+      position: 'relative', zIndex: 15, borderRadius: 27, overflow: 'hidden',
+      padding: '11px 0 2px',
+      display: 'flex', flexDirection: 'column', alignItems: 'center',
+      boxShadow: dark
+        ? '0 -2px 20px rgba(0,0,0,0.09)'
+        : '0 -1px 6px rgba(0,0,0,0.018), 0 -3px 20px rgba(0,0,0,0.012)',
+    }}>
+      {/* liquid glass bg — same recipe as nav pills */}
+      <div style={{
+        position: 'absolute', inset: 0, borderRadius: 27,
+        backdropFilter: 'blur(12px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(12px) saturate(180%)',
+        background: dark ? 'rgba(120,120,128,0.14)' : 'rgba(255,255,255,0.25)',
+      }} />
+      <div style={{
+        position: 'absolute', inset: 0, borderRadius: 27,
+        boxShadow: dark
+          ? 'inset 1.5px 1.5px 1px rgba(255,255,255,0.15)'
+          : 'inset 1.5px 1.5px 1px rgba(255,255,255,0.7), inset -1px -1px 1px rgba(255,255,255,0.4)',
+        border: dark ? '0.5px solid rgba(255,255,255,0.15)' : '0.5px solid rgba(0,0,0,0.06)',
+        pointerEvents: 'none',
+      }} />
+
+      {/* autocorrect bar */}
+      <div style={{
+        display: 'flex', gap: 20, alignItems: 'center',
+        padding: '8px 22px 13px', width: '100%', boxSizing: 'border-box',
+        position: 'relative',
+      }}>
+        {['"The"', 'the', 'to'].map((w, i) => (
+          <React.Fragment key={i}>
+            {i > 0 && <div style={{ width: 1, height: 25, background: '#ccc', opacity: 0.3 }} />}
+            <div style={{
+              flex: 1, textAlign: 'center',
+              fontFamily: '-apple-system, system-ui', fontSize: 17,
+              color: sugg, letterSpacing: -0.43, lineHeight: '22px',
+            }}>{w}</div>
+          </React.Fragment>
+        ))}
+      </div>
+
+      {/* key layout */}
+      <div style={{
+        display: 'flex', flexDirection: 'column', gap: 13,
+        padding: '0 6.5px', width: '100%', boxSizing: 'border-box',
+        position: 'relative',
+      }}>
+        {row(['q','w','e','r','t','y','u','i','o','p'])}
+        {row(['a','s','d','f','g','h','j','k','l'], 20)}
+        <div style={{ display: 'flex', gap: 14.25, alignItems: 'center' }}>
+          {key(icons.shift, { w: 45, k: 'shift' })}
+          <div style={{ display: 'flex', gap: 6.5, flex: 1 }}>
+            {['z','x','c','v','b','n','m'].map(l => key(l, { flex: true, k: l }))}
+          </div>
+          {key(icons.del, { w: 45, k: 'del' })}
+        </div>
+        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+          {key('ABC', { w: 92.25, fs: 18, k: 'abc' })}
+          {key('', { flex: true, k: 'space' })}
+          {key(icons.ret, { w: 92.25, ret: true, k: 'ret' })}
+        </div>
+      </div>
+
+      {/* bottom spacer (emoji+mic area, icons omitted) */}
+      <div style={{ height: 56, width: '100%', position: 'relative' }} />
+    </div>
+  );
+}
+
+Object.assign(window, {
+  IOSDevice, IOSStatusBar, IOSNavBar, IOSGlassPill, IOSList, IOSListRow, IOSKeyboard,
+});
+
+
+;// ── design-canvas.jsx ──
+
+// DesignCanvas.jsx — Figma-ish design canvas wrapper
+// Warm gray grid bg + Sections + Artboards + PostIt notes.
+// Artboards are reorderable (grip-drag), deletable, labels/titles are
+// inline-editable, and any artboard can be opened in a fullscreen focus
+// overlay (←/→/Esc). State persists to a .design-canvas.state.json sidecar
+// via the host bridge. No assets, no deps.
+//
+// Usage:
+//   <DesignCanvas>
+//     <DCSection id="onboarding" title="Onboarding" subtitle="First-run variants">
+//       <DCArtboard id="a" label="A · Dusk" width={260} height={480}>…</DCArtboard>
+//       <DCArtboard id="b" label="B · Minimal" width={260} height={480}>…</DCArtboard>
+//     </DCSection>
+//   </DesignCanvas>
+
+const DC = {
+  bg: '#f0eee9',
+  grid: 'rgba(0,0,0,0.06)',
+  label: 'rgba(60,50,40,0.7)',
+  title: 'rgba(40,30,20,0.85)',
+  subtitle: 'rgba(60,50,40,0.6)',
+  postitBg: '#fef4a8',
+  postitText: '#5a4a2a',
+  font: '-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif',
+};
+
+// One-time CSS injection (classes are dc-prefixed so they don't collide with
+// the hosted design's own styles).
+if (typeof document !== 'undefined' && !document.getElementById('dc-styles')) {
+  const s = document.createElement('style');
+  s.id = 'dc-styles';
+  s.textContent = [
+    '.dc-editable{cursor:text;outline:none;white-space:nowrap;border-radius:3px;padding:0 2px;margin:0 -2px}',
+    '.dc-editable:focus{background:#fff;box-shadow:0 0 0 1.5px #c96442}',
+    '[data-dc-slot]{transition:transform .18s cubic-bezier(.2,.7,.3,1)}',
+    '[data-dc-slot].dc-dragging{transition:none;z-index:10;pointer-events:none}',
+    '[data-dc-slot].dc-dragging .dc-card{box-shadow:0 12px 40px rgba(0,0,0,.25),0 0 0 2px #c96442;transform:scale(1.02)}',
+    // isolation:isolate contains artboard content's z-indexes so a
+    // z-indexed child (sticky navbar etc.) can't paint over .dc-header or
+    // the .dc-menu popover that drops into the top of the card.
+    '.dc-card{isolation:isolate;transition:box-shadow .15s,transform .15s}',
+    '.dc-card *{scrollbar-width:none}',
+    '.dc-card *::-webkit-scrollbar{display:none}',
+    // Per-artboard header: grip + label on the left, delete/expand on the
+    // right. Single flex row; when the artboard's on-screen width is too
+    // narrow for both the label yields (ellipsis, then hidden entirely below
+    // ~4ch via the container query) and the buttons stay on the row.
+    '.dc-header{position:absolute;bottom:100%;left:-4px;margin-bottom:calc(4px * var(--dc-inv-zoom,1));z-index:2;',
+    '  display:flex;align-items:center;container-type:inline-size}',
+    '.dc-labelrow{display:flex;align-items:center;gap:4px;height:24px;flex:1 1 auto;min-width:0}',
+    '.dc-grip{flex:0 0 auto;cursor:grab;display:flex;align-items:center;padding:5px 4px;border-radius:4px;transition:background .12s,opacity .12s}',
+    '.dc-grip:hover{background:rgba(0,0,0,.08)}',
+    '.dc-grip:active{cursor:grabbing}',
+    '.dc-labeltext{flex:1 1 auto;min-width:0;cursor:pointer;border-radius:4px;padding:3px 6px;',
+    '  display:flex;align-items:center;transition:background .12s;overflow:hidden}',
+    // Below ~4ch of label room: hide the label entirely, and drop the grip to
+    // hover-only (same reveal rule as .dc-btns) so a narrow header is clean
+    // until the card is moused.
+    '@container (max-width: 110px){',
+    '  .dc-labeltext{display:none}',
+    '  .dc-grip{opacity:0}',
+    '  [data-dc-slot]:hover .dc-grip{opacity:1}',
+    '}',
+    '.dc-labeltext:hover{background:rgba(0,0,0,.05)}',
+    '.dc-labeltext .dc-editable{overflow:hidden;text-overflow:ellipsis;max-width:100%}',
+    '.dc-labeltext .dc-editable:focus{overflow:visible;text-overflow:clip}',
+    '.dc-btns{flex:0 0 auto;margin-left:auto;display:flex;gap:2px;opacity:0;transition:opacity .12s}',
+    '[data-dc-slot]:hover .dc-btns,.dc-btns:has(.dc-menu){opacity:1}',
+    '.dc-expand,.dc-kebab{width:22px;height:22px;border-radius:5px;border:none;cursor:pointer;padding:0;',
+    '  background:transparent;color:rgba(60,50,40,.7);display:flex;align-items:center;justify-content:center;',
+    '  font:inherit;transition:background .12s,color .12s}',
+    '.dc-expand:hover,.dc-kebab:hover{background:rgba(0,0,0,.06);color:#2a251f}',
+    // Slot hosting an open menu floats above later siblings (which otherwise
+    // paint on top — same z-index:auto, later DOM order) so the popup isn't
+    // clipped by the next card.
+    '[data-dc-slot]:has(.dc-menu){z-index:10}',
+    '.dc-menu{position:absolute;top:100%;right:0;margin-top:4px;background:#fff;border-radius:8px;',
+    '  box-shadow:0 8px 28px rgba(0,0,0,.18),0 0 0 1px rgba(0,0,0,.05);padding:4px;min-width:160px;z-index:10}',
+    '.dc-menu button{display:block;width:100%;padding:7px 10px;border:0;background:transparent;',
+    '  border-radius:5px;font-family:inherit;font-size:13px;font-weight:500;line-height:1.2;',
+    '  color:#29261b;cursor:pointer;text-align:left;transition:background .12s;white-space:nowrap}',
+    '.dc-menu button:hover{background:rgba(0,0,0,.05)}',
+    '.dc-menu hr{border:0;border-top:1px solid rgba(0,0,0,.08);margin:4px 2px}',
+    '.dc-menu .dc-danger{color:#c96442}',
+    '.dc-menu .dc-danger:hover{background:rgba(201,100,66,.1)}',
+    // Chrome (titles / labels / buttons) counter-scales against the viewport
+    // zoom so it stays a constant on-screen size. --dc-inv-zoom is set by
+    // DCViewport on every transform update and inherits to all descendants —
+    // any overlay inside the world (e.g. a TweaksPanel on an artboard) can use
+    // it the same way.
+    //
+    // The header uses transform:scale (out-of-flow, so layout impact doesn't
+    // matter) with its world-space width set to card-width / inv-zoom so that
+    // after counter-scaling its on-screen width exactly matches the card's —
+    // that's what lets the container query + text-overflow behave against the
+    // card's visible edge at every zoom level.
+    //
+    // The section head uses CSS zoom instead of transform so its layout box
+    // grows with the counter-scale, pushing the card row down — otherwise the
+    // constant-screen-size title would overflow into the (shrinking) world-
+    // space gap and overlap the artboard headers at low zoom.
+    '.dc-header{width:calc((100% + 4px) / var(--dc-inv-zoom,1));',
+    '  transform:scale(var(--dc-inv-zoom,1));transform-origin:bottom left}',
+    '.dc-sectionhead{zoom:var(--dc-inv-zoom,1)}',
+  ].join('\n');
+  document.head.appendChild(s);
+}
+
+const DCCtx = React.createContext(null);
+
+// Recursively unwrap React.Fragment so <>…</> grouping doesn't hide
+// DCSection/DCArtboard children from the type-based walks below.
+function dcFlatten(children) {
+  const out = [];
+  React.Children.forEach(children, (c) => {
+    if (c && c.type === React.Fragment) out.push(...dcFlatten(c.props.children));
+    else out.push(c);
+  });
+  return out;
+}
+
+// ─────────────────────────────────────────────────────────────
+// DesignCanvas — stateful wrapper around the pan/zoom viewport.
+// Owns runtime state (per-section order, renamed titles/labels, hidden
+// artboards, focused artboard). Order/titles/labels/hidden persist to a
+// .design-canvas.state.json
+// sidecar next to the HTML. Reads go via plain fetch() so the saved
+// arrangement is visible anywhere the HTML + sidecar are served together
+// (omelette preview, direct link, downloaded zip). Writes go through the
+// host's window.omelette bridge — editing requires the omelette runtime.
+// Focus is ephemeral.
+// ─────────────────────────────────────────────────────────────
+const DC_STATE_FILE = '.design-canvas.state.json';
+
+function DesignCanvas({ children, minScale, maxScale, style }) {
+  const [state, setState] = React.useState({ sections: {}, focus: null });
+  // Hold rendering until the sidecar read settles so the saved order/titles
+  // appear on first paint (no source-order flash). didRead gates writes until
+  // the read settles so the empty initial state can't clobber a slow read;
+  // skipNextWrite suppresses the one echo-write that would otherwise follow
+  // hydration.
+  const [ready, setReady] = React.useState(false);
+  const didRead = React.useRef(false);
+  const skipNextWrite = React.useRef(false);
+
+  React.useEffect(() => {
+    let off = false;
+    fetch('./' + DC_STATE_FILE)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((saved) => {
+        if (off || !saved || !saved.sections) return;
+        skipNextWrite.current = true;
+        setState((s) => ({ ...s, sections: saved.sections }));
+      })
+      .catch(() => {})
+      .finally(() => { didRead.current = true; if (!off) setReady(true); });
+    const t = setTimeout(() => { if (!off) setReady(true); }, 150);
+    return () => { off = true; clearTimeout(t); };
+  }, []);
+
+  React.useEffect(() => {
+    if (!didRead.current) return;
+    if (skipNextWrite.current) { skipNextWrite.current = false; return; }
+    const t = setTimeout(() => {
+      window.omelette?.writeFile(DC_STATE_FILE, JSON.stringify({ sections: state.sections })).catch(() => {});
+    }, 250);
+    return () => clearTimeout(t);
+  }, [state.sections]);
+
+  // Build registries synchronously from children so FocusOverlay can read
+  // them in the same render. Fragments are flattened; wrapping in other
+  // elements still opts out of focus/reorder.
+  const registry = {};     // slotId -> { sectionId, artboard }
+  const sectionMeta = {};  // sectionId -> { title, subtitle, slotIds[] }
+  const sectionOrder = [];
+  dcFlatten(children).forEach((sec) => {
+    if (!sec || sec.type !== DCSection) return;
+    const sid = sec.props.id ?? sec.props.title;
+    if (!sid) return;
+    sectionOrder.push(sid);
+    const persisted = state.sections[sid] || {};
+    const abs = [];
+    dcFlatten(sec.props.children).forEach((ab) => {
+      if (!ab || ab.type !== DCArtboard) return;
+      const aid = ab.props.id ?? ab.props.label;
+      if (aid) abs.push([aid, ab]);
+    });
+    // hidden is scoped to one source revision — when the agent regenerates
+    // (artboard-ID set changes), prior deletes don't apply to new content.
+    const srcKey = abs.map(([k]) => k).join('\x1f');
+    const hidden = persisted.srcKey === srcKey ? (persisted.hidden || []) : [];
+    const srcIds = [];
+    abs.forEach(([aid, ab]) => {
+      if (hidden.includes(aid)) return;
+      registry[`${sid}/${aid}`] = { sectionId: sid, artboard: ab };
+      srcIds.push(aid);
+    });
+    const kept = (persisted.order || []).filter((k) => srcIds.includes(k));
+    sectionMeta[sid] = {
+      title: persisted.title ?? sec.props.title,
+      subtitle: sec.props.subtitle,
+      slotIds: [...kept, ...srcIds.filter((k) => !kept.includes(k))],
+    };
+  });
+
+  const api = React.useMemo(() => ({
+    state,
+    section: (id) => state.sections[id] || {},
+    patchSection: (id, p) => setState((s) => ({
+      ...s,
+      sections: { ...s.sections, [id]: { ...s.sections[id], ...(typeof p === 'function' ? p(s.sections[id] || {}) : p) } },
+    })),
+    setFocus: (slotId) => setState((s) => ({ ...s, focus: slotId })),
+  }), [state]);
+
+  // Esc exits focus; any outside pointerdown commits an in-progress rename.
+  React.useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') api.setFocus(null); };
+    const onPd = (e) => {
+      const ae = document.activeElement;
+      if (ae && ae.isContentEditable && !ae.contains(e.target)) ae.blur();
+    };
+    document.addEventListener('keydown', onKey);
+    document.addEventListener('pointerdown', onPd, true);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.removeEventListener('pointerdown', onPd, true);
+    };
+  }, [api]);
+
+  return (
+    <DCCtx.Provider value={api}>
+      <DCViewport minScale={minScale} maxScale={maxScale} style={style}>{ready && children}</DCViewport>
+      {state.focus && registry[state.focus] && (
+        <DCFocusOverlay entry={registry[state.focus]} sectionMeta={sectionMeta} sectionOrder={sectionOrder} />
+      )}
+    </DCCtx.Provider>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// DCViewport — transform-based pan/zoom (internal)
+//
+// Input mapping (Figma-style):
+//   • trackpad pinch  → zoom   (ctrlKey wheel; Safari gesture* events)
+//   • trackpad scroll → pan    (two-finger)
+//   • mouse wheel     → zoom   (notched; distinguished from trackpad scroll)
+//   • middle-drag / primary-drag-on-bg → pan
+//
+// Transform state lives in a ref and is written straight to the DOM
+// (translate3d + will-change) so wheel ticks don't go through React —
+// keeps pans at 60fps on dense canvases.
+// ─────────────────────────────────────────────────────────────
+function DCViewport({ children, minScale = 0.1, maxScale = 8, style = {} }) {
+  const vpRef = React.useRef(null);
+  const worldRef = React.useRef(null);
+  const tf = React.useRef({ x: 0, y: 0, scale: 1 });
+  // Persist viewport across reloads so the user lands back where they were
+  // after an agent edit or browser refresh. The sandbox origin is already
+  // per-project; pathname keeps multiple canvas files in one project apart.
+  const tfKey = 'dc-viewport:' + location.pathname;
+  const saveT = React.useRef(0);
+
+  const lastPostedScale = React.useRef();
+  const apply = React.useCallback(() => {
+    const { x, y, scale } = tf.current;
+    const el = worldRef.current;
+    if (!el) return;
+    el.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${scale})`;
+    // Exposed for zoom-invariant chrome (labels, buttons, TweaksPanel).
+    el.style.setProperty('--dc-inv-zoom', String(1 / scale));
+    // Keep the host toolbar's % readout in sync with the canvas scale. Pan
+    // ticks leave scale unchanged — skip the cross-frame post for those.
+    if (lastPostedScale.current !== scale) {
+      lastPostedScale.current = scale;
+      window.parent.postMessage({ type: '__dc_zoom', scale }, '*');
+    }
+    clearTimeout(saveT.current);
+    saveT.current = setTimeout(() => {
+      try { localStorage.setItem(tfKey, JSON.stringify(tf.current)); } catch {}
+    }, 200);
+  }, [tfKey]);
+
+  React.useLayoutEffect(() => {
+    const flush = () => {
+      clearTimeout(saveT.current);
+      try { localStorage.setItem(tfKey, JSON.stringify(tf.current)); } catch {}
+    };
+    try {
+      const s = JSON.parse(localStorage.getItem(tfKey) || 'null');
+      if (s && Number.isFinite(s.x) && Number.isFinite(s.y) && Number.isFinite(s.scale)) {
+        tf.current = { x: s.x, y: s.y, scale: Math.min(maxScale, Math.max(minScale, s.scale)) };
+        apply();
+      }
+    } catch {}
+    // Flush on pagehide and unmount so a reload within the 200ms debounce
+    // window doesn't drop the last pan/zoom.
+    window.addEventListener('pagehide', flush);
+    return () => { window.removeEventListener('pagehide', flush); flush(); };
+  }, []);
+
+  React.useEffect(() => {
+    const vp = vpRef.current;
+    if (!vp) return;
+
+    const zoomAt = (cx, cy, factor) => {
+      const r = vp.getBoundingClientRect();
+      const px = cx - r.left, py = cy - r.top;
+      const t = tf.current;
+      const next = Math.min(maxScale, Math.max(minScale, t.scale * factor));
+      const k = next / t.scale;
+      // --dc-inv-zoom consumers (.dc-sectionhead's CSS zoom, each section's
+      // marginBottom) reflow on every scale change, vertically shifting the
+      // world layout — so a world point mathematically pinned under the cursor
+      // drifts as you zoom (content creeps up on zoom-in, down on zoom-out).
+      // Anchor the DOM element under the cursor instead: record its screen Y,
+      // apply the transform + --dc-inv-zoom, then cancel whatever vertical
+      // drift the reflow introduced so it stays put on screen.
+      let marker = null, markerY0 = 0;
+      if (k !== 1) {
+        const hit = document.elementFromPoint(cx, cy);
+        marker = hit && hit.closest ? hit.closest('[data-dc-slot],[data-dc-section]') : null;
+        if (marker) markerY0 = marker.getBoundingClientRect().top;
+      }
+      // keep the world point under the cursor fixed
+      t.x = px - (px - t.x) * k;
+      t.y = py - (py - t.y) * k;
+      t.scale = next;
+      apply();
+      if (marker) {
+        // A pure zoom around (cx, cy) maps screen Y → cy + (Y - cy) * k. Any
+        // departure after the --dc-inv-zoom reflow is the layout drift.
+        const drift = marker.getBoundingClientRect().top - (cy + (markerY0 - cy) * k);
+        if (Math.abs(drift) > 0.1) { t.y -= drift; apply(); }
+      }
+    };
+
+    // Mouse-wheel vs trackpad-scroll heuristic. A physical wheel sends
+    // line-mode deltas (Firefox) or large integer pixel deltas with no X
+    // component (Chrome/Safari, typically multiples of 100/120). Trackpad
+    // two-finger scroll sends small/fractional pixel deltas, often with
+    // non-zero deltaX. ctrlKey is set by the browser for trackpad pinch.
+    const isMouseWheel = (e) =>
+      e.deltaMode !== 0 ||
+      (e.deltaX === 0 && Number.isInteger(e.deltaY) && Math.abs(e.deltaY) >= 40);
+
+    const onWheel = (e) => {
+      e.preventDefault();
+      if (isGesturing) return; // Safari: gesture* owns the pinch — discard concurrent wheels
+      if ((e.ctrlKey || e.metaKey) && !isMouseWheel(e)) {
+        // trackpad pinch, or ctrl/cmd + smooth-scroll mouse. Notched
+        // wheels fall through to the fixed-step branch below.
+        zoomAt(e.clientX, e.clientY, Math.exp(-e.deltaY * 0.01));
+      } else if (isMouseWheel(e)) {
+        // notched mouse wheel — fixed-ratio step per click
+        zoomAt(e.clientX, e.clientY, Math.exp(-Math.sign(e.deltaY) * 0.18));
+      } else {
+        // trackpad two-finger scroll — pan
+        tf.current.x -= e.deltaX;
+        tf.current.y -= e.deltaY;
+        apply();
+      }
+    };
+
+    // Safari sends native gesture* events for trackpad pinch with a smooth
+    // e.scale; preferring these over the ctrl+wheel fallback gives a much
+    // better feel there. No-ops on other browsers. Safari also fires
+    // ctrlKey wheel events during the same pinch — isGesturing makes
+    // onWheel drop those entirely so they neither zoom nor pan.
+    let gsBase = 1;
+    let isGesturing = false;
+    const onGestureStart = (e) => { e.preventDefault(); isGesturing = true; gsBase = tf.current.scale; };
+    const onGestureChange = (e) => {
+      e.preventDefault();
+      zoomAt(e.clientX, e.clientY, (gsBase * e.scale) / tf.current.scale);
+    };
+    const onGestureEnd = (e) => { e.preventDefault(); isGesturing = false; };
+
+    // Drag-pan: middle button anywhere, or primary button on canvas
+    // background (anything that isn't an artboard or an inline editor).
+    let drag = null;
+    const onPointerDown = (e) => {
+      const onBg = !e.target.closest('[data-dc-slot], .dc-editable');
+      if (!(e.button === 1 || (e.button === 0 && onBg))) return;
+      e.preventDefault();
+      vp.setPointerCapture(e.pointerId);
+      drag = { id: e.pointerId, lx: e.clientX, ly: e.clientY };
+      vp.style.cursor = 'grabbing';
+    };
+    const onPointerMove = (e) => {
+      if (!drag || e.pointerId !== drag.id) return;
+      tf.current.x += e.clientX - drag.lx;
+      tf.current.y += e.clientY - drag.ly;
+      drag.lx = e.clientX; drag.ly = e.clientY;
+      apply();
+    };
+    const onPointerUp = (e) => {
+      if (!drag || e.pointerId !== drag.id) return;
+      vp.releasePointerCapture(e.pointerId);
+      drag = null;
+      vp.style.cursor = '';
+    };
+
+    // Host-driven zoom (toolbar % menu). Zooms around viewport centre so the
+    // visible midpoint stays fixed — matching the host's iframe-zoom feel.
+    const onHostMsg = (e) => {
+      const d = e.data;
+      if (d && d.type === '__dc_set_zoom' && typeof d.scale === 'number') {
+        const r = vp.getBoundingClientRect();
+        zoomAt(r.left + r.width / 2, r.top + r.height / 2, d.scale / tf.current.scale);
+      } else if (d && d.type === '__dc_probe') {
+        // Host's [readyGen] reset asks whether a canvas is present; it
+        // fires on the iframe's native 'load', which for canvases with
+        // images/fonts is after our mount-time announce, so re-announce.
+        // Clear the pan-tick guard so apply() re-posts the current scale
+        // even if it's unchanged — the host just reset dcScale to 1.
+        window.parent.postMessage({ type: '__dc_present' }, '*');
+        lastPostedScale.current = undefined;
+        apply();
+      }
+    };
+    window.addEventListener('message', onHostMsg);
+    // Announce canvas mode so the host toolbar proxies its % control here
+    // instead of scaling the iframe element (which would just shrink the
+    // viewport window of an infinite canvas). The apply() that follows emits
+    // the initial __dc_zoom so the toolbar % is correct before first pinch.
+    // lastPostedScale reset mirrors the __dc_probe handler: the layout
+    // effect's restore-path apply() may already have posted the restored
+    // scale (before __dc_present), so clear the guard to re-post it in order.
+    window.parent.postMessage({ type: '__dc_present' }, '*');
+    lastPostedScale.current = undefined;
+    apply();
+
+    vp.addEventListener('wheel', onWheel, { passive: false });
+    vp.addEventListener('gesturestart', onGestureStart, { passive: false });
+    vp.addEventListener('gesturechange', onGestureChange, { passive: false });
+    vp.addEventListener('gestureend', onGestureEnd, { passive: false });
+    vp.addEventListener('pointerdown', onPointerDown);
+    vp.addEventListener('pointermove', onPointerMove);
+    vp.addEventListener('pointerup', onPointerUp);
+    vp.addEventListener('pointercancel', onPointerUp);
+    return () => {
+      window.removeEventListener('message', onHostMsg);
+      vp.removeEventListener('wheel', onWheel);
+      vp.removeEventListener('gesturestart', onGestureStart);
+      vp.removeEventListener('gesturechange', onGestureChange);
+      vp.removeEventListener('gestureend', onGestureEnd);
+      vp.removeEventListener('pointerdown', onPointerDown);
+      vp.removeEventListener('pointermove', onPointerMove);
+      vp.removeEventListener('pointerup', onPointerUp);
+      vp.removeEventListener('pointercancel', onPointerUp);
+    };
+  }, [apply, minScale, maxScale]);
+
+  const gridSvg = `url("data:image/svg+xml,%3Csvg width='120' height='120' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M120 0H0v120' fill='none' stroke='${encodeURIComponent(DC.grid)}' stroke-width='1'/%3E%3C/svg%3E")`;
+  return (
+    <div
+      ref={vpRef}
+      className="design-canvas"
+      style={{
+        height: '100vh', width: '100vw',
+        background: DC.bg,
+        overflow: 'hidden',
+        overscrollBehavior: 'none',
+        touchAction: 'none',
+        position: 'relative',
+        fontFamily: DC.font,
+        boxSizing: 'border-box',
+        ...style,
+      }}
+    >
+      <div
+        ref={worldRef}
+        style={{
+          position: 'absolute', top: 0, left: 0,
+          transformOrigin: '0 0',
+          willChange: 'transform',
+          width: 'max-content', minWidth: '100%',
+          minHeight: '100%',
+          padding: '60px 0 80px',
+        }}
+      >
+        <div style={{ position: 'absolute', inset: -6000, backgroundImage: gridSvg, backgroundSize: '120px 120px', pointerEvents: 'none', zIndex: -1 }} />
+        {children}
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// DCSection — editable title + h-row of artboards in persisted order
+// ─────────────────────────────────────────────────────────────
+function DCSection({ id, title, subtitle, children, gap = 48 }) {
+  const ctx = React.useContext(DCCtx);
+  const sid = id ?? title;
+  const all = React.Children.toArray(dcFlatten(children));
+  const artboards = all.filter((c) => c && c.type === DCArtboard);
+  const rest = all.filter((c) => !(c && c.type === DCArtboard));
+  const sec = (ctx && sid && ctx.section(sid)) || {};
+  // Must match DesignCanvas's srcKey computation exactly (it filters falsy
+  // IDs), or onDelete persists a srcKey that DesignCanvas never recognizes.
+  const allIds = artboards.map((a) => a.props.id ?? a.props.label).filter(Boolean);
+  const srcKey = allIds.join('\x1f');
+  const hidden = sec.srcKey === srcKey ? (sec.hidden || []) : [];
+  const srcOrder = allIds.filter((k) => !hidden.includes(k));
+
+  const order = React.useMemo(() => {
+    const kept = (sec.order || []).filter((k) => srcOrder.includes(k));
+    return [...kept, ...srcOrder.filter((k) => !kept.includes(k))];
+  }, [sec.order, srcOrder.join('|')]);
+
+  const byId = Object.fromEntries(artboards.map((a) => [a.props.id ?? a.props.label, a]));
+
+  // marginBottom counter-scales so the on-screen gap between sections stays
+  // constant — otherwise at low zoom the (world-space) gap collapses while
+  // the screen-constant sectionhead below it doesn't, and the title reads as
+  // belonging to the section above. paddingBottom below is just enough for
+  // the 24px artboard-header (abs-positioned above each card) plus ~8px, so
+  // the title sits tight against its own row at every zoom.
+  return (
+    <div data-dc-section={sid}
+      style={{ marginBottom: 'calc(80px * var(--dc-inv-zoom, 1))', position: 'relative' }}>
+      <div style={{ padding: '0 60px' }}>
+        <div className="dc-sectionhead" style={{ paddingBottom: 36 }}>
+          <DCEditable tag="div" value={sec.title ?? title}
+            onChange={(v) => ctx && sid && ctx.patchSection(sid, { title: v })}
+            style={{ fontSize: 28, fontWeight: 600, color: DC.title, letterSpacing: -0.4, marginBottom: 6, display: 'inline-block' }} />
+          {subtitle && <div style={{ fontSize: 16, color: DC.subtitle }}>{subtitle}</div>}
+        </div>
+      </div>
+      <div style={{ display: 'flex', gap, padding: '0 60px', alignItems: 'flex-start', width: 'max-content' }}>
+        {order.map((k) => (
+          <DCArtboardFrame key={k} sectionId={sid} artboard={byId[k]} order={order}
+            label={(sec.labels || {})[k] ?? byId[k].props.label}
+            onRename={(v) => ctx && ctx.patchSection(sid, (x) => ({ labels: { ...x.labels, [k]: v } }))}
+            onReorder={(next) => ctx && ctx.patchSection(sid, { order: next })}
+            onDelete={() => ctx && ctx.patchSection(sid, (x) => ({
+              hidden: [...(x.srcKey === srcKey ? (x.hidden || []) : []), k],
+              srcKey,
+            }))}
+            onFocus={() => ctx && ctx.setFocus(`${sid}/${k}`)} />
+        ))}
+      </div>
+      {rest}
+    </div>
+  );
+}
+
+// DCArtboard — marker; rendered by DCArtboardFrame via DCSection.
+function DCArtboard() { return null; }
+
+// Per-artboard export (kind: 'png' | 'html'). Both paths share the same
+// self-contained clone: computed styles baked in, @font-face / <img> /
+// inline-style background-image urls inlined as data URIs. PNG wraps the
+// clone in foreignObject→canvas at 3× the artboard's natural width×height
+// (same pipeline the host uses for page captures); HTML wraps it in a
+// minimal standalone document. Both are independent of viewport zoom.
+async function dcExport(node, w, h, name, kind) {
+  try { await document.fonts.ready; } catch {}
+  const toDataURL = (url) => fetch(url).then((r) => r.blob()).then((b) => new Promise((res) => {
+    const fr = new FileReader(); fr.onload = () => res(fr.result); fr.onerror = () => res(url); fr.readAsDataURL(b);
+  })).catch(() => url);
+
+  // Collect @font-face rules. ss.cssRules throws SecurityError on
+  // cross-origin sheets (e.g. fonts.googleapis.com) — in that case fetch
+  // the CSS text directly (those endpoints send ACAO:*) and regex-extract
+  // the blocks. @import and @media/@supports are walked so nested
+  // @font-face rules aren't missed.
+  const fontRules = [], pending = [], seen = new Set();
+  const scrapeCss = (href) => {
+    if (seen.has(href)) return; seen.add(href);
+    pending.push(fetch(href).then((r) => r.text()).then((css) => {
+      for (const m of css.match(/@font-face\s*{[^}]*}/g) || []) fontRules.push({ css: m, base: href });
+      for (const m of css.matchAll(/@import\s+(?:url\()?['"]?([^'")\s;]+)/g))
+        scrapeCss(new URL(m[1], href).href);
+    }).catch(() => {}));
+  };
+  const walk = (rules, base) => {
+    for (const r of rules) {
+      if (r.type === CSSRule.FONT_FACE_RULE) fontRules.push({ css: r.cssText, base });
+      else if (r.type === CSSRule.IMPORT_RULE && r.styleSheet) {
+        const ibase = r.styleSheet.href || base;
+        try { walk(r.styleSheet.cssRules, ibase); } catch { scrapeCss(ibase); }
+      } else if (r.cssRules) walk(r.cssRules, base);
+    }
+  };
+  for (const ss of document.styleSheets) {
+    const base = ss.href || location.href;
+    try { walk(ss.cssRules, base); } catch { if (ss.href) scrapeCss(ss.href); }
+  }
+  while (pending.length) await pending.shift();
+  const fontCss = (await Promise.all(fontRules.map(async (rule) => {
+    let out = rule.css, m; const re = /url\((['"]?)([^'")]+)\1\)/g;
+    while ((m = re.exec(rule.css))) {
+      if (m[2].indexOf('data:') === 0) continue;
+      let abs; try { abs = new URL(m[2], rule.base).href; } catch { continue; }
+      out = out.split(m[0]).join('url("' + await toDataURL(abs) + '")');
+    }
+    return out;
+  }))).join('\n');
+
+  const cloneStyled = (src) => {
+    if (src.nodeType === 8 || (src.nodeType === 1 && src.tagName === 'SCRIPT')) return document.createTextNode('');
+    const dst = src.cloneNode(false);
+    if (src.nodeType === 1) {
+      const cs = getComputedStyle(src); let txt = '';
+      for (let i = 0; i < cs.length; i++) txt += cs[i] + ':' + cs.getPropertyValue(cs[i]) + ';';
+      dst.setAttribute('style', txt + 'animation:none;transition:none;');
+      if (src.tagName === 'CANVAS') try { const im = document.createElement('img'); im.src = src.toDataURL(); im.setAttribute('style', txt); return im; } catch {}
+    }
+    for (let c = src.firstChild; c; c = c.nextSibling) dst.appendChild(cloneStyled(c));
+    return dst;
+  };
+  const clone = cloneStyled(node);
+  clone.setAttribute('xmlns', 'http://www.w3.org/1999/xhtml');
+  // Drop the card's own shadow/radius so the export is a flush w×h rect;
+  // the artboard's own background (if any) is already in the computed style.
+  clone.style.boxShadow = 'none'; clone.style.borderRadius = '0';
+
+  const jobs = [];
+  clone.querySelectorAll('img').forEach((el) => {
+    const s = el.getAttribute('src');
+    if (s && s.indexOf('data:') !== 0) jobs.push(toDataURL(el.src).then((d) => el.setAttribute('src', d)));
+  });
+  [clone, ...clone.querySelectorAll('*')].forEach((el) => {
+    const bg = el.style.backgroundImage; if (!bg) return;
+    let m; const re = /url\(["']?([^"')]+)["']?\)/g;
+    while ((m = re.exec(bg))) {
+      const tok = m[0], url = m[1];
+      if (url.indexOf('data:') === 0) continue;
+      jobs.push(toDataURL(url).then((d) => { el.style.backgroundImage = el.style.backgroundImage.split(tok).join('url("' + d + '")'); }));
+    }
+  });
+  await Promise.all(jobs);
+
+  const xml = new XMLSerializer().serializeToString(clone);
+  const save = (blob, ext) => {
+    if (!blob) return;
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = name + '.' + ext; a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  };
+
+  if (kind === 'html') {
+    const html = '<!doctype html><html><head><meta charset="utf-8"><title>' + name + '</title>' +
+      (fontCss ? '<style>' + fontCss + '</style>' : '') +
+      '</head><body style="margin:0">' + xml + '</body></html>';
+    return save(new Blob([html], { type: 'text/html' }), 'html');
+  }
+
+  // PNG: the SVG's own width/height must be the output resolution — an
+  // <img>-loaded SVG rasterizes at its intrinsic size, so sizing it at 1×
+  // and ctx.scale()-ing up would just upscale a 1× bitmap. viewBox maps the
+  // w×h foreignObject onto the px·w × px·h SVG canvas so the browser renders
+  // the HTML at full resolution.
+  const px = 3;
+  const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + w * px + '" height="' + h * px +
+    '" viewBox="0 0 ' + w + ' ' + h + '"><foreignObject width="' + w + '" height="' + h + '">' +
+    (fontCss ? '<style><![CDATA[' + fontCss + ']]></style>' : '') + xml + '</foreignObject></svg>';
+  const img = new Image();
+  await new Promise((res, rej) => {
+    img.onload = res; img.onerror = () => rej(new Error('svg load failed'));
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  });
+  const cv = document.createElement('canvas');
+  cv.width = w * px; cv.height = h * px;
+  cv.getContext('2d').drawImage(img, 0, 0);
+  cv.toBlob((blob) => save(blob, 'png'), 'image/png');
+}
+
+function DCArtboardFrame({ sectionId, artboard, label, order, onRename, onReorder, onFocus, onDelete }) {
+  const { id: rawId, label: rawLabel, width = 260, height = 480, children, style = {} } = artboard.props;
+  const id = rawId ?? rawLabel;
+  const ref = React.useRef(null);
+  const cardRef = React.useRef(null);
+  const menuRef = React.useRef(null);
+  const [menuOpen, setMenuOpen] = React.useState(false);
+  const [confirming, setConfirming] = React.useState(false);
+
+  // ⋯ menu: close on any outside pointerdown. Two-click delete lives inside
+  // the menu — first click arms the row, second commits; closing disarms.
+  React.useEffect(() => {
+    if (!menuOpen) { setConfirming(false); return; }
+    const off = (e) => { if (!menuRef.current || !menuRef.current.contains(e.target)) setMenuOpen(false); };
+    document.addEventListener('pointerdown', off, true);
+    return () => document.removeEventListener('pointerdown', off, true);
+  }, [menuOpen]);
+
+  const doExport = (kind) => {
+    setMenuOpen(false);
+    if (!cardRef.current) return;
+    const name = String(label || id || 'artboard').replace(/[^\w\s.-]+/g, '_');
+    dcExport(cardRef.current, width, height, name, kind)
+      .catch((e) => console.error('[design-canvas] export failed:', e));
+  };
+
+  // Live drag-reorder: dragged card sticks to cursor; siblings slide into
+  // their would-be slots in real time via transforms. DOM order only
+  // changes on drop.
+  const onGripDown = (e) => {
+    e.preventDefault(); e.stopPropagation();
+    const me = ref.current;
+    // translateX is applied in local (pre-scale) space but pointer deltas and
+    // getBoundingClientRect().left are screen-space — divide by the viewport's
+    // current scale so the dragged card tracks the cursor at any zoom level.
+    const scale = me.getBoundingClientRect().width / me.offsetWidth || 1;
+    const peers = Array.from(document.querySelectorAll(`[data-dc-section="${sectionId}"] [data-dc-slot]`));
+    const homes = peers.map((el) => ({ el, id: el.dataset.dcSlot, x: el.getBoundingClientRect().left }));
+    const slotXs = homes.map((h) => h.x);
+    const startIdx = order.indexOf(id);
+    const startX = e.clientX;
+    let liveOrder = order.slice();
+    me.classList.add('dc-dragging');
+
+    const layout = () => {
+      for (const h of homes) {
+        if (h.id === id) continue;
+        const slot = liveOrder.indexOf(h.id);
+        h.el.style.transform = `translateX(${(slotXs[slot] - h.x) / scale}px)`;
+      }
+    };
+
+    const move = (ev) => {
+      const dx = ev.clientX - startX;
+      me.style.transform = `translateX(${dx / scale}px)`;
+      const cur = homes[startIdx].x + dx;
+      let nearest = 0, best = Infinity;
+      for (let i = 0; i < slotXs.length; i++) {
+        const d = Math.abs(slotXs[i] - cur);
+        if (d < best) { best = d; nearest = i; }
+      }
+      if (liveOrder.indexOf(id) !== nearest) {
+        liveOrder = order.filter((k) => k !== id);
+        liveOrder.splice(nearest, 0, id);
+        layout();
+      }
+    };
+
+    const up = () => {
+      document.removeEventListener('pointermove', move);
+      document.removeEventListener('pointerup', up);
+      const finalSlot = liveOrder.indexOf(id);
+      me.classList.remove('dc-dragging');
+      me.style.transform = `translateX(${(slotXs[finalSlot] - homes[startIdx].x) / scale}px)`;
+      // After the settle transition, kill transitions + clear transforms +
+      // commit the reorder in the same frame so there's no visual snap-back.
+      setTimeout(() => {
+        for (const h of homes) { h.el.style.transition = 'none'; h.el.style.transform = ''; }
+        if (liveOrder.join('|') !== order.join('|')) onReorder(liveOrder);
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          for (const h of homes) h.el.style.transition = '';
+        }));
+      }, 180);
+    };
+    document.addEventListener('pointermove', move);
+    document.addEventListener('pointerup', up);
+  };
+
+  return (
+    <div ref={ref} data-dc-slot={id} style={{ position: 'relative', flexShrink: 0 }}>
+      <div className="dc-header" data-omelette-chrome="" style={{ color: DC.label }} onPointerDown={(e) => e.stopPropagation()}>
+        <div className="dc-labelrow">
+          <div className="dc-grip" onPointerDown={onGripDown} title="Drag to reorder">
+            <svg width="9" height="13" viewBox="0 0 9 13" fill="currentColor"><circle cx="2" cy="2" r="1.1"/><circle cx="7" cy="2" r="1.1"/><circle cx="2" cy="6.5" r="1.1"/><circle cx="7" cy="6.5" r="1.1"/><circle cx="2" cy="11" r="1.1"/><circle cx="7" cy="11" r="1.1"/></svg>
+          </div>
+          <div className="dc-labeltext" onClick={onFocus} title="Click to focus">
+            <DCEditable value={label} onChange={onRename} onClick={(e) => e.stopPropagation()}
+              style={{ fontSize: 15, fontWeight: 500, color: DC.label, lineHeight: 1 }} />
+          </div>
+        </div>
+        <div className="dc-btns">
+          <div ref={menuRef} style={{ position: 'relative' }}>
+            <button className="dc-kebab" title="More" onClick={() => setMenuOpen((o) => !o)}>
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><circle cx="2.5" cy="6" r="1.1"/><circle cx="6" cy="6" r="1.1"/><circle cx="9.5" cy="6" r="1.1"/></svg>
+            </button>
+            {menuOpen && (
+              <div className="dc-menu" onPointerDown={(e) => e.stopPropagation()}>
+                <button onClick={() => doExport('png')}>Download PNG</button>
+                <button onClick={() => doExport('html')}>Download HTML</button>
+                <hr />
+                <button className="dc-danger"
+                  onClick={() => { if (confirming) { setMenuOpen(false); onDelete(); } else setConfirming(true); }}>
+                  {confirming ? 'Click again to delete' : 'Delete'}
+                </button>
+              </div>
+            )}
+          </div>
+          <button className="dc-expand" onClick={onFocus} title="Focus">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"><path d="M7 1h4v4M5 11H1V7M11 1L7.5 4.5M1 11l3.5-3.5"/></svg>
+          </button>
+        </div>
+      </div>
+      <div ref={cardRef} className="dc-card"
+        style={{ borderRadius: 2, boxShadow: '0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.06)', overflow: 'hidden', width, height, background: '#fff', ...style }}>
+        {children || <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#bbb', fontSize: 13, fontFamily: DC.font }}>{id}</div>}
+      </div>
+    </div>
+  );
+}
+
+// Inline rename — commits on blur or Enter.
+function DCEditable({ value, onChange, style, tag = 'span', onClick }) {
+  const T = tag;
+  return (
+    <T className="dc-editable" contentEditable suppressContentEditableWarning
+      onClick={onClick}
+      onPointerDown={(e) => e.stopPropagation()}
+      onBlur={(e) => onChange && onChange(e.currentTarget.textContent)}
+      onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); e.currentTarget.blur(); } }}
+      style={style}>{value}</T>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Focus mode — overlay one artboard; ←/→ within section, ↑/↓ across
+// sections, Esc or backdrop click to exit.
+// ─────────────────────────────────────────────────────────────
+function DCFocusOverlay({ entry, sectionMeta, sectionOrder }) {
+  const ctx = React.useContext(DCCtx);
+  const { sectionId, artboard } = entry;
+  const sec = ctx.section(sectionId);
+  const meta = sectionMeta[sectionId];
+  const peers = meta.slotIds;
+  const aid = artboard.props.id ?? artboard.props.label;
+  const idx = peers.indexOf(aid);
+  const secIdx = sectionOrder.indexOf(sectionId);
+
+  const go = (d) => { const n = peers[(idx + d + peers.length) % peers.length]; if (n) ctx.setFocus(`${sectionId}/${n}`); };
+  const goSection = (d) => {
+    // Sections whose artboards are all deleted have slotIds:[] — step past
+    // them to the next non-empty section so ↑/↓ doesn't dead-end.
+    const n = sectionOrder.length;
+    for (let i = 1; i < n; i++) {
+      const ns = sectionOrder[(((secIdx + d * i) % n) + n) % n];
+      const first = sectionMeta[ns] && sectionMeta[ns].slotIds[0];
+      if (first) { ctx.setFocus(`${ns}/${first}`); return; }
+    }
+  };
+
+  React.useEffect(() => {
+    const k = (e) => {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); go(1); }
+      if (e.key === 'ArrowUp') { e.preventDefault(); goSection(-1); }
+      if (e.key === 'ArrowDown') { e.preventDefault(); goSection(1); }
+    };
+    document.addEventListener('keydown', k);
+    return () => document.removeEventListener('keydown', k);
+  });
+
+  const { width = 260, height = 480, children } = artboard.props;
+  const [vp, setVp] = React.useState({ w: window.innerWidth, h: window.innerHeight });
+  React.useEffect(() => { const r = () => setVp({ w: window.innerWidth, h: window.innerHeight }); window.addEventListener('resize', r); return () => window.removeEventListener('resize', r); }, []);
+  const scale = Math.max(0.1, Math.min((vp.w - 200) / width, (vp.h - 260) / height, 2));
+
+  const [ddOpen, setDd] = React.useState(false);
+  const Arrow = ({ dir, onClick }) => (
+    <button onClick={(e) => { e.stopPropagation(); onClick(); }}
+      style={{ position: 'absolute', top: '50%', [dir]: 28, transform: 'translateY(-50%)',
+        border: 'none', background: 'rgba(255,255,255,.08)', color: 'rgba(255,255,255,.9)',
+        width: 44, height: 44, borderRadius: 22, fontSize: 18, cursor: 'pointer',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background .15s' }}
+      onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(255,255,255,.18)')}
+      onMouseLeave={(e) => (e.currentTarget.style.background = 'rgba(255,255,255,.08)')}>
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+        <path d={dir === 'left' ? 'M11 3L5 9l6 6' : 'M7 3l6 6-6 6'} /></svg>
+    </button>
+  );
+
+  // Portal to body so position:fixed is the real viewport regardless of any
+  // transform on DesignCanvas's ancestors (including the canvas zoom itself).
+  return ReactDOM.createPortal(
+    <div onClick={() => ctx.setFocus(null)}
+      onWheel={(e) => e.preventDefault()}
+      style={{ position: 'fixed', inset: 0, zIndex: 100, background: 'rgba(24,20,16,.6)', backdropFilter: 'blur(14px)',
+        fontFamily: DC.font, color: '#fff' }}>
+
+      {/* top bar: section dropdown (left) · close (right) */}
+      <div onClick={(e) => e.stopPropagation()}
+        style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 72, display: 'flex', alignItems: 'flex-start', padding: '16px 20px 0', gap: 16 }}>
+        <div style={{ position: 'relative' }}>
+          <button onClick={() => setDd((o) => !o)}
+            style={{ border: 'none', background: 'transparent', color: '#fff', cursor: 'pointer', padding: '6px 8px',
+              borderRadius: 6, textAlign: 'left', fontFamily: 'inherit' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontSize: 18, fontWeight: 600, letterSpacing: -0.3 }}>{meta.title}</span>
+              <svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" style={{ opacity: .7 }}><path d="M2 4l3.5 3.5L9 4"/></svg>
+            </span>
+            {meta.subtitle && <span style={{ display: 'block', fontSize: 13, opacity: .6, fontWeight: 400, marginTop: 2 }}>{meta.subtitle}</span>}
+          </button>
+          {ddOpen && (
+            <div style={{ position: 'absolute', top: '100%', left: 0, marginTop: 4, background: '#2a251f', borderRadius: 8,
+              boxShadow: '0 8px 32px rgba(0,0,0,.4)', padding: 4, minWidth: 200, zIndex: 10 }}>
+              {sectionOrder.filter((sid) => sectionMeta[sid].slotIds.length).map((sid) => (
+                <button key={sid} onClick={() => { setDd(false); const f = sectionMeta[sid].slotIds[0]; if (f) ctx.setFocus(`${sid}/${f}`); }}
+                  style={{ display: 'block', width: '100%', textAlign: 'left', border: 'none', cursor: 'pointer',
+                    background: sid === sectionId ? 'rgba(255,255,255,.1)' : 'transparent', color: '#fff',
+                    padding: '8px 12px', borderRadius: 5, fontSize: 14, fontWeight: sid === sectionId ? 600 : 400, fontFamily: 'inherit' }}>
+                  {sectionMeta[sid].title}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+        <div style={{ flex: 1 }} />
+        <button onClick={() => ctx.setFocus(null)}
+          onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(255,255,255,.12)')}
+          onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+          style={{ border: 'none', background: 'transparent', color: 'rgba(255,255,255,.7)', width: 32, height: 32,
+            borderRadius: 16, fontSize: 20, cursor: 'pointer', lineHeight: 1, transition: 'background .12s' }}>×</button>
+      </div>
+
+      {/* card centered, label + index below — only the card itself stops
+          propagation so any backdrop click (including the margins around
+          the card) exits focus */}
+      <div
+        style={{ position: 'absolute', top: 64, bottom: 56, left: 100, right: 100, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16 }}>
+        <div onClick={(e) => e.stopPropagation()} style={{ width: width * scale, height: height * scale, position: 'relative' }}>
+          <div style={{ width, height, transform: `scale(${scale})`, transformOrigin: 'top left', background: '#fff', borderRadius: 2, overflow: 'hidden',
+            boxShadow: '0 20px 80px rgba(0,0,0,.4)' }}>
+            {children || <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#bbb' }}>{aid}</div>}
+          </div>
+        </div>
+        <div onClick={(e) => e.stopPropagation()} style={{ fontSize: 14, fontWeight: 500, opacity: .85, textAlign: 'center' }}>
+          {(sec.labels || {})[aid] ?? artboard.props.label}
+          <span style={{ opacity: .5, marginLeft: 10, fontVariantNumeric: 'tabular-nums' }}>{idx + 1} / {peers.length}</span>
+        </div>
+      </div>
+
+      <Arrow dir="left" onClick={() => go(-1)} />
+      <Arrow dir="right" onClick={() => go(1)} />
+
+      {/* dots */}
+      <div onClick={(e) => e.stopPropagation()}
+        style={{ position: 'absolute', bottom: 20, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 8 }}>
+        {peers.map((p, i) => (
+          <button key={p} onClick={() => ctx.setFocus(`${sectionId}/${p}`)}
+            style={{ border: 'none', padding: 0, cursor: 'pointer', width: 6, height: 6, borderRadius: 3,
+              background: i === idx ? '#fff' : 'rgba(255,255,255,.3)' }} />
+        ))}
+      </div>
+    </div>,
+    document.body,
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Post-it — absolute-positioned sticky note
+// ─────────────────────────────────────────────────────────────
+function DCPostIt({ children, top, left, right, bottom, rotate = -2, width = 180 }) {
+  return (
+    <div style={{
+      position: 'absolute', top, left, right, bottom, width,
+      background: DC.postitBg, padding: '14px 16px',
+      fontFamily: '"Comic Sans MS", "Marker Felt", "Segoe Print", cursive',
+      fontSize: 14, lineHeight: 1.4, color: DC.postitText,
+      boxShadow: '0 2px 8px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.08)',
+      transform: `rotate(${rotate}deg)`,
+      zIndex: 5,
+    }}>{children}</div>
+  );
+}
+
+Object.assign(window, { DesignCanvas, DCSection, DCArtboard, DCPostIt });
+
+
+
+;// ── zuvaro-theme.jsx ──
+// Zuvaro — theme tokens, logo mark, icon set
+// All shared visual primitives live here.
+
+const ZTheme = {
+  // surfaces
+  bg:        '#08080A',
+  bgAlt:     '#0E0E11',
+  card:      '#141417',
+  cardHi:    '#1C1C20',
+  stroke:    'rgba(255,255,255,0.06)',
+  strokeHi:  'rgba(255,255,255,0.12)',
+
+  // brand
+  pink:      '#FF2D87',
+  pinkLight: '#FF7AB6',
+  magenta:   '#C81E5B',
+  magentaDk: '#8A0E3D',
+
+  // text
+  text:      '#FFFFFF',
+  textMute:  'rgba(255,255,255,0.55)',
+  textDim:   'rgba(255,255,255,0.32)',
+  textHint:  'rgba(255,255,255,0.18)',
+
+  // type
+  display:   "'Space Grotesk', system-ui, sans-serif",
+  body:      "'Inter', system-ui, sans-serif",
+  mono:      "'JetBrains Mono', ui-monospace, monospace",
+};
+
+// ─── Logo: two interlocking petal-strokes forming a chain-link Z ─────────
+// Original mark. Two oblong loops, weaving over/under, mirrored across the
+// horizontal axis. Stroked, not filled, so it reads at all sizes.
+function ZuvaroMark({ size = 64, color = ZTheme.pink, stroke = 6 }) {
+  const w = size, h = size;
+  return (
+    <svg width={w} height={h} viewBox="0 0 100 100" fill="none" aria-label="Zuvaro">
+      <defs>
+        <linearGradient id="zg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor={ZTheme.pinkLight} />
+          <stop offset="60%" stopColor={color} />
+          <stop offset="100%" stopColor={ZTheme.magenta} />
+        </linearGradient>
+        <mask id="zm">
+          <rect width="100" height="100" fill="white" />
+          {/* knock out a sliver from the back loop where the front passes over */}
+          <path d="M50 50 m-9 -2 a 11 11 0 0 1 18 4" stroke="black" strokeWidth="9" fill="none" />
+        </mask>
+      </defs>
+      {/* back loop — leaning right */}
+      <g mask="url(#zm)">
+        <path
+          d="M20 24 C 20 10, 50 10, 60 30 S 80 76, 80 76"
+          stroke="url(#zg)" strokeWidth={stroke} strokeLinecap="round" fill="none"
+        />
+        <path
+          d="M80 76 C 80 90, 50 90, 40 70 S 20 24, 20 24"
+          stroke="url(#zg)" strokeWidth={stroke} strokeLinecap="round" fill="none"
+        />
+      </g>
+      {/* front loop — mirrored, weaves through the back */}
+      <path
+        d="M80 24 C 80 10, 50 10, 40 30 S 20 76, 20 76"
+        stroke="url(#zg)" strokeWidth={stroke} strokeLinecap="round" fill="none"
+      />
+      <path
+        d="M20 76 C 20 90, 50 90, 60 70 S 80 24, 80 24"
+        stroke="url(#zg)" strokeWidth={stroke} strokeLinecap="round" fill="none"
+      />
+    </svg>
+  );
+}
+
+// ─── Wordmark — Space Grotesk weight 600, tight tracking ──────────────────
+function ZuvaroWordmark({ size = 22, color = ZTheme.text }) {
+  return (
+    <span style={{
+      fontFamily: ZTheme.display, fontWeight: 600, fontSize: size,
+      letterSpacing: -0.04 * size, color,
+    }}>zuvaro</span>
+  );
+}
+
+// ─── Icons (24px, line, 1.6 stroke) ──────────────────────────────────────
+const Icon = ({ d, size = 22, stroke = ZTheme.text, fill = 'none', sw = 1.6, children }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill={fill}
+       stroke={stroke} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round">
+    {d ? <path d={d}/> : children}
+  </svg>
+);
+
+const Icons = {
+  home:    (p)=> <Icon {...p}><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></Icon>,
+  trophy:  (p)=> <Icon {...p}><path d="M7 4h10v4a5 5 0 01-10 0V4z"/><path d="M5 6H3a3 3 0 003 3M19 6h2a3 3 0 01-3 3"/><path d="M9 21h6M12 17v4"/></Icon>,
+  user:    (p)=> <Icon {...p}><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></Icon>,
+  plus:    (p)=> <Icon {...p}><path d="M12 5v14M5 12h14"/></Icon>,
+  search:  (p)=> <Icon {...p}><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></Icon>,
+  bell:    (p)=> <Icon {...p}><path d="M6 16V11a6 6 0 1112 0v5l2 2H4l2-2z"/><path d="M10 21a2 2 0 004 0"/></Icon>,
+  flame:   (p)=> <Icon {...p}><path d="M12 3s5 4 5 9a5 5 0 11-10 0c0-2 2-3 2-5 2 1 3 3 3-4z"/></Icon>,
+  bolt:    (p)=> <Icon {...p}><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/></Icon>,
+  chevR:   (p)=> <Icon {...p}><path d="M9 6l6 6-6 6"/></Icon>,
+  chevD:   (p)=> <Icon {...p}><path d="M6 9l6 6 6-6"/></Icon>,
+  chevL:   (p)=> <Icon {...p}><path d="M15 6l-6 6 6 6"/></Icon>,
+  close:   (p)=> <Icon {...p}><path d="M6 6l12 12M18 6L6 18"/></Icon>,
+  apple:   (p)=> <Icon {...p} fill="currentColor" stroke="none"><path d="M16.4 12.7c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.2-2.8.9-3.5.9-.7 0-1.9-.8-3.1-.8-1.6 0-3.1 1-3.9 2.4-1.7 2.9-.4 7.2 1.2 9.6.8 1.2 1.7 2.4 3 2.4 1.2 0 1.7-.8 3.1-.8s1.9.8 3.2.8c1.3 0 2.2-1.2 3-2.4.6-.9 1.1-1.9 1.4-2.9-.1 0-2.7-1-2.7-3.9zM14.2 5.8c.7-.8 1.1-2 1-3.1-1 0-2.2.7-2.9 1.5-.6.7-1.2 1.9-1.1 3 1.1.1 2.3-.6 3-1.4z"/></Icon>,
+  google:  (p)=> <Icon {...p} fill="currentColor" stroke="none"><path d="M21.6 12.2c0-.7-.1-1.3-.2-1.9H12v3.7h5.4c-.2 1.2-.9 2.3-2 3v2.5h3.2c1.9-1.7 3-4.3 3-7.3z"/><path d="M12 22c2.7 0 5-.9 6.6-2.4l-3.2-2.5c-.9.6-2 1-3.4 1-2.6 0-4.8-1.8-5.6-4.1H3.1v2.6C4.8 19.7 8.1 22 12 22z"/><path d="M6.4 14c-.2-.6-.3-1.3-.3-2s.1-1.4.3-2V7.3H3.1C2.4 8.7 2 10.3 2 12s.4 3.3 1.1 4.7L6.4 14z"/><path d="M12 5.9c1.5 0 2.8.5 3.8 1.5l2.8-2.8C16.9 3 14.7 2 12 2 8.1 2 4.8 4.3 3.1 7.3L6.4 9.9c.8-2.3 3-4 5.6-4z"/></Icon>,
+  mail:    (p)=> <Icon {...p}><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></Icon>,
+  help:    (p)=> <Icon {...p}><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 015 0c0 1.7-2.5 2-2.5 4"/><circle cx="12" cy="17" r=".5" fill="currentColor"/></Icon>,
+  settings:(p)=> <Icon {...p}><circle cx="12" cy="12" r="3"/><path d="M19.4 13.9l1.6 1-2 3.5-1.9-.7a8 8 0 01-2 1.2L14.5 21h-5l-.6-2.1a8 8 0 01-2-1.2l-1.9.7-2-3.5 1.6-1a8 8 0 010-2.2L3 10.7l2-3.5 1.9.7a8 8 0 012-1.2L9.5 4.7l5-.7.6 2.1a8 8 0 012 1.2l1.9-.7 2 3.5-1.6 1a8 8 0 010 2.2z"/></Icon>,
+  share:   (p)=> <Icon {...p}><path d="M12 2v14M7 7l5-5 5 5M5 14v6h14v-6"/></Icon>,
+  arrowU:  (p)=> <Icon {...p}><path d="M12 19V5M5 12l7-7 7 7"/></Icon>,
+  arrowD:  (p)=> <Icon {...p}><path d="M12 5v14M5 12l7 7 7-7"/></Icon>,
+  dot:     (p)=> <Icon {...p} fill="currentColor" stroke="none"><circle cx="12" cy="12" r="3"/></Icon>,
+  medal:   (p)=> <Icon {...p}><circle cx="12" cy="15" r="6"/><path d="M9 9l-3-6M15 9l3-6M9 15h6"/></Icon>,
+  calendar:(p)=> <Icon {...p}><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></Icon>,
+};
+
+// Quick text-style helpers
+const T = {
+  display:  (s=48)=>({ fontFamily: ZTheme.display, fontWeight: 600, fontSize: s, letterSpacing: -0.03 * s, lineHeight: 1.05, color: ZTheme.text }),
+  title:    (s=22)=>({ fontFamily: ZTheme.display, fontWeight: 600, fontSize: s, letterSpacing: -0.02 * s, lineHeight: 1.2,  color: ZTheme.text }),
+  body:     (s=15)=>({ fontFamily: ZTheme.body, fontWeight: 400, fontSize: s, lineHeight: 1.45, color: ZTheme.text }),
+  label:    (s=12)=>({ fontFamily: ZTheme.body, fontWeight: 500, fontSize: s, letterSpacing: 0.08, textTransform: 'uppercase', color: ZTheme.textMute }),
+  mono:     (s=13)=>({ fontFamily: ZTheme.mono, fontWeight: 500, fontSize: s, letterSpacing: -0.02, color: ZTheme.text }),
+};
+
+Object.assign(window, { ZTheme, ZuvaroMark, ZuvaroWordmark, Icons, T });
+
+
+;// ── zuvaro-onboarding.jsx ──
+// Zuvaro — onboarding screens (logo, welcome A/B, sign up)
+// Each screen is a self-contained component sized for IOSDevice's content area.
+
+// ─── Shared scaffolding ──────────────────────────────────────────────────
+function ScreenBG({ children, style }) {
+  return (
+    <div style={{
+      position: 'absolute', inset: 0, background: ZTheme.bg, color: ZTheme.text,
+      fontFamily: ZTheme.body, overflow: 'hidden', ...style,
+    }}>
+      {children}
+    </div>
+  );
+}
+
+// Radial pink glow used on hero screens
+function PinkAura({ x = '50%', y = '32%', r = 280, opacity = 0.55 }) {
+  return (
+    <div style={{
+      position: 'absolute', left: x, top: y, transform: 'translate(-50%, -50%)',
+      width: r * 2, height: r * 2, borderRadius: '50%',
+      background: `radial-gradient(circle, ${ZTheme.pink} 0%, ${ZTheme.magenta} 30%, transparent 70%)`,
+      filter: 'blur(60px)', opacity, pointerEvents: 'none',
+    }} />
+  );
+}
+
+// Faint grid texture
+function GridTex({ opacity = 0.05 }) {
+  return (
+    <div style={{
+      position: 'absolute', inset: 0, pointerEvents: 'none', opacity,
+      backgroundImage:
+        'linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px),' +
+        'linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)',
+      backgroundSize: '32px 32px',
+      maskImage: 'radial-gradient(ellipse at center, black 30%, transparent 75%)',
+      WebkitMaskImage: 'radial-gradient(ellipse at center, black 30%, transparent 75%)',
+    }} />
+  );
+}
+
+// ─── Logo-only card ──────────────────────────────────────────────────────
+function LogoScreen() {
+  return (
+    <ScreenBG>
+      <PinkAura y="50%" r={220} opacity={0.55} />
+      <GridTex opacity={0.04} />
+      <div style={{
+        position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column',
+        alignItems: 'center', justifyContent: 'center', gap: 28,
+      }}>
+        <ZuvaroMark size={160} stroke={5} />
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+          <ZuvaroWordmark size={28} />
+          <span style={{ ...T.label(10), letterSpacing: 0.32, color: ZTheme.textMute }}>
+            move · track · belong
+          </span>
+        </div>
+      </div>
+    </ScreenBG>
+  );
+}
+
+// ─── Welcome A (centered, prominent CTA) ─────────────────────────────────
+function WelcomeA({ onContinue, onSignIn } = {}) {
+  return (
+    <ScreenBG>
+      <PinkAura y="38%" r={260} opacity={0.7} />
+      <GridTex />
+      {/* tagline pill, top */}
+      <div style={{ position: 'absolute', top: 64, left: 0, right: 0, display: 'flex', justifyContent: 'center' }}>
+        <div style={{
+          padding: '8px 14px', borderRadius: 999,
+          background: 'rgba(255,255,255,0.04)', border: `1px solid ${ZTheme.strokeHi}`,
+          ...T.label(10), color: ZTheme.textMute, backdropFilter: 'blur(8px)',
+        }}>
+          <span style={{ color: ZTheme.pinkLight }}>●</span>  beta · v0.4
+        </div>
+      </div>
+
+      {/* logo + headline */}
+      <div style={{
+        position: 'absolute', top: 0, bottom: 220, left: 0, right: 0,
+        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 32, padding: '0 32px',
+      }}>
+        <ZuvaroMark size={104} stroke={5} />
+        <div style={{ textAlign: 'center', maxWidth: 320 }}>
+          <h1 style={{ ...T.display(44), margin: 0 }}>
+            Welcome to <span style={{ color: ZTheme.pink }}>Zuvaro</span>
+          </h1>
+          <p style={{ ...T.body(15), color: ZTheme.textMute, marginTop: 14, textWrap: 'pretty' }}>
+            Train with your people. Log every session.
+            Climb the board.
+          </p>
+        </div>
+      </div>
+
+      {/* CTAs */}
+      <div style={{
+        position: 'absolute', bottom: 56, left: 24, right: 24,
+        display: 'flex', flexDirection: 'column', gap: 12,
+      }}>
+        <button onClick={onContinue} style={ctaPrimary}>Get started</button>
+        <button onClick={onSignIn} style={ctaText}>I already have an account</button>
+      </div>
+    </ScreenBG>
+  );
+}
+
+// ─── Welcome B (with feature list, secondary variant) ────────────────────
+function WelcomeB({ onContinue, onSignIn } = {}) {
+  const features = [
+    { icon: Icons.flame, label: 'Daily streaks', tint: ZTheme.pink },
+    { icon: Icons.trophy, label: 'Friend-group leaderboard', tint: ZTheme.pinkLight },
+    { icon: Icons.bolt, label: 'Live session check-ins', tint: ZTheme.magenta },
+  ];
+  return (
+    <ScreenBG>
+      <PinkAura y="22%" r={220} opacity={0.6} />
+      <GridTex />
+      <div style={{
+        position: 'absolute', top: 80, left: 24, right: 24,
+        display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 24,
+      }}>
+        <ZuvaroMark size={64} stroke={5} />
+        <div>
+          <h1 style={{ ...T.display(38), margin: 0 }}>Welcome to<br/>
+            <span style={{ color: ZTheme.pink }}>Zuvaro.</span>
+          </h1>
+          <p style={{ ...T.body(15), color: ZTheme.textMute, marginTop: 12, textWrap: 'pretty', maxWidth: 320 }}>
+            A community-first training log built for people who&nbsp;turn up.
+          </p>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, width: '100%', marginTop: 8 }}>
+          {features.map((f, i) => (
+            <div key={i} style={{
+              display: 'flex', alignItems: 'center', gap: 12, padding: '14px 16px',
+              borderRadius: 16, background: ZTheme.card, border: `1px solid ${ZTheme.stroke}`,
+            }}>
+              <span style={{
+                width: 36, height: 36, borderRadius: 12, display: 'grid', placeItems: 'center',
+                background: 'rgba(255,45,135,0.12)', color: f.tint,
+              }}><f.icon size={18} stroke={f.tint}/></span>
+              <span style={{ ...T.body(14), color: ZTheme.text }}>{f.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div style={{ position: 'absolute', bottom: 56, left: 24, right: 24, display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <button onClick={onContinue} style={ctaPrimary}>Get started</button>
+        <button onClick={onSignIn} style={ctaText}>Sign in instead</button>
+      </div>
+    </ScreenBG>
+  );
+}
+
+// ─── Sign up (auth providers) ────────────────────────────────────────────
+function SignUpScreen({ onApple, onGoogle, onEmail, onBack } = {}) {
+  return (
+    <ScreenBG>
+      <PinkAura y="20%" r={200} opacity={0.45} />
+      <GridTex />
+
+      {/* nav */}
+      <div style={{
+        position: 'absolute', top: 60, left: 0, right: 0,
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 18px',
+      }}>
+        <button onClick={onBack} style={iconBtn}><Icons.chevL size={20} stroke={ZTheme.text}/></button>
+        <button style={iconBtn}><Icons.help size={20} stroke={ZTheme.textMute}/></button>
+      </div>
+
+      {/* hero */}
+      <div style={{ position: 'absolute', top: 140, left: 24, right: 24 }}>
+        <ZuvaroMark size={56} stroke={5} />
+        <h1 style={{ ...T.display(32), margin: '24px 0 0' }}>Sign up to <span style={{ color: ZTheme.pink }}>Zuvaro</span></h1>
+        <p style={{ ...T.body(14), color: ZTheme.textMute, marginTop: 10 }}>
+          Pick a way to sign in. We&rsquo;ll never post or message your contacts.
+        </p>
+      </div>
+
+      {/* providers */}
+      <div style={{ position: 'absolute', bottom: 56, left: 24, right: 24, display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <button onClick={onApple} style={ctaSecondary}>
+          <Icons.apple size={18} stroke={ZTheme.text} />
+          <span>Continue with Apple</span>
+        </button>
+        <button onClick={onGoogle} style={ctaSecondary}>
+          <Icons.google size={18} stroke={ZTheme.text} />
+          <span>Continue with Google</span>
+        </button>
+        <button onClick={onEmail} style={{ ...ctaPrimary, marginTop: 6 }}>
+          <Icons.mail size={18} stroke="#000" />
+          <span>Continue with email</span>
+        </button>
+        <p style={{ ...T.body(11), color: ZTheme.textDim, marginTop: 10, textAlign: 'center' }}>
+          By continuing you agree to our <u>Terms</u> &amp; <u>Privacy</u>.
+        </p>
+      </div>
+    </ScreenBG>
+  );
+}
+
+// ─── Shared button styles ────────────────────────────────────────────────
+const ctaPrimary = {
+  height: 54, borderRadius: 16, border: 'none', cursor: 'pointer',
+  background: `linear-gradient(180deg, ${ZTheme.pinkLight}, ${ZTheme.pink})`,
+  color: '#0A0508', ...T.body(15), fontWeight: 600,
+  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+  boxShadow: '0 10px 24px -10px rgba(255,45,135,0.7), inset 0 1px 0 rgba(255,255,255,0.35)',
+};
+const ctaSecondary = {
+  height: 54, borderRadius: 16, cursor: 'pointer',
+  background: ZTheme.card, color: ZTheme.text, border: `1px solid ${ZTheme.strokeHi}`,
+  ...T.body(15), fontWeight: 500,
+  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+};
+const ctaText = {
+  height: 40, borderRadius: 12, cursor: 'pointer',
+  background: 'transparent', color: ZTheme.textMute, border: 'none',
+  ...T.body(13), fontWeight: 500,
+};
+const iconBtn = {
+  width: 36, height: 36, borderRadius: 12, display: 'grid', placeItems: 'center',
+  background: 'rgba(255,255,255,0.05)', border: `1px solid ${ZTheme.stroke}`, cursor: 'pointer',
+  padding: 0,
+};
+
+Object.assign(window, {
+  LogoScreen, WelcomeA, WelcomeB, SignUpScreen,
+  ScreenBG, PinkAura, GridTex,
+  ctaPrimary, ctaSecondary, ctaText, iconBtn,
+});
+
+
+;// ── zuvaro-app.jsx ──
+// Zuvaro — main app screens: Home (feed), Leaderboard, Profile
+// Consumes window globals from zuvaro-theme.jsx + zuvaro-onboarding.jsx.
+
+// ─── Bottom tab bar (shared across main app) ─────────────────────────────
+function TabBar({ active = 'home', onChange = () => {} }) {
+  const tabs = [
+    { id: 'home',  icon: Icons.home,   label: 'Today' },
+    { id: 'board', icon: Icons.trophy, label: 'Board' },
+    { id: 'me',    icon: Icons.user,   label: 'Me'    },
+  ];
+  return (
+    <div style={{
+      position: 'absolute', bottom: 0, left: 0, right: 0, height: 92,
+      paddingBottom: 28,
+      background: 'linear-gradient(180deg, transparent, rgba(8,8,10,0.92) 35%)',
+      display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
+    }}>
+      <div style={{
+        display: 'flex', gap: 4, padding: 6, borderRadius: 999,
+        background: 'rgba(20,20,23,0.85)', border: `1px solid ${ZTheme.stroke}`,
+        backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)',
+      }}>
+        {tabs.map(t => {
+          const on = t.id === active;
+          return (
+            <button key={t.id} onClick={() => onChange(t.id)} style={{
+              display: 'flex', alignItems: 'center', gap: 8,
+              padding: on ? '10px 16px' : '10px 14px',
+              borderRadius: 999, border: 'none', cursor: 'pointer',
+              background: on ? ZTheme.pink : 'transparent',
+              color: on ? '#0A0508' : ZTheme.textMute,
+              ...T.body(13), fontWeight: 600,
+              transition: 'all .15s',
+            }}>
+              <t.icon size={18} stroke={on ? '#0A0508' : ZTheme.textMute}/>
+              {on && <span>{t.label}</span>}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ─── Reusable header ─────────────────────────────────────────────────────
+function AppHeader({ title, subtitle, right }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', padding: '70px 24px 16px' }}>
+      <div>
+        {subtitle && <div style={{ ...T.label(10), color: ZTheme.textMute, marginBottom: 6 }}>{subtitle}</div>}
+        <h1 style={{ ...T.display(30), margin: 0 }}>{title}</h1>
+      </div>
+      {right}
+    </div>
+  );
+}
+
+// ─── HOME — today's session + recent log ─────────────────────────────────
+function HomeScreen({ onOpenEntry, onOpenBoard } = {}) {
+  const entries = [
+    { d: 'Tue',  date: '07', title: 'Long run · easy', sub: '12.4 km · zone 2', dur: '58:12', tag: 'run',     accent: ZTheme.pink },
+    { d: 'Mon',  date: '06', title: 'Lower body · push', sub: '6 sets · 4 lifts', dur: '47:05', tag: 'lift',    accent: ZTheme.pinkLight },
+    { d: 'Sun',  date: '05', title: 'Rest + mobility',  sub: '20 min flow',      dur: '20:00', tag: 'recovery',accent: ZTheme.magenta },
+    { d: 'Sat',  date: '04', title: 'Threshold intervals', sub: '6 × 800m',      dur: '42:36', tag: 'run',     accent: ZTheme.pink },
+  ];
+
+  return (
+    <ScreenBG>
+      {/* soft top wash */}
+      <div style={{
+        position: 'absolute', top: -120, left: -40, right: -40, height: 360,
+        background: `radial-gradient(ellipse at top, ${ZTheme.magenta}55 0%, transparent 60%)`,
+        filter: 'blur(40px)', pointerEvents: 'none',
+      }}/>
+
+      <AppHeader
+        title="Today"
+        subtitle="Wed · May 21"
+        right={
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button style={iconBtn}><Icons.search size={18} stroke={ZTheme.textMute}/></button>
+            <button style={iconBtn}><Icons.bell size={18} stroke={ZTheme.textMute}/></button>
+          </div>
+        }
+      />
+
+      <div style={{ padding: '0 24px 140px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+        {/* HERO — today's planned session */}
+        <div style={{
+          position: 'relative', overflow: 'hidden',
+          borderRadius: 28, padding: 20, minHeight: 200,
+          background: `linear-gradient(140deg, ${ZTheme.magenta} 0%, ${ZTheme.pink} 55%, ${ZTheme.pinkLight} 100%)`,
+          color: '#160009',
+        }}>
+          <div style={{
+            position: 'absolute', top: -60, right: -40, width: 220, height: 220, borderRadius: '50%',
+            background: 'rgba(255,255,255,0.18)', filter: 'blur(20px)',
+          }}/>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', position: 'relative' }}>
+            <span style={{ ...T.label(10), color: 'rgba(22,0,9,0.7)' }}>Today&rsquo;s session</span>
+            <span style={{
+              padding: '4px 10px', borderRadius: 999, background: 'rgba(22,0,9,0.18)',
+              ...T.label(10), color: '#160009',
+            }}>5:30 pm</span>
+          </div>
+          <h2 style={{ ...T.display(28), color: '#160009', margin: '40px 0 6px' }}>Tempo run<br/>+ core finisher</h2>
+          <div style={{ ...T.body(13), color: 'rgba(22,0,9,0.7)' }}>8 km · target 4:38/km · 45 min</div>
+
+          <div style={{
+            position: 'relative', display: 'flex', alignItems: 'center', gap: 10, marginTop: 18,
+          }}>
+            <button style={{
+              flex: 1, height: 44, borderRadius: 14, border: 'none', cursor: 'pointer',
+              background: '#0A0508', color: '#fff', ...T.body(14), fontWeight: 600,
+            }}>Start session →</button>
+            <button style={{
+              width: 44, height: 44, borderRadius: 14, border: 'none', cursor: 'pointer',
+              background: 'rgba(22,0,9,0.18)', color: '#160009', display: 'grid', placeItems: 'center',
+            }}><Icons.calendar size={18} stroke="#160009"/></button>
+          </div>
+        </div>
+
+        {/* streak + week mini-stats */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 12 }}>
+          <div style={statCard}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <Icons.flame size={16} stroke={ZTheme.pink}/>
+              <span style={{ ...T.label(10), color: ZTheme.textMute }}>Streak</span>
+            </div>
+            <div style={{ ...T.display(28), marginTop: 8, color: ZTheme.text }}>
+              23<span style={{ ...T.body(13), color: ZTheme.textMute, marginLeft: 4 }}>days</span>
+            </div>
+            <WeekBars />
+          </div>
+          <div style={statCard}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <Icons.bolt size={16} stroke={ZTheme.pinkLight}/>
+              <span style={{ ...T.label(10), color: ZTheme.textMute }}>This week</span>
+            </div>
+            <div style={{ ...T.display(28), marginTop: 8 }}>4<span style={{ ...T.body(13), color: ZTheme.textMute, marginLeft: 4 }}>/ 6</span></div>
+            <div style={{ ...T.body(12), color: ZTheme.textMute, marginTop: 6 }}>sessions logged</div>
+          </div>
+        </div>
+
+        {/* RECENT — section header */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 8 }}>
+          <span style={{ ...T.label(10), color: ZTheme.textMute }}>Recent log</span>
+          <span style={{ ...T.body(12), color: ZTheme.pink, fontWeight: 600 }}>See all</span>
+        </div>
+
+        {entries.map((e, i) => (
+          <button key={i} onClick={onOpenEntry} style={{
+            all: 'unset', cursor: 'pointer',
+            display: 'flex', alignItems: 'center', gap: 14, padding: '14px 16px',
+            borderRadius: 18, background: ZTheme.card, border: `1px solid ${ZTheme.stroke}`,
+          }}>
+            <div style={{
+              width: 44, height: 56, borderRadius: 12, display: 'flex', flexDirection: 'column',
+              alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+              background: 'rgba(255,255,255,0.04)', border: `1px solid ${ZTheme.stroke}`,
+            }}>
+              <span style={{ ...T.label(9), color: ZTheme.textMute }}>{e.d}</span>
+              <span style={{ ...T.display(20), marginTop: 2 }}>{e.date}</span>
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ ...T.body(14), fontWeight: 600 }}>{e.title}</div>
+              <div style={{ ...T.body(12), color: ZTheme.textMute, marginTop: 2 }}>{e.sub}</div>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4 }}>
+              <span style={{ ...T.mono(13), color: ZTheme.text }}>{e.dur}</span>
+              <span style={{
+                ...T.label(9), padding: '2px 8px', borderRadius: 999,
+                background: `${e.accent}1F`, color: e.accent,
+              }}>{e.tag}</span>
+            </div>
+          </button>
+        ))}
+      </div>
+
+      {/* FAB */}
+      <button style={{
+        position: 'absolute', right: 24, bottom: 110, width: 56, height: 56, borderRadius: 18,
+        border: 'none', cursor: 'pointer',
+        background: ZTheme.pink, color: '#0A0508',
+        display: 'grid', placeItems: 'center',
+        boxShadow: `0 16px 30px -10px ${ZTheme.pink}, inset 0 1px 0 rgba(255,255,255,0.3)`,
+      }}>
+        <Icons.plus size={26} stroke="#0A0508" sw={2.2}/>
+      </button>
+
+      <TabBar active="home" onChange={(t) => t === 'board' && onOpenBoard?.()}/>
+    </ScreenBG>
+  );
+}
+
+function WeekBars() {
+  // 7 vertical bars, last 4 filled (today highlighted)
+  const data = [1,1,1,0,1,0.6,0];
+  return (
+    <div style={{ display: 'flex', gap: 4, alignItems: 'flex-end', height: 28, marginTop: 12 }}>
+      {data.map((v, i) => (
+        <div key={i} style={{
+          flex: 1, height: `${20 + v * 70}%`, borderRadius: 3,
+          background: v ? (i === 5 ? ZTheme.pink : `${ZTheme.pink}AA`) : 'rgba(255,255,255,0.08)',
+        }}/>
+      ))}
+    </div>
+  );
+}
+
+const statCard = {
+  borderRadius: 20, padding: 16, background: ZTheme.card, border: `1px solid ${ZTheme.stroke}`,
+};
+
+// ─── LEADERBOARD ─────────────────────────────────────────────────────────
+function LeaderboardScreen({ onBack, onOpenProfile } = {}) {
+  const podium = [
+    { rank: 2, name: 'Mira K.',   pts: 1218, color: ZTheme.pinkLight },
+    { rank: 1, name: 'Asha D.',   pts: 1342, color: ZTheme.pink },
+    { rank: 3, name: 'Theo R.',   pts: 1184, color: ZTheme.magenta },
+  ];
+  const others = [
+    { rank: 4, name: 'Jules Vance', sub: '12 sessions',  pts: 982,  delta: '+24' },
+    { rank: 5, name: 'Nina Park',   sub: '11 sessions',  pts: 904,  delta: '+11' },
+    { rank: 6, name: 'You',         sub: '10 sessions',  pts: 871,  delta: '+38', me: true },
+    { rank: 7, name: 'Sam Holt',    sub: '9 sessions',   pts: 812,  delta: '-4'  },
+    { rank: 8, name: 'Rae L.',      sub: '8 sessions',   pts: 760,  delta: '+2'  },
+  ];
+
+  return (
+    <ScreenBG>
+      <div style={{
+        position: 'absolute', top: -80, left: '50%', transform: 'translateX(-50%)',
+        width: 380, height: 280,
+        background: `radial-gradient(ellipse, ${ZTheme.pink}66 0%, transparent 60%)`,
+        filter: 'blur(40px)', pointerEvents: 'none',
+      }}/>
+
+      {/* header */}
+      <div style={{ position: 'relative', padding: '70px 18px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <button onClick={onBack} style={iconBtn}><Icons.chevL size={18} stroke={ZTheme.text}/></button>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ ...T.label(10), color: ZTheme.textMute }}>This week</div>
+          <div style={{ ...T.title(18), marginTop: 2 }}>Leaderboard</div>
+        </div>
+        <button style={iconBtn}><Icons.share size={18} stroke={ZTheme.textMute}/></button>
+      </div>
+
+      {/* segmented control */}
+      <div style={{ display: 'flex', justifyContent: 'center', padding: '8px 24px 16px' }}>
+        <div style={{
+          display: 'flex', gap: 4, padding: 4, borderRadius: 12,
+          background: ZTheme.card, border: `1px solid ${ZTheme.stroke}`,
+        }}>
+          {['Friends', 'Club', 'Global'].map((s, i) => (
+            <button key={s} style={{
+              padding: '7px 14px', borderRadius: 9, border: 'none', cursor: 'pointer',
+              background: i === 0 ? ZTheme.pink : 'transparent',
+              color: i === 0 ? '#0A0508' : ZTheme.textMute,
+              ...T.body(12), fontWeight: 600,
+            }}>{s}</button>
+          ))}
+        </div>
+      </div>
+
+      {/* podium */}
+      <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'flex-end', gap: 16, padding: '8px 28px 24px' }}>
+        {podium.map((p) => {
+          const isFirst = p.rank === 1;
+          return (
+            <div key={p.rank} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, flex: 1 }}>
+              <div style={{ position: 'relative' }}>
+                <Avatar name={p.name} size={isFirst ? 76 : 60} ring={p.color}/>
+                {isFirst && (
+                  <div style={{
+                    position: 'absolute', top: -16, left: '50%', transform: 'translateX(-50%) rotate(-6deg)',
+                    fontSize: 22,
+                  }}>
+                    <svg width="28" height="20" viewBox="0 0 28 20">
+                      <path d="M2 18 L8 4 L14 14 L20 4 L26 18 Z" fill={ZTheme.pink} stroke={ZTheme.pinkLight} strokeWidth="1"/>
+                    </svg>
+                  </div>
+                )}
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ ...T.body(13), fontWeight: 600 }}>{p.name}</div>
+                <div style={{ ...T.mono(12), color: p.color, marginTop: 2 }}>{p.pts}<span style={{ ...T.body(10), color: ZTheme.textMute }}> pts</span></div>
+              </div>
+              <div style={{
+                width: 52, height: isFirst ? 56 : p.rank === 2 ? 40 : 28, borderRadius: '12px 12px 0 0',
+                background: isFirst
+                  ? `linear-gradient(180deg, ${ZTheme.pink}, ${ZTheme.magenta})`
+                  : `linear-gradient(180deg, ${p.color}AA, ${p.color}55)`,
+                display: 'grid', placeItems: 'center', color: '#0A0508',
+                ...T.display(20),
+              }}>{p.rank}</div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* list */}
+      <div style={{ padding: '8px 18px 120px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {others.map((o) => (
+          <button key={o.rank} onClick={o.me ? onOpenProfile : undefined} style={{
+            all: 'unset', cursor: o.me ? 'pointer' : 'default',
+            display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px',
+            borderRadius: 16,
+            background: o.me ? `linear-gradient(90deg, ${ZTheme.pink}22, ${ZTheme.magenta}11)` : ZTheme.card,
+            border: o.me ? `1px solid ${ZTheme.pink}55` : `1px solid ${ZTheme.stroke}`,
+          }}>
+            <span style={{
+              width: 28, ...T.mono(13),
+              color: o.me ? ZTheme.pink : ZTheme.textMute, textAlign: 'center',
+            }}>{o.rank}</span>
+            <Avatar name={o.name} size={36} ring={o.me ? ZTheme.pink : 'transparent'}/>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ ...T.body(14), fontWeight: o.me ? 700 : 500 }}>{o.name}</div>
+              <div style={{ ...T.body(11), color: ZTheme.textMute }}>{o.sub}</div>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 2 }}>
+              <span style={{ ...T.mono(13) }}>{o.pts}</span>
+              <span style={{
+                ...T.mono(11),
+                color: o.delta.startsWith('-') ? ZTheme.textMute : ZTheme.pinkLight,
+              }}>{o.delta}</span>
+            </div>
+          </button>
+        ))}
+      </div>
+
+      <TabBar active="board" onChange={(t)=>{
+        if (t === 'home') onBack?.();
+        if (t === 'me') onOpenProfile?.();
+      }}/>
+    </ScreenBG>
+  );
+}
+
+// ─── PROFILE / STATS ─────────────────────────────────────────────────────
+function ProfileScreen({ onBack, onHome, onBoard } = {}) {
+  const stats = [
+    { k: 'Sessions logged',        v: '184',        sub: '+12 vs last mo.' },
+    { k: 'Total distance',         v: '627 km',     sub: 'lifetime · running' },
+    { k: 'Volume lifted',          v: '42,180 kg',  sub: 'lifetime · strength' },
+    { k: 'Avg. session length',    v: '47 min',     sub: 'rolling 30 days' },
+    { k: 'Top streak',             v: '38 days',    sub: 'set Mar 2026' },
+    { k: 'Friends training',       v: '14',         sub: '3 active today' },
+  ];
+
+  return (
+    <ScreenBG>
+      <div style={{
+        position: 'absolute', top: -80, left: '50%', transform: 'translateX(-50%)',
+        width: 360, height: 260,
+        background: `radial-gradient(ellipse, ${ZTheme.pink}55 0%, transparent 65%)`,
+        filter: 'blur(40px)', pointerEvents: 'none',
+      }}/>
+
+      {/* header */}
+      <div style={{ position: 'relative', padding: '70px 18px 8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <button onClick={onBack} style={iconBtn}><Icons.chevL size={18} stroke={ZTheme.text}/></button>
+        <div style={{ ...T.label(10), color: ZTheme.textMute }}>Profile</div>
+        <button style={iconBtn}><Icons.settings size={18} stroke={ZTheme.textMute}/></button>
+      </div>
+
+      {/* avatar block */}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, padding: '16px 24px 8px' }}>
+        <div style={{ position: 'relative' }}>
+          <Avatar name="You" size={96} ring={ZTheme.pink} thick/>
+          <div style={{
+            position: 'absolute', bottom: -2, right: -2, width: 28, height: 28, borderRadius: '50%',
+            background: ZTheme.pink, color: '#0A0508', display: 'grid', placeItems: 'center',
+            border: `3px solid ${ZTheme.bg}`,
+          }}><Icons.flame size={14} stroke="#0A0508"/></div>
+        </div>
+        <h1 style={{ ...T.display(26), margin: '8px 0 0' }}>Alex Moreno</h1>
+        <div style={{ ...T.body(13), color: ZTheme.textMute }}>@alex.m · joined Jan 2026</div>
+        <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
+          <Pill>23 day streak</Pill>
+          <Pill tint={ZTheme.pinkLight}>rank #6</Pill>
+        </div>
+      </div>
+
+      {/* statistics section */}
+      <div style={{ padding: '20px 24px 140px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+          <span style={{ ...T.label(10), color: ZTheme.textMute }}>Statistics</span>
+          <span style={{ ...T.body(12), color: ZTheme.pink, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>
+            All time <Icons.chevD size={12} stroke={ZTheme.pink}/>
+          </span>
+        </div>
+        <div style={{
+          borderRadius: 20, background: ZTheme.card, border: `1px solid ${ZTheme.stroke}`,
+          overflow: 'hidden',
+        }}>
+          {stats.map((s, i) => (
+            <div key={i} style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              padding: '14px 16px',
+              borderBottom: i === stats.length - 1 ? 'none' : `1px solid ${ZTheme.stroke}`,
+            }}>
+              <div style={{ minWidth: 0 }}>
+                <div style={{ ...T.body(13), color: ZTheme.text }}>{s.k}</div>
+                <div style={{ ...T.body(11), color: ZTheme.textDim, marginTop: 2 }}>{s.sub}</div>
+              </div>
+              <div style={{ ...T.mono(15), color: ZTheme.text }}>{s.v}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* logout */}
+        <button style={{
+          marginTop: 14, width: '100%', height: 50, borderRadius: 16, cursor: 'pointer',
+          background: 'rgba(200,30,91,0.12)', border: `1px solid ${ZTheme.magenta}55`,
+          color: ZTheme.pinkLight, ...T.body(14), fontWeight: 600,
+        }}>Log out</button>
+      </div>
+
+      <TabBar active="me" onChange={(t)=>{
+        if (t === 'home')  onHome?.();
+        if (t === 'board') onBoard?.();
+      }}/>
+    </ScreenBG>
+  );
+}
+
+// ─── Small primitives ────────────────────────────────────────────────────
+function Pill({ children, tint = ZTheme.pink }) {
+  return (
+    <span style={{
+      ...T.label(9), padding: '4px 10px', borderRadius: 999,
+      background: `${tint}1A`, color: tint, border: `1px solid ${tint}44`,
+    }}>{children}</span>
+  );
+}
+
+function Avatar({ name = '', size = 40, ring = 'transparent', thick = false }) {
+  // monogram from initials; deterministic hue from name
+  const initials = name.split(/\s+/).filter(Boolean).slice(0, 2).map(s => s[0]).join('').toUpperCase() || '·';
+  let h = 0;
+  for (const c of name) h = (h * 31 + c.charCodeAt(0)) % 360;
+  const isMe = name === 'You' || name === 'Alex Moreno';
+  const bg = isMe
+    ? `linear-gradient(135deg, ${ZTheme.pink}, ${ZTheme.magenta})`
+    : `linear-gradient(135deg, hsl(${h}, 30%, 22%), hsl(${(h+40)%360}, 30%, 14%))`;
+  return (
+    <div style={{
+      width: size, height: size, borderRadius: '50%',
+      background: bg, color: ZTheme.text,
+      display: 'grid', placeItems: 'center',
+      fontFamily: ZTheme.display, fontWeight: 600, fontSize: size * 0.36,
+      letterSpacing: -0.02 * size,
+      boxShadow: ring !== 'transparent'
+        ? `0 0 0 ${thick ? 3 : 2}px ${ZTheme.bg}, 0 0 0 ${thick ? 5 : 3}px ${ring}` : 'none',
+      flexShrink: 0,
+    }}>{initials}</div>
+  );
+}
+
+Object.assign(window, {
+  TabBar, AppHeader,
+  HomeScreen, LeaderboardScreen, ProfileScreen,
+  Pill, Avatar, WeekBars,
+});
+
+
+;// ── zuvaro-proto.jsx ──
+// Zuvaro — interactive prototype shell.
+// Wraps the screen components in a tiny router so one frame is fully clickable.
+
+function ZuvaroProto({ initial = 'welcome' } = {}) {
+  const [route, setRoute] = React.useState(initial);
+  const go = (r) => setRoute(r);
+
+  // simple cross-fade between screens
+  return (
+    <div style={{ position: 'absolute', inset: 0 }}>
+      <Fader keyName={route}>
+        {route === 'welcome'  && <WelcomeA   onContinue={() => go('signup')} onSignIn={() => go('home')} />}
+        {route === 'welcomeB' && <WelcomeB   onContinue={() => go('signup')} onSignIn={() => go('home')} />}
+        {route === 'signup'   && <SignUpScreen
+          onBack={() => go('welcome')}
+          onApple={() => go('home')} onGoogle={() => go('home')} onEmail={() => go('home')} />}
+        {route === 'home'     && <HomeScreen        onOpenBoard={() => go('board')} onOpenEntry={() => go('me')} />}
+        {route === 'board'    && <LeaderboardScreen onBack={() => go('home')} onOpenProfile={() => go('me')} />}
+        {route === 'me'       && <ProfileScreen     onBack={() => go('board')} onHome={() => go('home')} onBoard={() => go('board')} />}
+      </Fader>
+    </div>
+  );
+}
+
+function Fader({ keyName, children }) {
+  return (
+    <div key={keyName} style={{
+      position: 'absolute', inset: 0,
+      animation: 'zfade .26s ease-out both',
+    }}>{children}</div>
+  );
+}
+
+Object.assign(window, { ZuvaroProto, Fader });
+
+</script>
+<!-- ZUVARO_BUNDLE_END -->
+
+
+<script type="text/babel" data-presets="react">
+  const DEVICE = { w: 320, h: 692 };
+
+  function Frame({ children }) {
+    return <IOSDevice width={DEVICE.w} height={DEVICE.h} dark>{children}</IOSDevice>;
+  }
+
+  function App() {
+    return (
+      <DesignCanvas>
+        <DCSection id="brand" title="Brand"
+          subtitle="Original geometric mark — two interlocking petal-strokes form a chain-link Z. Pure black field, pink gradient stroke.">
+          <DCArtboard id="logo" label="Monogram" width={DEVICE.w} height={DEVICE.h}>
+            <Frame><LogoScreen /></Frame>
+          </DCArtboard>
+          <DCArtboard id="palette" label="Palette + type" width={420} height={DEVICE.h}>
+            <PaletteCard />
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="onboarding" title="Onboarding"
+          subtitle="First-run flow — three painted variants of the welcome &amp; sign-up screens.">
+          <DCArtboard id="welcomeA" label="Welcome · Hero" width={DEVICE.w} height={DEVICE.h}>
+            <Frame><WelcomeA /></Frame>
+          </DCArtboard>
+          <DCArtboard id="welcomeB" label="Welcome · Featurelist" width={DEVICE.w} height={DEVICE.h}>
+            <Frame><WelcomeB /></Frame>
+          </DCArtboard>
+          <DCArtboard id="signup" label="Sign up" width={DEVICE.w} height={DEVICE.h}>
+            <Frame><SignUpScreen /></Frame>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="app" title="Main app"
+          subtitle="Bottom-tabbed shell — Today (home), Leaderboard, and Profile. Last frame is fully interactive: tap any tab, button, or row.">
+          <DCArtboard id="home" label="Today" width={DEVICE.w} height={DEVICE.h}>
+            <Frame><HomeScreen /></Frame>
+          </DCArtboard>
+          <DCArtboard id="board" label="Leaderboard" width={DEVICE.w} height={DEVICE.h}>
+            <Frame><LeaderboardScreen /></Frame>
+          </DCArtboard>
+          <DCArtboard id="me" label="Profile · Stats" width={DEVICE.w} height={DEVICE.h}>
+            <Frame><ProfileScreen /></Frame>
+          </DCArtboard>
+          <DCArtboard id="proto" label="◉ Interactive prototype" width={DEVICE.w} height={DEVICE.h}>
+            <Frame><ZuvaroProto initial="welcome" /></Frame>
+          </DCArtboard>
+        </DCSection>
+      </DesignCanvas>
+    );
+  }
+
+  // Tiny side card showing the palette + type ramp
+  function PaletteCard() {
+    const swatches = [
+      { name: 'Pure black',  v: ZTheme.bg,        text: '#fff' },
+      { name: 'Card',        v: ZTheme.card,      text: '#fff' },
+      { name: 'Hot pink',    v: ZTheme.pink,      text: '#0A0508' },
+      { name: 'Pink light',  v: ZTheme.pinkLight, text: '#0A0508' },
+      { name: 'Magenta',     v: ZTheme.magenta,   text: '#fff' },
+      { name: 'Magenta dk.', v: ZTheme.magentaDk, text: '#fff' },
+    ];
+    return (
+      <div style={{
+        width: '100%', height: '100%', background: ZTheme.bg, color: ZTheme.text,
+        padding: 28, borderRadius: 28, overflow: 'hidden',
+        border: `1px solid ${ZTheme.stroke}`, position: 'relative',
+      }}>
+        <PinkAura y="105%" r={220} opacity={0.45} />
+        <div style={{ position: 'relative' }}>
+          <ZuvaroWordmark size={22}/>
+          <h2 style={{ ...T.display(28), margin: '14px 0 4px' }}>System</h2>
+          <p style={{ ...T.body(13), color: ZTheme.textMute, marginTop: 0 }}>
+            Pure black field, hot-pink primary, magenta depth.<br/>
+            Space Grotesk display + Inter UI + JetBrains Mono numerics.
+          </p>
+
+          <div style={{ ...T.label(10), color: ZTheme.textMute, marginTop: 24, marginBottom: 8 }}>Palette</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+            {swatches.map(s => (
+              <div key={s.name} style={{
+                borderRadius: 14, padding: '14px 14px 12px',
+                background: s.v, color: s.text,
+                border: `1px solid ${s.v === ZTheme.bg ? ZTheme.strokeHi : 'transparent'}`,
+              }}>
+                <div style={{ ...T.body(13), fontWeight: 600 }}>{s.name}</div>
+                <div style={{ ...T.mono(11), opacity: 0.7, marginTop: 4 }}>{s.v.toUpperCase()}</div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ ...T.label(10), color: ZTheme.textMute, marginTop: 24, marginBottom: 8 }}>Type ramp</div>
+          <div style={{ borderRadius: 16, background: ZTheme.card, border: `1px solid ${ZTheme.stroke}`, padding: 18 }}>
+            <div style={{ ...T.display(34), lineHeight: 1 }}>Display 34</div>
+            <div style={{ ...T.title(20), marginTop: 10 }}>Title 20</div>
+            <div style={{ ...T.body(14), color: ZTheme.textMute, marginTop: 6 }}>Body 14 — Inter regular for ui copy and descriptive text.</div>
+            <div style={{ ...T.mono(13), marginTop: 8, color: ZTheme.pink }}>42,180 kg · 04:38/km</div>
+            <div style={{ ...T.label(10), color: ZTheme.textMute, marginTop: 8 }}>Eyebrow label · 10</div>
+          </div>
+
+          <div style={{ ...T.body(11), color: ZTheme.textDim, marginTop: 16 }}>
+            Accent strokes share chroma ~0.18, hue 350°→335°. Surfaces stay near-black so pink does the lifting.
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "name": "zuvaro-app",
+  "private": true,
+  "scripts": {
+    "bundle": "node scripts/bundle-painted-html.js",
+    "bundle:all": "node scripts/bundle-painted-html.js --all",
+    "serve": "python3 -m http.server 8765"
+  }
+}
