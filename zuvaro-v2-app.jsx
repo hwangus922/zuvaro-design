@@ -46,7 +46,7 @@ function ZTabBar({ active = 'home', onChange = () => {} }) {
 }
 
 // ─── HOME — Quest Chain + filters + 5 challenge cards ────────────────────
-function ZHome({ onOpenBoard, onOpenMe, onOpenChallenge, onOpenQuestChain, questDone = 1, questTotal = 5 } = {}) {
+function ZHome({ onOpenBoard, onOpenMe, onOpenChallenge, onOpenQuestChain, onOpenSearch, questDone = 1, questTotal = 5 } = {}) {
   const [filter, setFilter] = React.useState('Recommended');
   const allChallenges = window.Z_CHALLENGES || [
     { time: '6 min', text: 'Let yo bih go thru yo phone', pts: 20, hook: 'Oh hell naw jigsaw u tweaking bruh', minutes: 6 },
@@ -130,7 +130,7 @@ function ZHome({ onOpenBoard, onOpenMe, onOpenChallenge, onOpenQuestChain, quest
         <FilterChip active={filter === 'Recommended'} onClick={() => setFilter('Recommended')}>Recommended</FilterChip>
         <FilterChip active={filter === 'Rewarding'} onClick={() => setFilter('Rewarding')}>Rewarding</FilterChip>
         <FilterChip active={filter === 'Short'} onClick={() => setFilter('Short')}>Short</FilterChip>
-        <button style={{
+        <button onClick={onOpenSearch} style={{
           marginLeft: 'auto', width: 24, height: 24, borderRadius: 12, cursor: 'pointer',
           border: `1px solid ${Z.strokeHi}`, background: Z.card, display: 'grid', placeItems: 'center',
         }}>
@@ -405,7 +405,7 @@ function LbRow({ rank, name, handle, pts, emoji, me, sep, onClick }) {
 }
 
 // ─── PROFILE ─────────────────────────────────────────────────────────────
-function ZProfile({ onBack, onHome, onBoard } = {}) {
+function ZProfile({ onBack, onHome, onBoard, onOpenSettings } = {}) {
   const [confirm, setConfirm] = React.useState(null);
   const stats = [
     { k: 'Wins',                 v: '47'  },
@@ -422,6 +422,12 @@ function ZProfile({ onBack, onHome, onBoard } = {}) {
         background: `radial-gradient(ellipse, ${Z.pink}55 0%, ${Z.orange}33 40%, transparent 70%)`,
         filter: 'blur(40px)', pointerEvents: 'none', opacity: Z.auraScale ?? 1,
       }}/>
+
+      <button onClick={onOpenSettings} style={{
+        position: 'absolute', top: 56, right: 24, ...iconChip,
+      }} aria-label="Settings">
+        <ZIcons.settings size={18} stroke={Z.textMute} sw={2}/>
+      </button>
 
       {/* avatar + edit pip */}
       <div style={{ position: 'absolute', left: 0, right: 0, top: 64, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>

@@ -1504,6 +1504,7 @@ const ZIcons = {
   google:  (p)=> <ZIcon {...p} fill="currentColor" stroke="none"><path d="M21.6 12.2c0-.7-.1-1.3-.2-1.9H12v3.7h5.4c-.2 1.2-.9 2.3-2 3v2.5h3.2c1.9-1.7 3-4.3 3-7.3z"/><path d="M12 22c2.7 0 5-.9 6.6-2.4l-3.2-2.5c-.9.6-2 1-3.4 1-2.6 0-4.8-1.8-5.6-4.1H3.1v2.6C4.8 19.7 8.1 22 12 22z"/><path d="M6.4 14c-.2-.6-.3-1.3-.3-2s.1-1.4.3-2V7.3H3.1C2.4 8.7 2 10.3 2 12s.4 3.3 1.1 4.7L6.4 14z"/><path d="M12 5.9c1.5 0 2.8.5 3.8 1.5l2.8-2.8C16.9 3 14.7 2 12 2 8.1 2 4.8 4.3 3.1 7.3L6.4 9.9c.8-2.3 3-4 5.6-4z"/></ZIcon>,
   mail:    (p)=> <ZIcon {...p}><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></ZIcon>,
   close:   (p)=> <ZIcon {...p}><path d="M6 6l12 12M18 6L6 18"/></ZIcon>,
+  settings:(p)=> <ZIcon {...p}><circle cx="12" cy="12" r="3"/><path d="M19.4 13.9l1.6 1-2 3.5-1.9-.7a8 8 0 01-2 1.2L14.5 21h-5l-.6-2.1a8 8 0 01-2-1.2l-1.9.7-2-3.5 1.6-1a8 8 0 010-2.2L3 10.7l2-3.5 1.9.7a8 8 0 012-1.2L9.5 4.7l5-.7.6 2.1a8 8 0 012 1.2l1.9-.7 2 3.5-1.6 1a8 8 0 010 2.2z"/></ZIcon>,
 };
 
 // Type helpers
@@ -2359,9 +2360,173 @@ function ZQuestChain({ questDone = 1, questTotal = 5, onBack, onSelectChallenge 
   );
 }
 
+// ─── Search dares ──────────────────────────────────────────────────────────
+function ZSearch({ onBack, onSelectChallenge } = {}) {
+  const [query, setQuery] = React.useState('');
+  const results = React.useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return Z_CHALLENGES;
+    return Z_CHALLENGES.filter(c =>
+      c.text.toLowerCase().includes(q) || c.hook.toLowerCase().includes(q)
+    );
+  }, [query]);
+
+  return (
+    <ZScreen>
+      <div style={{
+        position: 'absolute', top: -80, left: -40, right: -40, height: 240,
+        background: `radial-gradient(ellipse at top, ${Z.magenta}44 0%, transparent 70%)`,
+        filter: 'blur(40px)', pointerEvents: 'none', opacity: Z.auraScale ?? 1,
+      }}/>
+
+      <div style={{
+        position: 'absolute', top: 56, left: 24, right: 24,
+        display: 'flex', alignItems: 'center', gap: 12,
+      }}>
+        <button onClick={onBack} style={zIconBtn} aria-label="Back">
+          <ZIcons.chevL size={18} stroke={Z.text} sw={2}/>
+        </button>
+        <span style={{ ...ZT.body(16, 700), flex: 1 }}>Search dares</span>
+      </div>
+
+      <div style={{ position: 'absolute', left: 24, right: 24, top: 112 }}>
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 10, height: 48, borderRadius: 14,
+          padding: '0 14px', background: Z.card, border: `1px solid ${Z.strokeHi}`,
+        }}>
+          <ZIcons.search size={18} stroke={Z.textMute} sw={2}/>
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Try “phone”, “run”, “joke”…"
+            style={{
+              flex: 1, border: 'none', outline: 'none', background: 'transparent',
+              color: Z.text, ...ZT.body(16, 500),
+            }}
+          />
+          {query && (
+            <button onClick={() => setQuery('')} style={{ ...zIconBtn, width: 28, height: 28, borderRadius: 8 }}>
+              <ZIcons.close size={14} stroke={Z.textMute} sw={2}/>
+            </button>
+          )}
+        </div>
+      </div>
+
+      <div style={{
+        position: 'absolute', left: 24, right: 24, top: 180, bottom: 40,
+        overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: 12,
+      }}>
+        <div style={{ ...ZT.label(10), color: Z.textMute, marginBottom: 4 }}>
+          {query ? `${results.length} result${results.length === 1 ? '' : 's'}` : 'All dares'}
+        </div>
+        {results.map((c, i) => {
+          const idx = Z_CHALLENGES.indexOf(c);
+          return (
+            <button key={i} onClick={() => onSelectChallenge?.(idx)} style={{
+              all: 'unset', cursor: 'pointer', width: '100%',
+            }}>
+              <ChallengeCard {...c}/>
+            </button>
+          );
+        })}
+        {!results.length && (
+          <div style={{
+            padding: 24, borderRadius: 16, textAlign: 'center',
+            background: Z.card, border: `1px solid ${Z.stroke}`,
+          }}>
+            <div style={{ ...ZT.body(15, 600), color: Z.text }}>No dares match</div>
+            <div style={{ ...ZT.body(13), color: Z.textMute, marginTop: 6 }}>Try a shorter keyword or check spelling.</div>
+          </div>
+        )}
+      </div>
+    </ZScreen>
+  );
+}
+
+// ─── Settings ──────────────────────────────────────────────────────────────
+function ZSettings({ onBack } = {}) {
+  const [notifs, setNotifs] = React.useState({ daily: true, proof: true, board: false });
+
+  const rows = [
+    { k: 'daily', label: 'Daily dare reminders', sub: 'When Quest Chain refreshes' },
+    { k: 'proof', label: 'Proof approved', sub: 'Points credited notifications' },
+    { k: 'board', label: 'Leaderboard updates', sub: 'When someone passes you' },
+  ];
+
+  return (
+    <ZScreen>
+      <div style={{
+        position: 'absolute', top: 56, left: 24, right: 24,
+        display: 'flex', alignItems: 'center', gap: 12,
+      }}>
+        <button onClick={onBack} style={zIconBtn} aria-label="Back">
+          <ZIcons.chevL size={18} stroke={Z.text} sw={2}/>
+        </button>
+        <span style={{ ...ZT.body(16, 700), flex: 1 }}>Settings</span>
+      </div>
+
+      <div style={{ position: 'absolute', left: 24, right: 24, top: 120, bottom: 40, overflow: 'auto' }}>
+        <div style={{ ...ZT.label(10), color: Z.textMute, marginBottom: 10 }}>Notifications</div>
+        <div style={{
+          borderRadius: 20, background: Z.card, border: `1px solid ${Z.stroke}`, overflow: 'hidden',
+        }}>
+          {rows.map((r, i) => (
+            <div key={r.k} style={{
+              display: 'flex', alignItems: 'center', gap: 12, padding: '14px 16px',
+              borderTop: i ? `1px solid ${Z.stroke}` : 'none',
+            }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ ...ZT.body(15, 600), color: Z.text }}>{r.label}</div>
+                <div style={{ ...ZT.small(12), color: Z.textMute, marginTop: 2 }}>{r.sub}</div>
+              </div>
+              <button
+                onClick={() => setNotifs(n => ({ ...n, [r.k]: !n[r.k] }))}
+                style={{
+                  width: 48, height: 28, borderRadius: 14, border: 'none', cursor: 'pointer', padding: 2,
+                  background: notifs[r.k] ? Z_GRAD.warm : Z.cardHi,
+                  boxShadow: notifs[r.k] ? `0 4px 12px -4px ${Z.pink}` : 'none',
+                  transition: 'background .15s',
+                }}
+              >
+                <div style={{
+                  width: 24, height: 24, borderRadius: 12, background: '#fff',
+                  transform: notifs[r.k] ? 'translateX(20px)' : 'translateX(0)',
+                  transition: 'transform .15s',
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.15)',
+                }}/>
+              </button>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ ...ZT.label(10), color: Z.textMute, margin: '24px 0 10px' }}>Account</div>
+        <div style={{
+          borderRadius: 20, background: Z.card, border: `1px solid ${Z.stroke}`, overflow: 'hidden',
+        }}>
+          {['Edit profile', 'Privacy', 'Blocked users', 'Help & support'].map((label, i) => (
+            <button key={label} style={{
+              all: 'unset', cursor: 'pointer', width: '100%', display: 'flex', alignItems: 'center',
+              justifyContent: 'space-between', padding: '14px 16px',
+              borderTop: i ? `1px solid ${Z.stroke}` : 'none',
+            }}>
+              <span style={{ ...ZT.body(15, 500), color: Z.text }}>{label}</span>
+              <ZIcons.chevR size={16} stroke={Z.textMute} sw={2}/>
+            </button>
+          ))}
+        </div>
+
+        <div style={{ marginTop: 20, ...ZT.small(12), color: Z.textMute, textAlign: 'center' }}>
+          Zuvaro v3 prototype · v0.3
+        </div>
+      </div>
+    </ZScreen>
+  );
+}
+
 Object.assign(window, {
   Z_CHALLENGES,
   ZSignIn, ZEmailAuth, ZChallengeDetail, ZChallengeInProgress, ZSubmitProof, ZChallengeComplete, ZQuestChain,
+  ZSearch, ZSettings,
 });
 
 
@@ -2414,7 +2579,7 @@ function ZTabBar({ active = 'home', onChange = () => {} }) {
 }
 
 // ─── HOME — Quest Chain + filters + 5 challenge cards ────────────────────
-function ZHome({ onOpenBoard, onOpenMe, onOpenChallenge, onOpenQuestChain, questDone = 1, questTotal = 5 } = {}) {
+function ZHome({ onOpenBoard, onOpenMe, onOpenChallenge, onOpenQuestChain, onOpenSearch, questDone = 1, questTotal = 5 } = {}) {
   const [filter, setFilter] = React.useState('Recommended');
   const allChallenges = window.Z_CHALLENGES || [
     { time: '6 min', text: 'Let yo bih go thru yo phone', pts: 20, hook: 'Oh hell naw jigsaw u tweaking bruh', minutes: 6 },
@@ -2498,7 +2663,7 @@ function ZHome({ onOpenBoard, onOpenMe, onOpenChallenge, onOpenQuestChain, quest
         <FilterChip active={filter === 'Recommended'} onClick={() => setFilter('Recommended')}>Recommended</FilterChip>
         <FilterChip active={filter === 'Rewarding'} onClick={() => setFilter('Rewarding')}>Rewarding</FilterChip>
         <FilterChip active={filter === 'Short'} onClick={() => setFilter('Short')}>Short</FilterChip>
-        <button style={{
+        <button onClick={onOpenSearch} style={{
           marginLeft: 'auto', width: 24, height: 24, borderRadius: 12, cursor: 'pointer',
           border: `1px solid ${Z.strokeHi}`, background: Z.card, display: 'grid', placeItems: 'center',
         }}>
@@ -2773,7 +2938,7 @@ function LbRow({ rank, name, handle, pts, emoji, me, sep, onClick }) {
 }
 
 // ─── PROFILE ─────────────────────────────────────────────────────────────
-function ZProfile({ onBack, onHome, onBoard } = {}) {
+function ZProfile({ onBack, onHome, onBoard, onOpenSettings } = {}) {
   const [confirm, setConfirm] = React.useState(null);
   const stats = [
     { k: 'Wins',                 v: '47'  },
@@ -2790,6 +2955,12 @@ function ZProfile({ onBack, onHome, onBoard } = {}) {
         background: `radial-gradient(ellipse, ${Z.pink}55 0%, ${Z.orange}33 40%, transparent 70%)`,
         filter: 'blur(40px)', pointerEvents: 'none', opacity: Z.auraScale ?? 1,
       }}/>
+
+      <button onClick={onOpenSettings} style={{
+        position: 'absolute', top: 56, right: 24, ...iconChip,
+      }} aria-label="Settings">
+        <ZIcons.settings size={18} stroke={Z.textMute} sw={2}/>
+      </button>
 
       {/* avatar + edit pip */}
       <div style={{ position: 'absolute', left: 0, right: 0, top: 64, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
@@ -3017,7 +3188,13 @@ function ZProto({ initial = 'splash' } = {}) {
           onOpenMe={() => go('me')}
           onOpenChallenge={openChallenge}
           onOpenQuestChain={() => go('quest')}
+          onOpenSearch={() => go('search')}
         />}
+        {route === 'search'   && <ZSearch
+          onBack={() => go('home')}
+          onSelectChallenge={(idx) => openChallenge(idx)}
+        />}
+        {route === 'settings' && <ZSettings onBack={() => go('me')}/>}
         {route === 'quest'    && <ZQuestChain
           questDone={questDone}
           onBack={() => go('home')}
@@ -3048,7 +3225,12 @@ function ZProto({ initial = 'splash' } = {}) {
           onNext={nextChallenge}
         />}
         {route === 'board'    && <ZLeaderboard onBack={() => go('home')} onMe={() => go('me')}/>}
-        {route === 'me'       && <ZProfile onBack={() => go('home')} onHome={() => go('home')} onBoard={() => go('board')}/>}
+        {route === 'me'       && <ZProfile
+          onBack={() => go('home')}
+          onHome={() => go('home')}
+          onBoard={() => go('board')}
+          onOpenSettings={() => go('settings')}
+        />}
       </ZFader>
     </div>
   );
@@ -3121,11 +3303,23 @@ Object.assign(window, { ZProto, ZFader });
           <DCArtboard id="challenge-l" label="10 · Challenge detail" width={W} height={H}>
             <LFrame><ZChallengeDetail challenge={Z_CHALLENGES[0]}/></LFrame>
           </DCArtboard>
+          <DCArtboard id="inprogress-l" label="13 · Dare in progress" width={W} height={H}>
+            <LFrame><ZChallengeInProgress challenge={Z_CHALLENGES[0]}/></LFrame>
+          </DCArtboard>
+          <DCArtboard id="proof-l" label="14 · Submit proof" width={W} height={H}>
+            <LFrame><ZSubmitProof challenge={Z_CHALLENGES[0]}/></LFrame>
+          </DCArtboard>
           <DCArtboard id="complete-l" label="11 · Challenge complete" width={W} height={H}>
             <LFrame><ZChallengeComplete points={20} questDone={2}/></LFrame>
           </DCArtboard>
           <DCArtboard id="quest-l" label="12 · Quest Chain" width={W} height={H}>
             <LFrame><ZQuestChain questDone={1}/></LFrame>
+          </DCArtboard>
+          <DCArtboard id="search-l" label="15 · Search" width={W} height={H}>
+            <LFrame><ZSearch/></LFrame>
+          </DCArtboard>
+          <DCArtboard id="settings-l" label="16 · Settings" width={W} height={H}>
+            <LFrame><ZSettings/></LFrame>
           </DCArtboard>
           <DCArtboard id="proto-l" label="◉ Interactive prototype" width={W} height={H}>
             <LFrame><ZProto initial="splash"/></LFrame>

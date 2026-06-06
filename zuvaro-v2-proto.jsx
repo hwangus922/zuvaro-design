@@ -77,7 +77,13 @@ function ZProto({ initial = 'splash' } = {}) {
           onOpenMe={() => go('me')}
           onOpenChallenge={openChallenge}
           onOpenQuestChain={() => go('quest')}
+          onOpenSearch={() => go('search')}
         />}
+        {route === 'search'   && <ZSearch
+          onBack={() => go('home')}
+          onSelectChallenge={(idx) => openChallenge(idx)}
+        />}
+        {route === 'settings' && <ZSettings onBack={() => go('me')}/>}
         {route === 'quest'    && <ZQuestChain
           questDone={questDone}
           onBack={() => go('home')}
@@ -108,7 +114,12 @@ function ZProto({ initial = 'splash' } = {}) {
           onNext={nextChallenge}
         />}
         {route === 'board'    && <ZLeaderboard onBack={() => go('home')} onMe={() => go('me')}/>}
-        {route === 'me'       && <ZProfile onBack={() => go('home')} onHome={() => go('home')} onBoard={() => go('board')}/>}
+        {route === 'me'       && <ZProfile
+          onBack={() => go('home')}
+          onHome={() => go('home')}
+          onBoard={() => go('board')}
+          onOpenSettings={() => go('settings')}
+        />}
       </ZFader>
     </div>
   );

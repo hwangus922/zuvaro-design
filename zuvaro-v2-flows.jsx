@@ -534,7 +534,171 @@ function ZQuestChain({ questDone = 1, questTotal = 5, onBack, onSelectChallenge 
   );
 }
 
+// ─── Search dares ──────────────────────────────────────────────────────────
+function ZSearch({ onBack, onSelectChallenge } = {}) {
+  const [query, setQuery] = React.useState('');
+  const results = React.useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return Z_CHALLENGES;
+    return Z_CHALLENGES.filter(c =>
+      c.text.toLowerCase().includes(q) || c.hook.toLowerCase().includes(q)
+    );
+  }, [query]);
+
+  return (
+    <ZScreen>
+      <div style={{
+        position: 'absolute', top: -80, left: -40, right: -40, height: 240,
+        background: `radial-gradient(ellipse at top, ${Z.magenta}44 0%, transparent 70%)`,
+        filter: 'blur(40px)', pointerEvents: 'none', opacity: Z.auraScale ?? 1,
+      }}/>
+
+      <div style={{
+        position: 'absolute', top: 56, left: 24, right: 24,
+        display: 'flex', alignItems: 'center', gap: 12,
+      }}>
+        <button onClick={onBack} style={zIconBtn} aria-label="Back">
+          <ZIcons.chevL size={18} stroke={Z.text} sw={2}/>
+        </button>
+        <span style={{ ...ZT.body(16, 700), flex: 1 }}>Search dares</span>
+      </div>
+
+      <div style={{ position: 'absolute', left: 24, right: 24, top: 112 }}>
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 10, height: 48, borderRadius: 14,
+          padding: '0 14px', background: Z.card, border: `1px solid ${Z.strokeHi}`,
+        }}>
+          <ZIcons.search size={18} stroke={Z.textMute} sw={2}/>
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Try “phone”, “run”, “joke”…"
+            style={{
+              flex: 1, border: 'none', outline: 'none', background: 'transparent',
+              color: Z.text, ...ZT.body(16, 500),
+            }}
+          />
+          {query && (
+            <button onClick={() => setQuery('')} style={{ ...zIconBtn, width: 28, height: 28, borderRadius: 8 }}>
+              <ZIcons.close size={14} stroke={Z.textMute} sw={2}/>
+            </button>
+          )}
+        </div>
+      </div>
+
+      <div style={{
+        position: 'absolute', left: 24, right: 24, top: 180, bottom: 40,
+        overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: 12,
+      }}>
+        <div style={{ ...ZT.label(10), color: Z.textMute, marginBottom: 4 }}>
+          {query ? `${results.length} result${results.length === 1 ? '' : 's'}` : 'All dares'}
+        </div>
+        {results.map((c, i) => {
+          const idx = Z_CHALLENGES.indexOf(c);
+          return (
+            <button key={i} onClick={() => onSelectChallenge?.(idx)} style={{
+              all: 'unset', cursor: 'pointer', width: '100%',
+            }}>
+              <ChallengeCard {...c}/>
+            </button>
+          );
+        })}
+        {!results.length && (
+          <div style={{
+            padding: 24, borderRadius: 16, textAlign: 'center',
+            background: Z.card, border: `1px solid ${Z.stroke}`,
+          }}>
+            <div style={{ ...ZT.body(15, 600), color: Z.text }}>No dares match</div>
+            <div style={{ ...ZT.body(13), color: Z.textMute, marginTop: 6 }}>Try a shorter keyword or check spelling.</div>
+          </div>
+        )}
+      </div>
+    </ZScreen>
+  );
+}
+
+// ─── Settings ──────────────────────────────────────────────────────────────
+function ZSettings({ onBack } = {}) {
+  const [notifs, setNotifs] = React.useState({ daily: true, proof: true, board: false });
+
+  const rows = [
+    { k: 'daily', label: 'Daily dare reminders', sub: 'When Quest Chain refreshes' },
+    { k: 'proof', label: 'Proof approved', sub: 'Points credited notifications' },
+    { k: 'board', label: 'Leaderboard updates', sub: 'When someone passes you' },
+  ];
+
+  return (
+    <ZScreen>
+      <div style={{
+        position: 'absolute', top: 56, left: 24, right: 24,
+        display: 'flex', alignItems: 'center', gap: 12,
+      }}>
+        <button onClick={onBack} style={zIconBtn} aria-label="Back">
+          <ZIcons.chevL size={18} stroke={Z.text} sw={2}/>
+        </button>
+        <span style={{ ...ZT.body(16, 700), flex: 1 }}>Settings</span>
+      </div>
+
+      <div style={{ position: 'absolute', left: 24, right: 24, top: 120, bottom: 40, overflow: 'auto' }}>
+        <div style={{ ...ZT.label(10), color: Z.textMute, marginBottom: 10 }}>Notifications</div>
+        <div style={{
+          borderRadius: 20, background: Z.card, border: `1px solid ${Z.stroke}`, overflow: 'hidden',
+        }}>
+          {rows.map((r, i) => (
+            <div key={r.k} style={{
+              display: 'flex', alignItems: 'center', gap: 12, padding: '14px 16px',
+              borderTop: i ? `1px solid ${Z.stroke}` : 'none',
+            }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ ...ZT.body(15, 600), color: Z.text }}>{r.label}</div>
+                <div style={{ ...ZT.small(12), color: Z.textMute, marginTop: 2 }}>{r.sub}</div>
+              </div>
+              <button
+                onClick={() => setNotifs(n => ({ ...n, [r.k]: !n[r.k] }))}
+                style={{
+                  width: 48, height: 28, borderRadius: 14, border: 'none', cursor: 'pointer', padding: 2,
+                  background: notifs[r.k] ? Z_GRAD.warm : Z.cardHi,
+                  boxShadow: notifs[r.k] ? `0 4px 12px -4px ${Z.pink}` : 'none',
+                  transition: 'background .15s',
+                }}
+              >
+                <div style={{
+                  width: 24, height: 24, borderRadius: 12, background: '#fff',
+                  transform: notifs[r.k] ? 'translateX(20px)' : 'translateX(0)',
+                  transition: 'transform .15s',
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.15)',
+                }}/>
+              </button>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ ...ZT.label(10), color: Z.textMute, margin: '24px 0 10px' }}>Account</div>
+        <div style={{
+          borderRadius: 20, background: Z.card, border: `1px solid ${Z.stroke}`, overflow: 'hidden',
+        }}>
+          {['Edit profile', 'Privacy', 'Blocked users', 'Help & support'].map((label, i) => (
+            <button key={label} style={{
+              all: 'unset', cursor: 'pointer', width: '100%', display: 'flex', alignItems: 'center',
+              justifyContent: 'space-between', padding: '14px 16px',
+              borderTop: i ? `1px solid ${Z.stroke}` : 'none',
+            }}>
+              <span style={{ ...ZT.body(15, 500), color: Z.text }}>{label}</span>
+              <ZIcons.chevR size={16} stroke={Z.textMute} sw={2}/>
+            </button>
+          ))}
+        </div>
+
+        <div style={{ marginTop: 20, ...ZT.small(12), color: Z.textMute, textAlign: 'center' }}>
+          Zuvaro v3 prototype · v0.3
+        </div>
+      </div>
+    </ZScreen>
+  );
+}
+
 Object.assign(window, {
   Z_CHALLENGES,
   ZSignIn, ZEmailAuth, ZChallengeDetail, ZChallengeInProgress, ZSubmitProof, ZChallengeComplete, ZQuestChain,
+  ZSearch, ZSettings,
 });
