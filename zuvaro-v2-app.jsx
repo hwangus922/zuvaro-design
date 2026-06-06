@@ -405,7 +405,7 @@ function LbRow({ rank, name, handle, pts, emoji, me, sep, onClick }) {
 }
 
 // ─── PROFILE ─────────────────────────────────────────────────────────────
-function ZProfile({ onBack, onHome, onBoard, onOpenSettings } = {}) {
+function ZProfile({ onBack, onHome, onBoard, onOpenSettings, onOpenSubmissions } = {}) {
   const [confirm, setConfirm] = React.useState(null);
   const stats = [
     { k: 'Wins',                 v: '47'  },
@@ -508,10 +508,18 @@ function ZProfile({ onBack, onHome, onBoard, onOpenSettings } = {}) {
 
       {/* Account actions */}
       <div style={{
-        position: 'absolute', left: 24, top: 640, right: 24, height: 96,
+        position: 'absolute', left: 24, top: 640, right: 24, height: 144,
         borderRadius: 20, background: Z.card, border: `1px solid ${Z.stroke}`,
         overflow: 'hidden',
       }}>
+        <button onClick={onOpenSubmissions} style={accountBtn}>
+          <span style={{ ...ZT.body(16, 500) }}>My submissions</span>
+          <span style={{
+            ...ZT.small(11, 700), color: Z.orange, padding: '3px 8px', borderRadius: 999,
+            background: `${Z.orange}14`,
+          }}>1 pending</span>
+        </button>
+        <div style={{ height: 1, background: Z.stroke }}/>
         <button onClick={() => setConfirm('logout')} style={accountBtn}>
           <span style={{ ...ZT.body(16, 500) }}>Log out</span>
           <ZIcons.chevR size={16} stroke={Z.textMute} sw={2}/>

@@ -31,9 +31,17 @@ function ZProto({ initial = 'splash' } = {}) {
     go('proof');
   };
 
-  const finishChallenge = () => {
+  const submitProof = () => {
+    go('proofUploading');
+  };
+
+  const proofUploaded = () => {
+    go('proofPending');
+  };
+
+  const approveProof = () => {
     setQuestDone((n) => Math.min(5, n + 1));
-    go('complete');
+    go('proofApproved');
   };
 
   const nextChallenge = () => {
@@ -105,7 +113,37 @@ function ZProto({ initial = 'splash' } = {}) {
         {route === 'proof' && <ZSubmitProof
           challenge={activeChallenge}
           onBack={() => go('inProgress')}
-          onSubmit={finishChallenge}
+          onSubmit={submitProof}
+        />}
+        {route === 'proofUploading' && <ZProofUploading
+          challenge={activeChallenge}
+          onDone={proofUploaded}
+        />}
+        {route === 'proofPending' && <ZProofPending
+          challenge={activeChallenge}
+          onHome={() => go('home')}
+          onViewSubmissions={() => go('submissions')}
+          onSimulateApproved={approveProof}
+        />}
+        {route === 'proofApproved' && <ZProofApproved
+          challenge={activeChallenge}
+          points={activePts}
+          questDone={questDone}
+          onHome={() => go('home')}
+          onNext={nextChallenge}
+        />}
+        {route === 'proofRejected' && <ZProofRejected
+          challenge={activeChallenge}
+          onResubmit={() => go('proof')}
+          onHome={() => go('home')}
+        />}
+        {route === 'submissions' && <ZMySubmissions
+          onBack={() => go('me')}
+          onSelect={(s) => {
+            if (s.status === 'pending') go('proofPending');
+            else if (s.status === 'approved') go('proofApproved');
+            else go('proofRejected');
+          }}
         />}
         {route === 'complete' && <ZChallengeComplete
           points={activePts}
@@ -119,6 +157,7 @@ function ZProto({ initial = 'splash' } = {}) {
           onHome={() => go('home')}
           onBoard={() => go('board')}
           onOpenSettings={() => go('settings')}
+          onOpenSubmissions={() => go('submissions')}
         />}
       </ZFader>
     </div>

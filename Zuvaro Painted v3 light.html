@@ -2127,20 +2127,359 @@ function ZChallengeInProgress({ challenge, onDone, onBack } = {}) {
   );
 }
 
+function ProofPhotoThumb({ large = false } = {}) {
+  const h = large ? 180 : 72;
+  return (
+    <div style={{
+      width: '100%', height: h, borderRadius: large ? 16 : 12,
+      background: `linear-gradient(135deg, ${Z.pink}33, ${Z.orange}22)`,
+      border: `1px solid ${Z.strokeHi}`,
+      display: 'grid', placeItems: 'center', overflow: 'hidden', position: 'relative',
+    }}>
+      <div style={{
+        position: 'absolute', inset: 0,
+        background: `radial-gradient(circle at 30% 40%, ${Z.orange}44, transparent 55%),
+          radial-gradient(circle at 70% 60%, ${Z.pink}33, transparent 50%)`,
+      }}/>
+      <ZIcons.check size={large ? 36 : 22} stroke={Z.success || '#22C55E'} sw={2.5}/>
+    </div>
+  );
+}
+
 // ─── Submit proof ──────────────────────────────────────────────────────────
-function ZSubmitProof({ challenge, onBack, onSubmit } = {}) {
+function ZSubmitProof({ challenge, onBack, onSubmit, demoHasPhoto = false } = {}) {
   const c = challenge || Z_CHALLENGES[0];
-  const [hasPhoto, setHasPhoto] = React.useState(false);
+  const [hasPhoto, setHasPhoto] = React.useState(demoHasPhoto);
+  const [caption, setCaption] = React.useState('');
   const ptsLabel = c.pts ? `+${c.pts}pts` : 'for the lulz';
 
   return (
     <ZScreen>
       <div style={{
-        position: 'absolute', top: -80, left: -40, right: -40, height: 280,
+        position: 'absolute', top: -80, left: -40, right: -40, height: 240,
         background: `radial-gradient(ellipse at top, ${Z.magenta}55 0%, ${Z.pink}33 35%, transparent 70%)`,
         filter: 'blur(40px)', pointerEvents: 'none', opacity: Z.auraScale ?? 1,
       }}/>
 
+      <div style={{
+        position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column',
+        padding: '56px 24px 36px',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+          <button onClick={onBack} style={zIconBtn} aria-label="Back">
+            <ZIcons.chevL size={18} stroke={Z.text} sw={2}/>
+          </button>
+          <span style={{ ...ZT.label(10), color: Z.textMute, flex: 1 }}>SUBMIT PROOF</span>
+          <span style={{
+            padding: '6px 12px', borderRadius: 999,
+            background: c.pts ? `linear-gradient(135deg, ${Z.orange}, ${Z.pink})` : Z.card,
+            color: c.pts ? '#160009' : Z.textMute, ...ZT.body(12, 700),
+          }}>{ptsLabel}</span>
+        </div>
+
+        <div style={{ flex: 1, overflow: 'auto', display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <div>
+            <h1 style={{ ...ZT.display(24, 700), margin: 0 }}>{c.text}</h1>
+            <p style={{ ...ZT.body(14), color: Z.textMute, marginTop: 8, lineHeight: 1.45 }}>
+              Upload a photo showing you completed this dare. Add a caption if you want extra chaos.
+            </p>
+          </div>
+
+          <button onClick={() => setHasPhoto(true)} style={{
+            all: 'unset', cursor: 'pointer', borderRadius: 20,
+            background: Z.card, border: `1px dashed ${hasPhoto ? Z.success || '#22C55E' : Z.strokeHi}`,
+            padding: hasPhoto ? 12 : 20, textAlign: 'center',
+          }}>
+            {hasPhoto ? (
+              <div>
+                <ProofPhotoThumb large/>
+                <span style={{ ...ZT.body(14, 600), color: Z.text, display: 'block', marginTop: 10 }}>
+                  Photo added · tap to change
+                </span>
+              </div>
+            ) : (
+              <div>
+                <span style={{ fontSize: 32 }}>📷</span>
+                <div style={{ ...ZT.body(15, 600), color: Z.text, marginTop: 10 }}>Tap to add photo proof</div>
+                <div style={{ ...ZT.small(12), color: Z.textMute, marginTop: 4 }}>Required to earn points</div>
+              </div>
+            )}
+          </button>
+
+          <label style={{ display: 'block' }}>
+            <span style={{ ...ZT.label(10), color: Z.textMute, display: 'block', marginBottom: 8 }}>Caption (optional)</span>
+            <input
+              value={caption}
+              onChange={(e) => setCaption(e.target.value)}
+              placeholder="e.g. he really went through my camera roll"
+              style={{
+                width: '100%', height: 44, borderRadius: 12, padding: '0 14px', boxSizing: 'border-box',
+                border: `1px solid ${Z.strokeHi}`, background: Z.card, color: Z.text,
+                ...ZT.body(14, 500), outline: 'none',
+              }}
+            />
+          </label>
+
+          <div style={{
+            borderRadius: 16, background: Z.card, border: `1px solid ${Z.stroke}`, padding: 14,
+          }}>
+            <div style={{ ...ZT.label(10), color: Z.textMute, marginBottom: 6 }}>What counts as proof</div>
+            <p style={{ ...ZT.body(13, 500), color: Z.text, margin: 0, lineHeight: 1.5 }}>{c.rules}</p>
+          </div>
+        </div>
+
+        <button
+          onClick={() => hasPhoto && onSubmit?.()}
+          disabled={!hasPhoto}
+          style={{
+            ...zCtaPrimary, marginTop: 12, flexShrink: 0,
+            opacity: hasPhoto ? 1 : 0.45,
+            cursor: hasPhoto ? 'pointer' : 'not-allowed',
+          }}
+        >
+          Submit proof · {c.pts ? `${c.pts}pts` : 'no pts'}
+        </button>
+      </div>
+    </ZScreen>
+  );
+}
+
+// ─── Uploading proof ───────────────────────────────────────────────────────
+function ZProofUploading({ challenge, onDone } = {}) {
+  const c = challenge || Z_CHALLENGES[0];
+
+  React.useEffect(() => {
+    const id = setTimeout(() => onDone?.(), 1400);
+    return () => clearTimeout(id);
+  }, [onDone]);
+
+  return (
+    <ZScreen>
+      <div style={{
+        position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column',
+        alignItems: 'center', justifyContent: 'center', padding: 32, textAlign: 'center',
+      }}>
+        <div style={{
+          width: 88, height: 88, borderRadius: '50%',
+          background: Z.card, border: `1px solid ${Z.strokeHi}`,
+          display: 'grid', placeItems: 'center',
+          animation: 'zfadev2 .6s ease-in-out infinite alternate',
+        }}>
+          <ZIcons.bolt size={36} stroke={Z.pink} sw={2} fill={Z.pink}/>
+        </div>
+        <h1 style={{ ...ZT.display(26, 700), margin: '24px 0 0' }}>Uploading proof…</h1>
+        <p style={{ ...ZT.body(14), color: Z.textMute, marginTop: 10, maxWidth: 280 }}>
+          Sending your photo for <span style={{ color: Z.text, fontWeight: 600 }}>{c.text}</span>
+        </p>
+        <div style={{ width: 200, height: 4, borderRadius: 2, background: Z.stroke, marginTop: 28, overflow: 'hidden' }}>
+          <div style={{
+            width: '65%', height: '100%', borderRadius: 2, background: Z_GRAD.warm,
+            animation: 'zfadev2 1s ease-in-out infinite alternate',
+          }}/>
+        </div>
+      </div>
+    </ZScreen>
+  );
+}
+
+// ─── Proof pending review ──────────────────────────────────────────────────
+function ZProofPending({ challenge, onHome, onViewSubmissions, onSimulateApproved } = {}) {
+  const c = challenge || Z_CHALLENGES[0];
+  const ptsLabel = c.pts ? `+${c.pts}pts` : 'for the lulz';
+
+  return (
+    <ZScreen>
+      <HeatAura y="30%" r={220} opacity={0.4}/>
+      <div style={{
+        position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column',
+        padding: '56px 24px 36px',
+      }}>
+        <div style={{ textAlign: 'center', marginBottom: 20 }}>
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 12px',
+            borderRadius: 999, background: `${Z.orange}18`, border: `1px solid ${Z.orange}44`,
+          }}>
+            <ZIcons.clock size={14} stroke={Z.orange} sw={2}/>
+            <span style={{ ...ZT.small(11, 700), color: Z.orange }}>PENDING REVIEW</span>
+          </div>
+          <h1 style={{ ...ZT.display(28, 700), margin: '16px 0 0' }}>Proof submitted</h1>
+          <p style={{ ...ZT.body(14), color: Z.textMute, marginTop: 8 }}>
+            We'll review your photo and credit points once approved. Usually within 24 hours.
+          </p>
+        </div>
+
+        <div style={{
+          borderRadius: 20, background: Z.card, border: `1px solid ${Z.stroke}`,
+          padding: 16, display: 'flex', gap: 14, alignItems: 'center',
+        }}>
+          <div style={{ width: 72, flexShrink: 0 }}><ProofPhotoThumb/></div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ ...ZT.body(15, 700), color: Z.text }}>{c.text}</div>
+            <div style={{ ...ZT.small(12), color: Z.textMute, marginTop: 4 }}>Submitted just now</div>
+            <div style={{
+              display: 'inline-block', marginTop: 8, padding: '4px 10px', borderRadius: 999,
+              background: `${Z.orange}14`, ...ZT.small(11, 700), color: Z.orange,
+            }}>{ptsLabel} pending</div>
+          </div>
+        </div>
+
+        <div style={{
+          marginTop: 14, borderRadius: 16, padding: '14px 16px',
+          background: Z.card, border: `1px solid ${Z.stroke}`,
+        }}>
+          <div style={{ ...ZT.label(10), color: Z.textMute, marginBottom: 8 }}>Review timeline</div>
+          {['Proof received', 'Moderator review', 'Points credited'].map((step, i) => (
+            <div key={step} style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: i ? 10 : 0 }}>
+              <div style={{
+                width: 22, height: 22, borderRadius: '50%', flexShrink: 0,
+                background: i === 0 ? Z_GRAD.warm : Z.cardHi,
+                border: i === 0 ? 'none' : `1px solid ${Z.stroke}`,
+                display: 'grid', placeItems: 'center',
+              }}>
+                {i === 0 && <ZIcons.check size={12} stroke={Z.inkOnWarm || '#0A0508'} sw={2.5}/>}
+              </div>
+              <span style={{
+                ...ZT.body(14, i === 0 ? 600 : 500),
+                color: i === 0 ? Z.text : Z.textMute,
+              }}>{step}</span>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <button onClick={onHome} style={zCtaPrimary}>Back to Home</button>
+          <button onClick={onViewSubmissions} style={{
+            ...zCtaSecondary, background: 'transparent', border: 'none',
+            color: Z.textMute, height: 40,
+          }}>View all submissions</button>
+          {onSimulateApproved && (
+            <button onClick={onSimulateApproved} style={{
+              ...zCtaSecondary, border: `1px dashed ${Z.strokeHi}`, color: Z.textMute, height: 40,
+            }}>Demo: simulate approval</button>
+          )}
+        </div>
+      </div>
+    </ZScreen>
+  );
+}
+
+// ─── Proof approved ────────────────────────────────────────────────────────
+function ZProofApproved({ challenge, points, questDone = 2, questTotal = 5, onHome, onNext } = {}) {
+  const c = challenge || Z_CHALLENGES[0];
+  const pts = points ?? c.pts;
+  const pct = Math.round((questDone / questTotal) * 100);
+
+  return (
+    <ZScreen>
+      <HeatAura y="35%" r={240} opacity={0.55}/>
+      <div style={{
+        position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column',
+        alignItems: 'center', padding: '72px 32px 36px', textAlign: 'center',
+      }}>
+        <div style={{
+          width: 88, height: 88, borderRadius: '50%',
+          background: Z_GRAD.warm, display: 'grid', placeItems: 'center',
+          boxShadow: `0 20px 48px -12px ${Z.pink}`,
+        }}>
+          <ZIcons.check size={40} stroke={Z.inkOnWarm || '#0A0508'} sw={3}/>
+        </div>
+        <h1 style={{ ...ZT.display(30, 700), margin: '24px 0 0' }}>Proof approved!</h1>
+        <p style={{ ...ZT.body(14), color: Z.textMute, marginTop: 8 }}>{c.text}</p>
+
+        {pts ? (
+          <div style={{
+            marginTop: 24, ...ZT.display(44, 800),
+            background: Z_GRAD.warm, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+          }}>+{pts}pts</div>
+        ) : (
+          <div style={{ marginTop: 24, ...ZT.display(24, 800), color: Z.text }}>Dare logged · no pts</div>
+        )}
+
+        <div style={{
+          marginTop: 20, padding: '16px 18px', borderRadius: 16, width: '100%',
+          background: Z_GRAD.cardWarm, color: Z.inkOnWarm || '#0A0508', textAlign: 'left',
+        }}>
+          <div style={{ ...ZT.body(14, 700) }}>Quest Chain · {questDone}/{questTotal}</div>
+          <div style={{ marginTop: 10, height: 6, borderRadius: 3, background: 'rgba(10,5,8,0.22)' }}>
+            <div style={{ width: `${pct}%`, height: '100%', borderRadius: 3, background: '#0A0508' }}/>
+          </div>
+        </div>
+
+        <div style={{ marginTop: 'auto', width: '100%', display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <button onClick={onNext} style={zCtaPrimary}>Next dare</button>
+          <button onClick={onHome} style={{
+            ...zCtaSecondary, background: 'transparent', border: 'none', color: Z.textMute, height: 40,
+          }}>Back to Home</button>
+        </div>
+      </div>
+    </ZScreen>
+  );
+}
+
+// ─── Proof rejected ────────────────────────────────────────────────────────
+function ZProofRejected({ challenge, onResubmit, onHome } = {}) {
+  const c = challenge || Z_CHALLENGES[0];
+
+  return (
+    <ZScreen>
+      <div style={{
+        position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column',
+        padding: '56px 24px 36px',
+      }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{
+            width: 72, height: 72, borderRadius: '50%', margin: '0 auto',
+            background: `${Z.orange}18`, border: `1px solid ${Z.orange}55`,
+            display: 'grid', placeItems: 'center',
+          }}>
+            <ZIcons.close size={32} stroke={Z.orange} sw={2.5}/>
+          </div>
+          <h1 style={{ ...ZT.display(26, 700), margin: '20px 0 0' }}>Proof rejected</h1>
+          <p style={{ ...ZT.body(14), color: Z.textMute, marginTop: 8, lineHeight: 1.45 }}>
+            Your photo for <span style={{ color: Z.text, fontWeight: 600 }}>{c.text}</span> didn't pass review.
+          </p>
+        </div>
+
+        <div style={{
+          marginTop: 24, borderRadius: 16, padding: 16,
+          background: Z.card, border: `1px solid ${Z.stroke}`,
+        }}>
+          <div style={{ ...ZT.label(10), color: Z.textMute, marginBottom: 6 }}>Reason</div>
+          <p style={{ ...ZT.body(14, 500), color: Z.text, margin: 0, lineHeight: 1.5 }}>
+            Photo doesn't clearly show the dare was completed. Make sure your face, the action, or the result is visible.
+          </p>
+        </div>
+
+        <div style={{ marginTop: 14, width: 120 }}><ProofPhotoThumb large/></div>
+
+        <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <button onClick={onResubmit} style={zCtaPrimary}>Resubmit proof</button>
+          <button onClick={onHome} style={{
+            ...zCtaSecondary, background: 'transparent', border: 'none', color: Z.textMute, height: 40,
+          }}>Skip for now</button>
+        </div>
+      </div>
+    </ZScreen>
+  );
+}
+
+// ─── My submissions list ───────────────────────────────────────────────────
+const Z_SUBMISSIONS = [
+  { dare: 'Let yo bih go thru yo phone', status: 'pending', pts: 20, time: '2m ago' },
+  { dare: 'Text your ex', status: 'approved', pts: 10, time: 'Yesterday' },
+  { dare: 'Run 10 km', status: 'rejected', pts: 50, time: '3 days ago' },
+];
+
+function ZMySubmissions({ onBack, onSelect } = {}) {
+  const statusStyle = {
+    pending:  { bg: `${Z.orange}14`, color: Z.orange, label: 'Pending' },
+    approved: { bg: `${Z.success || '#22C55E'}18`, color: Z.success || '#22C55E', label: 'Approved' },
+    rejected: { bg: `${Z.pink}14`, color: Z.pink, label: 'Rejected' },
+  };
+
+  return (
+    <ZScreen>
       <div style={{
         position: 'absolute', top: 56, left: 24, right: 24,
         display: 'flex', alignItems: 'center', gap: 12,
@@ -2148,85 +2487,40 @@ function ZSubmitProof({ challenge, onBack, onSubmit } = {}) {
         <button onClick={onBack} style={zIconBtn} aria-label="Back">
           <ZIcons.chevL size={18} stroke={Z.text} sw={2}/>
         </button>
-        <span style={{
-          padding: '6px 12px', borderRadius: 999, marginLeft: 'auto',
-          background: c.pts ? `linear-gradient(135deg, ${Z.orange}, ${Z.pink})` : Z.card,
-          color: c.pts ? '#160009' : Z.textMute, ...ZT.body(12, 700),
-        }}>{ptsLabel}</span>
-      </div>
-
-      <div style={{ position: 'absolute', left: 24, right: 24, top: 112 }}>
-        <span style={{ ...ZT.label(10), color: Z.textMute }}>SUBMIT PROOF</span>
-        <h1 style={{ ...ZT.display(26, 700), margin: '8px 0 0' }}>{c.text}</h1>
-        <p style={{ ...ZT.body(14), color: Z.textMute, marginTop: 10, lineHeight: 1.45 }}>
-          Upload a photo showing you completed this dare. Points are awarded after your proof is approved.
-        </p>
+        <span style={{ ...ZT.body(16, 700), flex: 1 }}>My submissions</span>
       </div>
 
       <div style={{
-        position: 'absolute', left: 24, right: 24, top: 230,
-        padding: '14px 16px', borderRadius: 16,
-        background: `${Z.orange}14`, border: `1px solid ${Z.orange}44`,
-        display: 'flex', alignItems: 'center', gap: 12,
+        position: 'absolute', left: 24, right: 24, top: 112, bottom: 40,
+        overflow: 'auto', display: 'flex', flexDirection: 'column', gap: 10,
       }}>
-        <ZIcons.star size={20} stroke={Z.orange} sw={2} fill={Z.orange}/>
-        <div style={{ flex: 1 }}>
-          <div style={{ ...ZT.small(11, 600), color: Z.textMute }}>Points at stake</div>
-          <div style={{ ...ZT.body(16, 700), color: Z.text }}>{ptsLabel}</div>
-        </div>
-        <span style={{ ...ZT.small(11, 600), color: Z.textMute }}>Review ~24h</span>
-      </div>
-
-      <button onClick={() => setHasPhoto(true)} style={{
-        all: 'unset', cursor: 'pointer',
-        position: 'absolute', left: 24, right: 24, top: 310, height: 220,
-        borderRadius: 20, background: Z.card, border: `1px solid ${Z.stroke}`,
-        display: 'grid', placeItems: 'center', textAlign: 'center', padding: 20,
-      }}>
-        {hasPhoto ? (
-          <div>
-            <div style={{
-              width: '100%', height: 140, borderRadius: 14,
-              background: `linear-gradient(135deg, ${Z.pink}33, ${Z.orange}22)`,
-              display: 'grid', placeItems: 'center', marginBottom: 12,
+        {Z_SUBMISSIONS.map((s, i) => {
+          const st = statusStyle[s.status] || statusStyle.pending;
+          return (
+            <button key={i} onClick={() => onSelect?.(s)} style={{
+              all: 'unset', cursor: 'pointer', width: '100%',
+              borderRadius: 16, background: Z.card, border: `1px solid ${Z.stroke}`,
+              padding: 14, display: 'flex', gap: 12, alignItems: 'center',
             }}>
-              <ZIcons.check size={40} stroke={Z.success || '#22C55E'} sw={2.5}/>
-            </div>
-            <span style={{ ...ZT.body(14, 600), color: Z.text }}>Photo selected · tap to change</span>
-          </div>
-        ) : (
-          <div>
-            <span style={{ fontSize: 36 }}>📷</span>
-            <div style={{ ...ZT.body(15, 600), color: Z.text, marginTop: 12 }}>Add photo proof</div>
-            <div style={{ ...ZT.small(12), color: Z.textMute, marginTop: 4 }}>Required to earn points</div>
-          </div>
-        )}
-      </button>
-
-      <div style={{
-        position: 'absolute', left: 24, right: 24, top: 548, bottom: 100,
-        borderRadius: 20, background: Z.card, border: `1px solid ${Z.stroke}`,
-        padding: 16, overflow: 'auto',
-      }}>
-        <div style={{ ...ZT.label(10), color: Z.textMute, marginBottom: 8 }}>What counts as proof</div>
-        <p style={{ ...ZT.body(14, 500), color: Z.text, margin: 0, lineHeight: 1.5 }}>{c.rules}</p>
-      </div>
-
-      <div style={{
-        position: 'absolute', left: 24, right: 24, bottom: 40,
-        display: 'flex', flexDirection: 'column', gap: 10,
-      }}>
-        <button
-          onClick={() => hasPhoto && onSubmit?.()}
-          disabled={!hasPhoto}
-          style={{
-            ...zCtaPrimary,
-            opacity: hasPhoto ? 1 : 0.45,
-            cursor: hasPhoto ? 'pointer' : 'not-allowed',
-          }}
-        >
-          Submit proof · {c.pts ? `${c.pts}pts` : 'no pts'}
-        </button>
+              <div style={{ width: 56, flexShrink: 0 }}><ProofPhotoThumb/></div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ ...ZT.body(14, 600), color: Z.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {s.dare}
+                </div>
+                <div style={{ ...ZT.small(12), color: Z.textMute, marginTop: 4 }}>{s.time}</div>
+              </div>
+              <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                <div style={{
+                  padding: '4px 8px', borderRadius: 999, background: st.bg,
+                  ...ZT.small(10, 700), color: st.color,
+                }}>{st.label}</div>
+                {s.pts && (
+                  <div style={{ ...ZT.mono(12, 600), color: Z.textMute, marginTop: 6 }}>+{s.pts}pts</div>
+                )}
+              </div>
+            </button>
+          );
+        })}
       </div>
     </ZScreen>
   );
@@ -2258,9 +2552,9 @@ function ZChallengeComplete({
           <ZIcons.check size={40} stroke={Z.inkOnWarm || '#0A0508'} sw={3}/>
         </div>
 
-        <h1 style={{ ...ZT.display(32, 700), margin: '28px 0 0' }}>Proof submitted</h1>
+        <h1 style={{ ...ZT.display(32, 700), margin: '28px 0 0' }}>Dare complete</h1>
         <p style={{ ...ZT.body(15), color: Z.textMute, marginTop: 10 }}>
-          We’ll review your photo and credit points once approved.
+          Quest progress updated — check My submissions for proof status.
         </p>
 
         <div style={{
@@ -2524,9 +2818,10 @@ function ZSettings({ onBack } = {}) {
 }
 
 Object.assign(window, {
-  Z_CHALLENGES,
-  ZSignIn, ZEmailAuth, ZChallengeDetail, ZChallengeInProgress, ZSubmitProof, ZChallengeComplete, ZQuestChain,
-  ZSearch, ZSettings,
+  Z_CHALLENGES, Z_SUBMISSIONS,
+  ZSignIn, ZEmailAuth, ZChallengeDetail, ZChallengeInProgress, ZSubmitProof,
+  ZProofUploading, ZProofPending, ZProofApproved, ZProofRejected, ZMySubmissions,
+  ZChallengeComplete, ZQuestChain, ZSearch, ZSettings,
 });
 
 
@@ -2938,7 +3233,7 @@ function LbRow({ rank, name, handle, pts, emoji, me, sep, onClick }) {
 }
 
 // ─── PROFILE ─────────────────────────────────────────────────────────────
-function ZProfile({ onBack, onHome, onBoard, onOpenSettings } = {}) {
+function ZProfile({ onBack, onHome, onBoard, onOpenSettings, onOpenSubmissions } = {}) {
   const [confirm, setConfirm] = React.useState(null);
   const stats = [
     { k: 'Wins',                 v: '47'  },
@@ -3041,10 +3336,18 @@ function ZProfile({ onBack, onHome, onBoard, onOpenSettings } = {}) {
 
       {/* Account actions */}
       <div style={{
-        position: 'absolute', left: 24, top: 640, right: 24, height: 96,
+        position: 'absolute', left: 24, top: 640, right: 24, height: 144,
         borderRadius: 20, background: Z.card, border: `1px solid ${Z.stroke}`,
         overflow: 'hidden',
       }}>
+        <button onClick={onOpenSubmissions} style={accountBtn}>
+          <span style={{ ...ZT.body(16, 500) }}>My submissions</span>
+          <span style={{
+            ...ZT.small(11, 700), color: Z.orange, padding: '3px 8px', borderRadius: 999,
+            background: `${Z.orange}14`,
+          }}>1 pending</span>
+        </button>
+        <div style={{ height: 1, background: Z.stroke }}/>
         <button onClick={() => setConfirm('logout')} style={accountBtn}>
           <span style={{ ...ZT.body(16, 500) }}>Log out</span>
           <ZIcons.chevR size={16} stroke={Z.textMute} sw={2}/>
@@ -3142,9 +3445,17 @@ function ZProto({ initial = 'splash' } = {}) {
     go('proof');
   };
 
-  const finishChallenge = () => {
+  const submitProof = () => {
+    go('proofUploading');
+  };
+
+  const proofUploaded = () => {
+    go('proofPending');
+  };
+
+  const approveProof = () => {
     setQuestDone((n) => Math.min(5, n + 1));
-    go('complete');
+    go('proofApproved');
   };
 
   const nextChallenge = () => {
@@ -3216,7 +3527,37 @@ function ZProto({ initial = 'splash' } = {}) {
         {route === 'proof' && <ZSubmitProof
           challenge={activeChallenge}
           onBack={() => go('inProgress')}
-          onSubmit={finishChallenge}
+          onSubmit={submitProof}
+        />}
+        {route === 'proofUploading' && <ZProofUploading
+          challenge={activeChallenge}
+          onDone={proofUploaded}
+        />}
+        {route === 'proofPending' && <ZProofPending
+          challenge={activeChallenge}
+          onHome={() => go('home')}
+          onViewSubmissions={() => go('submissions')}
+          onSimulateApproved={approveProof}
+        />}
+        {route === 'proofApproved' && <ZProofApproved
+          challenge={activeChallenge}
+          points={activePts}
+          questDone={questDone}
+          onHome={() => go('home')}
+          onNext={nextChallenge}
+        />}
+        {route === 'proofRejected' && <ZProofRejected
+          challenge={activeChallenge}
+          onResubmit={() => go('proof')}
+          onHome={() => go('home')}
+        />}
+        {route === 'submissions' && <ZMySubmissions
+          onBack={() => go('me')}
+          onSelect={(s) => {
+            if (s.status === 'pending') go('proofPending');
+            else if (s.status === 'approved') go('proofApproved');
+            else go('proofRejected');
+          }}
         />}
         {route === 'complete' && <ZChallengeComplete
           points={activePts}
@@ -3230,6 +3571,7 @@ function ZProto({ initial = 'splash' } = {}) {
           onHome={() => go('home')}
           onBoard={() => go('board')}
           onOpenSettings={() => go('settings')}
+          onOpenSubmissions={() => go('submissions')}
         />}
       </ZFader>
     </div>
@@ -3290,6 +3632,37 @@ Object.assign(window, { ZProto, ZFader });
           </DCArtboard>
         </DCSection>
 
+        <DCSection id="submission" title="Submission · Light"
+          subtitle="Dare timer → photo proof → upload → review → approved / rejected. Full flow in the interactive prototype.">
+          <DCArtboard id="challenge-l" label="10 · Challenge detail" width={W} height={H}>
+            <LFrame><ZChallengeDetail challenge={Z_CHALLENGES[0]}/></LFrame>
+          </DCArtboard>
+          <DCArtboard id="inprogress-l" label="11 · Dare in progress" width={W} height={H}>
+            <LFrame><ZChallengeInProgress challenge={Z_CHALLENGES[0]}/></LFrame>
+          </DCArtboard>
+          <DCArtboard id="proof-l" label="12 · Submit proof" width={W} height={H}>
+            <LFrame><ZSubmitProof challenge={Z_CHALLENGES[0]}/></LFrame>
+          </DCArtboard>
+          <DCArtboard id="proof-filled-l" label="12b · Proof added" width={W} height={H}>
+            <LFrame><ZSubmitProof challenge={Z_CHALLENGES[0]} demoHasPhoto/></LFrame>
+          </DCArtboard>
+          <DCArtboard id="uploading-l" label="13 · Uploading" width={W} height={H}>
+            <LFrame><ZProofUploading challenge={Z_CHALLENGES[0]}/></LFrame>
+          </DCArtboard>
+          <DCArtboard id="pending-l" label="14 · Pending review" width={W} height={H}>
+            <LFrame><ZProofPending challenge={Z_CHALLENGES[0]}/></LFrame>
+          </DCArtboard>
+          <DCArtboard id="approved-l" label="15 · Approved" width={W} height={H}>
+            <LFrame><ZProofApproved challenge={Z_CHALLENGES[0]} points={20} questDone={2}/></LFrame>
+          </DCArtboard>
+          <DCArtboard id="rejected-l" label="16 · Rejected" width={W} height={H}>
+            <LFrame><ZProofRejected challenge={Z_CHALLENGES[0]}/></LFrame>
+          </DCArtboard>
+          <DCArtboard id="submissions-l" label="17 · My submissions" width={W} height={H}>
+            <LFrame><ZMySubmissions/></LFrame>
+          </DCArtboard>
+        </DCSection>
+
         <DCSection id="app" title="Main app · Light">
           <DCArtboard id="home-l" label="05 · Home" width={W} height={H}>
             <LFrame><ZHome/></LFrame>
@@ -3300,25 +3673,16 @@ Object.assign(window, { ZProto, ZFader });
           <DCArtboard id="me-l" label="07 · Profile" width={W} height={H}>
             <LFrame><ZProfile/></LFrame>
           </DCArtboard>
-          <DCArtboard id="challenge-l" label="10 · Challenge detail" width={W} height={H}>
-            <LFrame><ZChallengeDetail challenge={Z_CHALLENGES[0]}/></LFrame>
-          </DCArtboard>
-          <DCArtboard id="inprogress-l" label="13 · Dare in progress" width={W} height={H}>
-            <LFrame><ZChallengeInProgress challenge={Z_CHALLENGES[0]}/></LFrame>
-          </DCArtboard>
-          <DCArtboard id="proof-l" label="14 · Submit proof" width={W} height={H}>
-            <LFrame><ZSubmitProof challenge={Z_CHALLENGES[0]}/></LFrame>
-          </DCArtboard>
-          <DCArtboard id="complete-l" label="11 · Challenge complete" width={W} height={H}>
-            <LFrame><ZChallengeComplete points={20} questDone={2}/></LFrame>
-          </DCArtboard>
-          <DCArtboard id="quest-l" label="12 · Quest Chain" width={W} height={H}>
+          <DCArtboard id="quest-l" label="18 · Quest Chain" width={W} height={H}>
             <LFrame><ZQuestChain questDone={1}/></LFrame>
           </DCArtboard>
-          <DCArtboard id="search-l" label="15 · Search" width={W} height={H}>
+          <DCArtboard id="complete-l" label="19 · Dare complete" width={W} height={H}>
+            <LFrame><ZChallengeComplete points={20} questDone={2}/></LFrame>
+          </DCArtboard>
+          <DCArtboard id="search-l" label="20 · Search" width={W} height={H}>
             <LFrame><ZSearch/></LFrame>
           </DCArtboard>
-          <DCArtboard id="settings-l" label="16 · Settings" width={W} height={H}>
+          <DCArtboard id="settings-l" label="21 · Settings" width={W} height={H}>
             <LFrame><ZSettings/></LFrame>
           </DCArtboard>
           <DCArtboard id="proto-l" label="◉ Interactive prototype" width={W} height={H}>
@@ -3405,7 +3769,12 @@ Object.assign(window, { ZProto, ZFader });
     );
   }
 
-  ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+  window.mountZuvaroApp = function () {
+    ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+  };
+  if (location.protocol === 'file:' || location.protocol === 'data:' || !window.ZUVARO_LOAD_CONFIG) {
+    window.mountZuvaroApp();
+  }
 </script>
 </body>
 </html>

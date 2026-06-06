@@ -25,13 +25,18 @@ Or double-click `Open Zuvaro v3 Light.command` on macOS.
 | 06 | Leaderboard |
 | 07 | Profile |
 | 08–09 | Sign in, email auth |
+| 05–09 | Home, leaderboard, profile, sign-in, email |
+| **Submission · Light** | |
 | 10 | Challenge detail |
-| 11 | Challenge complete |
-| 12 | Quest chain |
-| 13 | Dare in progress (timer) |
-| 14 | Submit proof |
-| 15 | Search |
-| 16 | Settings |
+| 11 | Dare in progress (timer) |
+| 12 | Submit proof |
+| 12b | Submit proof (photo added) |
+| 13 | Uploading |
+| 14 | Pending review |
+| 15 | Approved (+pts) |
+| 16 | Rejected (resubmit) |
+| 17 | My submissions |
+| 18–21 | Quest chain, dare complete, search, settings |
 | ◉ | **Interactive prototype** — full clickable flow |
 
 ## Edit workflow
