@@ -295,7 +295,112 @@ function ZChallengeInProgress({ challenge, onDone, onBack } = {}) {
       <div style={{
         position: 'absolute', left: 24, right: 24, bottom: 40,
       }}>
-        <button onClick={onDone} style={zCtaPrimary}>I did it</button>
+        <button onClick={onDone} style={zCtaPrimary}>I did it — submit proof</button>
+      </div>
+    </ZScreen>
+  );
+}
+
+// ─── Submit proof ──────────────────────────────────────────────────────────
+function ZSubmitProof({ challenge, onBack, onSubmit } = {}) {
+  const c = challenge || Z_CHALLENGES[0];
+  const [hasPhoto, setHasPhoto] = React.useState(false);
+  const ptsLabel = c.pts ? `+${c.pts}pts` : 'for the lulz';
+
+  return (
+    <ZScreen>
+      <div style={{
+        position: 'absolute', top: -80, left: -40, right: -40, height: 280,
+        background: `radial-gradient(ellipse at top, ${Z.magenta}55 0%, ${Z.pink}33 35%, transparent 70%)`,
+        filter: 'blur(40px)', pointerEvents: 'none', opacity: Z.auraScale ?? 1,
+      }}/>
+
+      <div style={{
+        position: 'absolute', top: 56, left: 24, right: 24,
+        display: 'flex', alignItems: 'center', gap: 12,
+      }}>
+        <button onClick={onBack} style={zIconBtn} aria-label="Back">
+          <ZIcons.chevL size={18} stroke={Z.text} sw={2}/>
+        </button>
+        <span style={{
+          padding: '6px 12px', borderRadius: 999, marginLeft: 'auto',
+          background: c.pts ? `linear-gradient(135deg, ${Z.orange}, ${Z.pink})` : Z.card,
+          color: c.pts ? '#160009' : Z.textMute, ...ZT.body(12, 700),
+        }}>{ptsLabel}</span>
+      </div>
+
+      <div style={{ position: 'absolute', left: 24, right: 24, top: 112 }}>
+        <span style={{ ...ZT.label(10), color: Z.textMute }}>SUBMIT PROOF</span>
+        <h1 style={{ ...ZT.display(26, 700), margin: '8px 0 0' }}>{c.text}</h1>
+        <p style={{ ...ZT.body(14), color: Z.textMute, marginTop: 10, lineHeight: 1.45 }}>
+          Upload a photo showing you completed this dare. Points are awarded after your proof is approved.
+        </p>
+      </div>
+
+      <div style={{
+        position: 'absolute', left: 24, right: 24, top: 230,
+        padding: '14px 16px', borderRadius: 16,
+        background: `${Z.orange}14`, border: `1px solid ${Z.orange}44`,
+        display: 'flex', alignItems: 'center', gap: 12,
+      }}>
+        <ZIcons.star size={20} stroke={Z.orange} sw={2} fill={Z.orange}/>
+        <div style={{ flex: 1 }}>
+          <div style={{ ...ZT.small(11, 600), color: Z.textMute }}>Points at stake</div>
+          <div style={{ ...ZT.body(16, 700), color: Z.text }}>{ptsLabel}</div>
+        </div>
+        <span style={{ ...ZT.small(11, 600), color: Z.textMute }}>Review ~24h</span>
+      </div>
+
+      <button onClick={() => setHasPhoto(true)} style={{
+        all: 'unset', cursor: 'pointer',
+        position: 'absolute', left: 24, right: 24, top: 310, height: 220,
+        borderRadius: 20, background: Z.card, border: `1px solid ${Z.stroke}`,
+        display: 'grid', placeItems: 'center', textAlign: 'center', padding: 20,
+      }}>
+        {hasPhoto ? (
+          <div>
+            <div style={{
+              width: '100%', height: 140, borderRadius: 14,
+              background: `linear-gradient(135deg, ${Z.pink}33, ${Z.orange}22)`,
+              display: 'grid', placeItems: 'center', marginBottom: 12,
+            }}>
+              <ZIcons.check size={40} stroke={Z.success || '#22C55E'} sw={2.5}/>
+            </div>
+            <span style={{ ...ZT.body(14, 600), color: Z.text }}>Photo selected · tap to change</span>
+          </div>
+        ) : (
+          <div>
+            <span style={{ fontSize: 36 }}>📷</span>
+            <div style={{ ...ZT.body(15, 600), color: Z.text, marginTop: 12 }}>Add photo proof</div>
+            <div style={{ ...ZT.small(12), color: Z.textMute, marginTop: 4 }}>Required to earn points</div>
+          </div>
+        )}
+      </button>
+
+      <div style={{
+        position: 'absolute', left: 24, right: 24, top: 548, bottom: 100,
+        borderRadius: 20, background: Z.card, border: `1px solid ${Z.stroke}`,
+        padding: 16, overflow: 'auto',
+      }}>
+        <div style={{ ...ZT.label(10), color: Z.textMute, marginBottom: 8 }}>What counts as proof</div>
+        <p style={{ ...ZT.body(14, 500), color: Z.text, margin: 0, lineHeight: 1.5 }}>{c.rules}</p>
+      </div>
+
+      <div style={{
+        position: 'absolute', left: 24, right: 24, bottom: 40,
+        display: 'flex', flexDirection: 'column', gap: 10,
+      }}>
+        <button
+          onClick={() => hasPhoto && onSubmit?.()}
+          disabled={!hasPhoto}
+          style={{
+            ...zCtaPrimary,
+            opacity: hasPhoto ? 1 : 0.45,
+            cursor: hasPhoto ? 'pointer' : 'not-allowed',
+          }}
+        >
+          Submit proof · {c.pts ? `${c.pts}pts` : 'no pts'}
+        </button>
       </div>
     </ZScreen>
   );
@@ -327,9 +432,9 @@ function ZChallengeComplete({
           <ZIcons.check size={40} stroke={Z.inkOnWarm || '#0A0508'} sw={3}/>
         </div>
 
-        <h1 style={{ ...ZT.display(32, 700), margin: '28px 0 0' }}>Dare crushed</h1>
+        <h1 style={{ ...ZT.display(32, 700), margin: '28px 0 0' }}>Proof submitted</h1>
         <p style={{ ...ZT.body(15), color: Z.textMute, marginTop: 10 }}>
-          The board saw that. So did your group chat.
+          We’ll review your photo and credit points once approved.
         </p>
 
         <div style={{
@@ -346,8 +451,13 @@ function ZChallengeComplete({
             <div style={{ ...ZT.display(28, 800), color: Z.text }}>for the lulz</div>
           )}
           <div style={{ ...ZT.body(14), color: Z.textMute, marginTop: 8 }}>
-            {hasPts ? 'added to your total' : 'no points — dignity still lost'}
+            {hasPts ? 'pending review' : 'no points — dignity still lost'}
           </div>
+          {hasPts && (
+            <div style={{ ...ZT.small(12), color: Z.orange, marginTop: 8 }}>
+              Usually approved within 24 hours
+            </div>
+          )}
         </div>
 
         <div style={{
@@ -426,5 +536,5 @@ function ZQuestChain({ questDone = 1, questTotal = 5, onBack, onSelectChallenge 
 
 Object.assign(window, {
   Z_CHALLENGES,
-  ZSignIn, ZEmailAuth, ZChallengeDetail, ZChallengeInProgress, ZChallengeComplete, ZQuestChain,
+  ZSignIn, ZEmailAuth, ZChallengeDetail, ZChallengeInProgress, ZSubmitProof, ZChallengeComplete, ZQuestChain,
 });

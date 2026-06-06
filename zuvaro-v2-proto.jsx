@@ -27,6 +27,10 @@ function ZProto({ initial = 'splash' } = {}) {
     go('inProgress');
   };
 
+  const goToProof = () => {
+    go('proof');
+  };
+
   const finishChallenge = () => {
     setQuestDone((n) => Math.min(5, n + 1));
     go('complete');
@@ -89,8 +93,13 @@ function ZProto({ initial = 'splash' } = {}) {
         />}
         {route === 'inProgress' && <ZChallengeInProgress
           challenge={activeChallenge}
-          onDone={finishChallenge}
+          onDone={goToProof}
           onBack={() => go('challenge')}
+        />}
+        {route === 'proof' && <ZSubmitProof
+          challenge={activeChallenge}
+          onBack={() => go('inProgress')}
+          onSubmit={finishChallenge}
         />}
         {route === 'complete' && <ZChallengeComplete
           points={activePts}
