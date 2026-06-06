@@ -61,14 +61,17 @@ Then commit both the `.jsx` sources **and** the updated HTML files.
 
 ## Live preview (GitHub Pages)
 
-A deploy workflow is in `.github/workflows/pages.yml`. To go live:
+A deploy workflow is in `.github/workflows/pages.yml`. It skips quietly until Pages is enabled.
 
-1. Repo → **Settings** → **Pages** → Source: **GitHub Actions**
-2. Push to `main` (or run the workflow manually)
+**This repo is private.** GitHub Pages on private repos requires **GitHub Pro** (paid). Free alternative: make the repo **public**.
 
-Public URL will be: `https://hwangus922.github.io/zuvaro-design/`
+To enable:
 
-> Requires a GitHub plan that includes Pages (public repos on free accounts qualify).
+1. **Settings** → **General** → change visibility to Public *(or upgrade to Pro)*
+2. **Settings** → **Pages** → Source: **GitHub Actions**
+3. Push to `main` — the workflow deploys automatically
+
+Public URL: `https://hwangus922.github.io/zuvaro-design/`
 
 ## Project structure
 
