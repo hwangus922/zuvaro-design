@@ -1,6 +1,6 @@
 # Zuvaro Design
 
-Interactive UI prototype and design canvas for **Zuvaro** — daily dares, quest chains, leaderboards, and proof submission.
+Interactive UI prototype and design canvas for **Zuvaro** — daily dares, quest chains, leaderboards, group chat, and proof submission.
 
 **Canonical version:** `Zuvaro Painted v3 light.html` (light theme)
 
@@ -21,10 +21,6 @@ Or double-click `Open Zuvaro v3 Light.command` on macOS.
 |---|--------|
 | 01 | Splash |
 | 02–04 | Onboarding (welcome, TOS, sign-up) |
-| 05 | Home |
-| 06 | Leaderboard |
-| 07 | Profile |
-| 08–09 | Sign in, email auth |
 | 05–09 | Home, leaderboard, profile, sign-in, email |
 | **Submission · Light** | |
 | 10 | Challenge detail |
@@ -37,7 +33,23 @@ Or double-click `Open Zuvaro v3 Light.command` on macOS.
 | 16 | Rejected (resubmit) |
 | 17 | My submissions |
 | 18–21 | Quest chain, dare complete, search, settings |
+| **Social · Light** | |
+| 22 | Group chat |
+| 23 | Create dare |
+| 24 | Notifications |
+| 25 | Invite friends |
+| 26 | Edit profile |
+| 27 | Privacy |
+| 28 | Blocked users |
+| 29 | Help & support |
 | ◉ | **Interactive prototype** — full clickable flow |
+
+## Interactive prototype paths
+
+- **Dare loop:** Home → dare → Accept → timer → proof → upload → pending → approve/reject
+- **Social:** Home → chat icon → group chat → + create dare
+- **Notifications:** Home → bell icon
+- **Profile:** Me → submissions / invite friends / settings → sub-screens
 
 ## Edit workflow
 
@@ -77,7 +89,8 @@ Public URL: `https://hwangus922.github.io/zuvaro-design/`
 
 ```
 zuvaro-v2-proto.jsx      # Interactive prototype router
-zuvaro-v2-flows.jsx      # Challenge, auth, search, settings screens
+zuvaro-v2-flows.jsx      # Challenge, auth, search, settings, submission screens
+zuvaro-v2-social.jsx     # Group chat, notifications, invites, settings sub-screens
 zuvaro-v2-app.jsx        # Home, leaderboard, profile
 zuvaro-v2-onboarding.jsx # Onboarding screens
 zuvaro-v3-theme-light.jsx # v3 light design tokens

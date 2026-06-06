@@ -131,6 +131,10 @@ const ZIcons = {
   mail:    (p)=> <ZIcon {...p}><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></ZIcon>,
   close:   (p)=> <ZIcon {...p}><path d="M6 6l12 12M18 6L6 18"/></ZIcon>,
   settings:(p)=> <ZIcon {...p}><circle cx="12" cy="12" r="3"/><path d="M19.4 13.9l1.6 1-2 3.5-1.9-.7a8 8 0 01-2 1.2L14.5 21h-5l-.6-2.1a8 8 0 01-2-1.2l-1.9.7-2-3.5 1.6-1a8 8 0 010-2.2L3 10.7l2-3.5 1.9.7a8 8 0 012-1.2L9.5 4.7l5-.7.6 2.1a8 8 0 012 1.2l1.9-.7 2 3.5-1.6 1a8 8 0 010 2.2z"/></ZIcon>,
+  bell:    (p)=> <ZIcon {...p}><path d="M18 16v-5a6 6 0 10-12 0v5l-2 2h16l-2-2z"/><path d="M9 20a3 3 0 006 0"/></ZIcon>,
+  message: (p)=> <ZIcon {...p}><path d="M21 12a8 8 0 01-8 8H7l-4 3V12a8 8 0 018-8h2a8 8 0 018 8z"/></ZIcon>,
+  plus:    (p)=> <ZIcon {...p}><path d="M12 5v14M5 12h14"/></ZIcon>,
+  users:   (p)=> <ZIcon {...p}><circle cx="9" cy="8" r="3"/><circle cx="16" cy="9" r="2.5"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5M14 20c0-2 2-3.5 4-3.5"/></ZIcon>,
 };
 
 // Type helpers

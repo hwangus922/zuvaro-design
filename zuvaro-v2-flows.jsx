@@ -457,7 +457,7 @@ function ZProofUploading({ challenge, onDone } = {}) {
 }
 
 // ─── Proof pending review ──────────────────────────────────────────────────
-function ZProofPending({ challenge, onHome, onViewSubmissions, onSimulateApproved } = {}) {
+function ZProofPending({ challenge, onHome, onViewSubmissions, onSimulateApproved, onSimulateRejected } = {}) {
   const c = challenge || Z_CHALLENGES[0];
   const ptsLabel = c.pts ? `+${c.pts}pts` : 'for the lulz';
 
@@ -530,6 +530,11 @@ function ZProofPending({ challenge, onHome, onViewSubmissions, onSimulateApprove
             <button onClick={onSimulateApproved} style={{
               ...zCtaSecondary, border: `1px dashed ${Z.strokeHi}`, color: Z.textMute, height: 40,
             }}>Demo: simulate approval</button>
+          )}
+          {onSimulateRejected && (
+            <button onClick={onSimulateRejected} style={{
+              ...zCtaSecondary, border: `1px dashed ${Z.orange}44`, color: Z.orange, height: 40,
+            }}>Demo: simulate rejection</button>
           )}
         </div>
       </div>
@@ -912,7 +917,9 @@ function ZSearch({ onBack, onSelectChallenge } = {}) {
 }
 
 // ─── Settings ──────────────────────────────────────────────────────────────
-function ZSettings({ onBack } = {}) {
+function ZSettings({
+  onBack, onOpenNotifications, onOpenEditProfile, onOpenPrivacy, onOpenBlocked, onOpenHelp,
+} = {}) {
   const [notifs, setNotifs] = React.useState({ daily: true, proof: true, board: false });
 
   const rows = [
@@ -934,7 +941,14 @@ function ZSettings({ onBack } = {}) {
       </div>
 
       <div style={{ position: 'absolute', left: 24, right: 24, top: 120, bottom: 40, overflow: 'auto' }}>
-        <div style={{ ...ZT.label(10), color: Z.textMute, marginBottom: 10 }}>Notifications</div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+          <span style={{ ...ZT.label(10), color: Z.textMute }}>Notifications</span>
+          {onOpenNotifications && (
+            <button onClick={onOpenNotifications} style={{
+              all: 'unset', cursor: 'pointer', ...ZT.small(12, 600), color: Z.pink,
+            }}>View all</button>
+          )}
+        </div>
         <div style={{
           borderRadius: 20, background: Z.card, border: `1px solid ${Z.stroke}`, overflow: 'hidden',
         }}>
@@ -971,13 +985,18 @@ function ZSettings({ onBack } = {}) {
         <div style={{
           borderRadius: 20, background: Z.card, border: `1px solid ${Z.stroke}`, overflow: 'hidden',
         }}>
-          {['Edit profile', 'Privacy', 'Blocked users', 'Help & support'].map((label, i) => (
-            <button key={label} style={{
+          {[
+            { label: 'Edit profile', action: onOpenEditProfile },
+            { label: 'Privacy', action: onOpenPrivacy },
+            { label: 'Blocked users', action: onOpenBlocked },
+            { label: 'Help & support', action: onOpenHelp },
+          ].map((row, i) => (
+            <button key={row.label} onClick={row.action} style={{
               all: 'unset', cursor: 'pointer', width: '100%', display: 'flex', alignItems: 'center',
               justifyContent: 'space-between', padding: '14px 16px',
               borderTop: i ? `1px solid ${Z.stroke}` : 'none',
             }}>
-              <span style={{ ...ZT.body(15, 500), color: Z.text }}>{label}</span>
+              <span style={{ ...ZT.body(15, 500), color: Z.text }}>{row.label}</span>
               <ZIcons.chevR size={16} stroke={Z.textMute} sw={2}/>
             </button>
           ))}

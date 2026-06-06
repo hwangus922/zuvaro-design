@@ -46,7 +46,7 @@ function ZTabBar({ active = 'home', onChange = () => {} }) {
 }
 
 // ─── HOME — Quest Chain + filters + 5 challenge cards ────────────────────
-function ZHome({ onOpenBoard, onOpenMe, onOpenChallenge, onOpenQuestChain, onOpenSearch, questDone = 1, questTotal = 5 } = {}) {
+function ZHome({ onOpenBoard, onOpenMe, onOpenChallenge, onOpenQuestChain, onOpenSearch, onOpenChat, onOpenNotifications, questDone = 1, questTotal = 5 } = {}) {
   const [filter, setFilter] = React.useState('Recommended');
   const allChallenges = window.Z_CHALLENGES || [
     { time: '6 min', text: 'Let yo bih go thru yo phone', pts: 20, hook: 'Oh hell naw jigsaw u tweaking bruh', minutes: 6 },
@@ -77,14 +77,24 @@ function ZHome({ onOpenBoard, onOpenMe, onOpenChallenge, onOpenQuestChain, onOpe
       {/* status bar area is owned by IOSDevice */}
 
       {/* header — avatar / trending / thunder / pts */}
-      <div style={{ position: 'absolute', left: 24, top: 48, right: 24, display: 'flex', alignItems: 'center', gap: 12 }}>
+      <div style={{ position: 'absolute', left: 24, top: 48, right: 24, display: 'flex', alignItems: 'center', gap: 8 }}>
         <Avatar size={40} ring={Z.pink}/>
+        <button onClick={onOpenChat} style={{ ...iconChip, position: 'relative' }} aria-label="Group chat">
+          <ZIcons.message size={18} stroke={Z.text} sw={2}/>
+        </button>
         <div style={{ flex: 1 }}/>
+        <button onClick={onOpenNotifications} style={{ ...iconChip, position: 'relative' }} aria-label="Notifications">
+          <ZIcons.bell size={18} stroke={Z.text} sw={2}/>
+          <span style={{
+            position: 'absolute', top: 4, right: 4, width: 8, height: 8, borderRadius: '50%',
+            background: Z.pink, border: `2px solid ${Z.bg}`,
+          }}/>
+        </button>
         <button style={iconChip}><ZIcons.trending size={18} stroke={Z.text} sw={2}/></button>
-        <span style={{ ...ZT.mono(15, 700), color: Z.text }}>45</span>
+        <span style={{ ...ZT.mono(13, 700), color: Z.text }}>45</span>
         <button style={iconChip}><ZIcons.bolt size={18} stroke={Z.orange} sw={2} fill={Z.orange}/></button>
         <span style={{
-          ...ZT.mono(15, 700),
+          ...ZT.mono(13, 700),
           background: Z_GRAD.warm, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
           backgroundClip: 'text',
         }}>70pts</span>
@@ -405,7 +415,7 @@ function LbRow({ rank, name, handle, pts, emoji, me, sep, onClick }) {
 }
 
 // ─── PROFILE ─────────────────────────────────────────────────────────────
-function ZProfile({ onBack, onHome, onBoard, onOpenSettings, onOpenSubmissions } = {}) {
+function ZProfile({ onBack, onHome, onBoard, onOpenSettings, onOpenSubmissions, onOpenInvite } = {}) {
   const [confirm, setConfirm] = React.useState(null);
   const stats = [
     { k: 'Wins',                 v: '47'  },
@@ -508,7 +518,7 @@ function ZProfile({ onBack, onHome, onBoard, onOpenSettings, onOpenSubmissions }
 
       {/* Account actions */}
       <div style={{
-        position: 'absolute', left: 24, top: 640, right: 24, height: 144,
+        position: 'absolute', left: 24, top: 640, right: 24, height: 192,
         borderRadius: 20, background: Z.card, border: `1px solid ${Z.stroke}`,
         overflow: 'hidden',
       }}>
@@ -518,6 +528,11 @@ function ZProfile({ onBack, onHome, onBoard, onOpenSettings, onOpenSubmissions }
             ...ZT.small(11, 700), color: Z.orange, padding: '3px 8px', borderRadius: 999,
             background: `${Z.orange}14`,
           }}>1 pending</span>
+        </button>
+        <div style={{ height: 1, background: Z.stroke }}/>
+        <button onClick={onOpenInvite} style={accountBtn}>
+          <span style={{ ...ZT.body(16, 500) }}>Invite friends</span>
+          <ZIcons.users size={16} stroke={Z.textMute} sw={2}/>
         </button>
         <div style={{ height: 1, background: Z.stroke }}/>
         <button onClick={() => setConfirm('logout')} style={accountBtn}>

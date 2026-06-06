@@ -44,6 +44,10 @@ function ZProto({ initial = 'splash' } = {}) {
     go('proofApproved');
   };
 
+  const rejectProof = () => {
+    go('proofRejected');
+  };
+
   const nextChallenge = () => {
     const nextIdx = (challengeIdx + 1) % Math.max(challenges.length, 1);
     setChallengeIdx(nextIdx);
@@ -86,12 +90,40 @@ function ZProto({ initial = 'splash' } = {}) {
           onOpenChallenge={openChallenge}
           onOpenQuestChain={() => go('quest')}
           onOpenSearch={() => go('search')}
+          onOpenChat={() => go('chat')}
+          onOpenNotifications={() => go('notifications')}
         />}
+        {route === 'chat'     && <ZGroupChat
+          onBack={() => go('home')}
+          onCreateDare={() => go('createDare')}
+          onOpenDare={(idx) => openChallenge(idx)}
+        />}
+        {route === 'createDare' && <ZCreateDare
+          onBack={() => go('chat')}
+          onSubmit={() => go('chat')}
+        />}
+        {route === 'notifications' && <ZNotifications
+          onBack={() => go('home')}
+          onOpenChat={() => go('chat')}
+          onOpenSubmissions={() => go('submissions')}
+        />}
+        {route === 'invite'   && <ZInviteFriends onBack={() => go('me')}/>}
         {route === 'search'   && <ZSearch
           onBack={() => go('home')}
           onSelectChallenge={(idx) => openChallenge(idx)}
         />}
-        {route === 'settings' && <ZSettings onBack={() => go('me')}/>}
+        {route === 'settings' && <ZSettings
+          onBack={() => go('me')}
+          onOpenNotifications={() => go('notifications')}
+          onOpenEditProfile={() => go('editProfile')}
+          onOpenPrivacy={() => go('privacy')}
+          onOpenBlocked={() => go('blocked')}
+          onOpenHelp={() => go('help')}
+        />}
+        {route === 'editProfile' && <ZEditProfile onBack={() => go('settings')} onSave={() => go('settings')}/>}
+        {route === 'privacy'  && <ZPrivacy onBack={() => go('settings')}/>}
+        {route === 'blocked'  && <ZBlockedUsers onBack={() => go('settings')}/>}
+        {route === 'help'     && <ZHelpSupport onBack={() => go('settings')}/>}
         {route === 'quest'    && <ZQuestChain
           questDone={questDone}
           onBack={() => go('home')}
@@ -124,6 +156,7 @@ function ZProto({ initial = 'splash' } = {}) {
           onHome={() => go('home')}
           onViewSubmissions={() => go('submissions')}
           onSimulateApproved={approveProof}
+          onSimulateRejected={rejectProof}
         />}
         {route === 'proofApproved' && <ZProofApproved
           challenge={activeChallenge}
@@ -158,6 +191,7 @@ function ZProto({ initial = 'splash' } = {}) {
           onBoard={() => go('board')}
           onOpenSettings={() => go('settings')}
           onOpenSubmissions={() => go('submissions')}
+          onOpenInvite={() => go('invite')}
         />}
       </ZFader>
     </div>

@@ -20,6 +20,7 @@
           && typeof window.ZProto === 'function'
           && typeof window.ZSubmitProof === 'function'
           && typeof window.ZProofPending === 'function'
+          && typeof window.ZGroupChat === 'function'
           && typeof window.DesignCanvas === 'function') {
         window.mountZuvaroApp();
       } else if (tries++ < 80) {
