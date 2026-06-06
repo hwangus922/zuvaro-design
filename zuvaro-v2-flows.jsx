@@ -2,15 +2,15 @@
 // Consumes ZScreen, HeatAura, ZGrid, ChallengeCard patterns from onboarding + app.
 
 const Z_CHALLENGES = [
-  { time: '6 min', text: 'Let yo bih go thru yo phone', pts: 20, hook: 'Oh hell naw jigsaw u tweaking bruh',
+  { time: '6 min', text: 'Let yo bih go thru yo phone', pts: 20, hook: 'Oh hell naw jigsaw u tweaking bruh', minutes: 6,
     rules: 'Hand your phone unlocked to someone in the room for 6 minutes. They can scroll anything except banking apps. Screen recording counts as a skip.' },
-  { time: '9 min', text: 'Text your ex', pts: 10, hook: 'Yes.',
+  { time: '9 min', text: 'Text your ex', pts: 10, hook: 'Yes.', minutes: 9,
     rules: 'Send one honest text to your ex. No scheduling a call. Screenshot optional — we trust the chaos.' },
-  { time: '2 hrs', text: 'Run 10 km', pts: 50, hook: 'Burn some calories',
+  { time: '2 hrs', text: 'Run 10 km', pts: 50, hook: 'Burn some calories', minutes: 120,
     rules: 'Continuous run or walk. Strava / Apple Health / a sweaty selfie counts as proof.' },
-  { time: '5 hrs', text: 'Larp having money', pts: 60, hook: 'Larp larp larp sahur',
+  { time: '5 hrs', text: 'Larp having money', pts: 60, hook: 'Larp larp larp sahur', minutes: 300,
     rules: 'Post a story flexing obvious fake wealth for at least 5 hours. Comments must stay in character.' },
-  { time: '1 min', text: 'Make a dumb joke', pts: null, hook: 'Pure embarrassment',
+  { time: '1 min', text: 'Make a dumb joke', pts: null, hook: 'Pure embarrassment', minutes: 1,
     rules: 'Tell the joke out loud to at least two people. Groans = success. No points, only shame.' },
 ];
 
@@ -107,6 +107,7 @@ function ZSignIn({ onBack, onEmail, onGoogle, onSignUp } = {}) {
 function ZEmailAuth({ mode = 'signup', onBack, onSubmit, onToggleMode } = {}) {
   const [email, setEmail] = React.useState('you@example.com');
   const [password, setPassword] = React.useState('');
+  const [showError, setShowError] = React.useState(false);
   const isSignUp = mode === 'signup';
 
   return (
@@ -138,17 +139,22 @@ function ZEmailAuth({ mode = 'signup', onBack, onSubmit, onToggleMode } = {}) {
             value={password} onChange={(e) => setPassword(e.target.value)}/>
         </div>
 
-        <p style={{
-          ...ZT.small(12), color: Z.orange, marginTop: 12,
-          padding: '10px 12px', borderRadius: 12,
-          background: `${Z.orange}14`, border: `1px solid ${Z.orange}44`,
-        }}>
-          Example error: that password is weaker than your last dare.
-        </p>
+        {showError && (
+          <p style={{
+            ...ZT.small(12), color: Z.orange, marginTop: 12,
+            padding: '10px 12px', borderRadius: 12,
+            background: `${Z.orange}14`, border: `1px solid ${Z.orange}44`,
+          }}>
+            Example error: that password is weaker than your last dare.
+          </p>
+        )}
       </div>
 
       <div style={{ position: 'absolute', left: 24, right: 24, bottom: 56, display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <button onClick={onSubmit} style={zCtaPrimary}>
+        <button onClick={() => {
+          if (!password) { setShowError(true); return; }
+          onSubmit?.();
+        }} style={zCtaPrimary}>
           {isSignUp ? 'Create account' : 'Sign in'}
         </button>
         <button onClick={onToggleMode} style={{
@@ -230,6 +236,66 @@ function ZChallengeDetail({ challenge, questIndex = 1, questTotal = 5, onBack, o
           ...zCtaSecondary, background: 'transparent', border: 'none',
           color: Z.textMute, height: 40,
         }}>Not today</button>
+      </div>
+    </ZScreen>
+  );
+}
+
+// ─── Challenge in progress ─────────────────────────────────────────────────
+function ZChallengeInProgress({ challenge, onDone, onBack } = {}) {
+  const c = challenge || Z_CHALLENGES[0];
+  const [seconds, setSeconds] = React.useState((c.minutes ?? 6) * 60);
+
+  React.useEffect(() => {
+    const id = setInterval(() => setSeconds(s => Math.max(0, s - 1)), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const mm = String(Math.floor(seconds / 60)).padStart(2, '0');
+  const ss = String(seconds % 60).padStart(2, '0');
+
+  return (
+    <ZScreen>
+      <div style={{
+        position: 'absolute', top: -80, left: -40, right: -40, height: 280,
+        background: `radial-gradient(ellipse at top, ${Z.magenta}55 0%, ${Z.pink}33 35%, transparent 70%)`,
+        filter: 'blur(40px)', pointerEvents: 'none', opacity: Z.auraScale ?? 1,
+      }}/>
+
+      <div style={{
+        position: 'absolute', top: 56, left: 24, right: 24,
+        display: 'flex', alignItems: 'center', gap: 12,
+      }}>
+        <button onClick={onBack} style={zIconBtn} aria-label="Back">
+          <ZIcons.chevL size={18} stroke={Z.text} sw={2}/>
+        </button>
+        <span style={{ ...ZT.label(10), color: Z.textMute, flex: 1, textAlign: 'center' }}>DARE IN PROGRESS</span>
+      </div>
+
+      <div style={{ position: 'absolute', left: 24, right: 24, top: 120, textAlign: 'center' }}>
+        <h1 style={{ ...ZT.display(28, 700), margin: 0 }}>{c.text}</h1>
+        <div style={{
+          marginTop: 28, padding: '24px 20px', borderRadius: 20,
+          background: Z.card, border: `1px solid ${Z.stroke}`,
+        }}>
+          <div style={{ ...ZT.display(48, 800), fontVariantNumeric: 'tabular-nums' }}>{mm}:{ss}</div>
+          <div style={{ ...ZT.body(14), color: Z.textMute, marginTop: 8 }}>Time remaining</div>
+        </div>
+      </div>
+
+      <div style={{
+        position: 'absolute', left: 24, right: 24, top: 320, bottom: 120,
+        borderRadius: 20, background: Z.card, border: `1px solid ${Z.stroke}`,
+        padding: 18, overflow: 'auto',
+      }}>
+        <div style={{ ...ZT.label(10), color: Z.textMute, marginBottom: 10 }}>Rules recap</div>
+        <p style={{ ...ZT.body(15, 500), color: Z.text, margin: 0, lineHeight: 1.5 }}>{c.rules}</p>
+      </div>
+
+      <div style={{
+        position: 'absolute', left: 24, right: 24, bottom: 40,
+      }}>
+        <button onClick={onDone} style={zCtaPrimary}>I did it</button>
       </div>
     </ZScreen>
   );
@@ -360,5 +426,5 @@ function ZQuestChain({ questDone = 1, questTotal = 5, onBack, onSelectChallenge 
 
 Object.assign(window, {
   Z_CHALLENGES,
-  ZSignIn, ZEmailAuth, ZChallengeDetail, ZChallengeComplete, ZQuestChain,
+  ZSignIn, ZEmailAuth, ZChallengeDetail, ZChallengeInProgress, ZChallengeComplete, ZQuestChain,
 });

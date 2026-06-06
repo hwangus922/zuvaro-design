@@ -18,9 +18,9 @@
   div::-webkit-scrollbar { display: none; }
 </style>
 
-<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
 <script>
 (function () {
   window.addEventListener('load', function () {
@@ -43,7 +43,7 @@
 </script>
 </head>
 <body>
-<div id="root"></div>
+<div id="root" style="padding:48px;font-family:Inter,system-ui,sans-serif;color:#666;text-align:center">Loading Zuvaro design canvas… (needs internet first time)</div>
 
 <script>
 window.ZUVARO_LOAD_CONFIG = {
@@ -1827,15 +1827,15 @@ Object.assign(window, {
 // Consumes ZScreen, HeatAura, ZGrid, ChallengeCard patterns from onboarding + app.
 
 const Z_CHALLENGES = [
-  { time: '6 min', text: 'Let yo bih go thru yo phone', pts: 20, hook: 'Oh hell naw jigsaw u tweaking bruh',
+  { time: '6 min', text: 'Let yo bih go thru yo phone', pts: 20, hook: 'Oh hell naw jigsaw u tweaking bruh', minutes: 6,
     rules: 'Hand your phone unlocked to someone in the room for 6 minutes. They can scroll anything except banking apps. Screen recording counts as a skip.' },
-  { time: '9 min', text: 'Text your ex', pts: 10, hook: 'Yes.',
+  { time: '9 min', text: 'Text your ex', pts: 10, hook: 'Yes.', minutes: 9,
     rules: 'Send one honest text to your ex. No scheduling a call. Screenshot optional — we trust the chaos.' },
-  { time: '2 hrs', text: 'Run 10 km', pts: 50, hook: 'Burn some calories',
+  { time: '2 hrs', text: 'Run 10 km', pts: 50, hook: 'Burn some calories', minutes: 120,
     rules: 'Continuous run or walk. Strava / Apple Health / a sweaty selfie counts as proof.' },
-  { time: '5 hrs', text: 'Larp having money', pts: 60, hook: 'Larp larp larp sahur',
+  { time: '5 hrs', text: 'Larp having money', pts: 60, hook: 'Larp larp larp sahur', minutes: 300,
     rules: 'Post a story flexing obvious fake wealth for at least 5 hours. Comments must stay in character.' },
-  { time: '1 min', text: 'Make a dumb joke', pts: null, hook: 'Pure embarrassment',
+  { time: '1 min', text: 'Make a dumb joke', pts: null, hook: 'Pure embarrassment', minutes: 1,
     rules: 'Tell the joke out loud to at least two people. Groans = success. No points, only shame.' },
 ];
 
@@ -1932,6 +1932,7 @@ function ZSignIn({ onBack, onEmail, onGoogle, onSignUp } = {}) {
 function ZEmailAuth({ mode = 'signup', onBack, onSubmit, onToggleMode } = {}) {
   const [email, setEmail] = React.useState('you@example.com');
   const [password, setPassword] = React.useState('');
+  const [showError, setShowError] = React.useState(false);
   const isSignUp = mode === 'signup';
 
   return (
@@ -1963,17 +1964,22 @@ function ZEmailAuth({ mode = 'signup', onBack, onSubmit, onToggleMode } = {}) {
             value={password} onChange={(e) => setPassword(e.target.value)}/>
         </div>
 
-        <p style={{
-          ...ZT.small(12), color: Z.orange, marginTop: 12,
-          padding: '10px 12px', borderRadius: 12,
-          background: `${Z.orange}14`, border: `1px solid ${Z.orange}44`,
-        }}>
-          Example error: that password is weaker than your last dare.
-        </p>
+        {showError && (
+          <p style={{
+            ...ZT.small(12), color: Z.orange, marginTop: 12,
+            padding: '10px 12px', borderRadius: 12,
+            background: `${Z.orange}14`, border: `1px solid ${Z.orange}44`,
+          }}>
+            Example error: that password is weaker than your last dare.
+          </p>
+        )}
       </div>
 
       <div style={{ position: 'absolute', left: 24, right: 24, bottom: 56, display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <button onClick={onSubmit} style={zCtaPrimary}>
+        <button onClick={() => {
+          if (!password) { setShowError(true); return; }
+          onSubmit?.();
+        }} style={zCtaPrimary}>
           {isSignUp ? 'Create account' : 'Sign in'}
         </button>
         <button onClick={onToggleMode} style={{
@@ -2055,6 +2061,66 @@ function ZChallengeDetail({ challenge, questIndex = 1, questTotal = 5, onBack, o
           ...zCtaSecondary, background: 'transparent', border: 'none',
           color: Z.textMute, height: 40,
         }}>Not today</button>
+      </div>
+    </ZScreen>
+  );
+}
+
+// ─── Challenge in progress ─────────────────────────────────────────────────
+function ZChallengeInProgress({ challenge, onDone, onBack } = {}) {
+  const c = challenge || Z_CHALLENGES[0];
+  const [seconds, setSeconds] = React.useState((c.minutes ?? 6) * 60);
+
+  React.useEffect(() => {
+    const id = setInterval(() => setSeconds(s => Math.max(0, s - 1)), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const mm = String(Math.floor(seconds / 60)).padStart(2, '0');
+  const ss = String(seconds % 60).padStart(2, '0');
+
+  return (
+    <ZScreen>
+      <div style={{
+        position: 'absolute', top: -80, left: -40, right: -40, height: 280,
+        background: `radial-gradient(ellipse at top, ${Z.magenta}55 0%, ${Z.pink}33 35%, transparent 70%)`,
+        filter: 'blur(40px)', pointerEvents: 'none', opacity: Z.auraScale ?? 1,
+      }}/>
+
+      <div style={{
+        position: 'absolute', top: 56, left: 24, right: 24,
+        display: 'flex', alignItems: 'center', gap: 12,
+      }}>
+        <button onClick={onBack} style={zIconBtn} aria-label="Back">
+          <ZIcons.chevL size={18} stroke={Z.text} sw={2}/>
+        </button>
+        <span style={{ ...ZT.label(10), color: Z.textMute, flex: 1, textAlign: 'center' }}>DARE IN PROGRESS</span>
+      </div>
+
+      <div style={{ position: 'absolute', left: 24, right: 24, top: 120, textAlign: 'center' }}>
+        <h1 style={{ ...ZT.display(28, 700), margin: 0 }}>{c.text}</h1>
+        <div style={{
+          marginTop: 28, padding: '24px 20px', borderRadius: 20,
+          background: Z.card, border: `1px solid ${Z.stroke}`,
+        }}>
+          <div style={{ ...ZT.display(48, 800), fontVariantNumeric: 'tabular-nums' }}>{mm}:{ss}</div>
+          <div style={{ ...ZT.body(14), color: Z.textMute, marginTop: 8 }}>Time remaining</div>
+        </div>
+      </div>
+
+      <div style={{
+        position: 'absolute', left: 24, right: 24, top: 320, bottom: 120,
+        borderRadius: 20, background: Z.card, border: `1px solid ${Z.stroke}`,
+        padding: 18, overflow: 'auto',
+      }}>
+        <div style={{ ...ZT.label(10), color: Z.textMute, marginBottom: 10 }}>Rules recap</div>
+        <p style={{ ...ZT.body(15, 500), color: Z.text, margin: 0, lineHeight: 1.5 }}>{c.rules}</p>
+      </div>
+
+      <div style={{
+        position: 'absolute', left: 24, right: 24, bottom: 40,
+      }}>
+        <button onClick={onDone} style={zCtaPrimary}>I did it</button>
       </div>
     </ZScreen>
   );
@@ -2185,7 +2251,7 @@ function ZQuestChain({ questDone = 1, questTotal = 5, onBack, onSelectChallenge 
 
 Object.assign(window, {
   Z_CHALLENGES,
-  ZSignIn, ZEmailAuth, ZChallengeDetail, ZChallengeComplete, ZQuestChain,
+  ZSignIn, ZEmailAuth, ZChallengeDetail, ZChallengeInProgress, ZChallengeComplete, ZQuestChain,
 });
 
 
@@ -2238,14 +2304,24 @@ function ZTabBar({ active = 'home', onChange = () => {} }) {
 }
 
 // ─── HOME — Quest Chain + filters + 5 challenge cards ────────────────────
-function ZHome({ onOpenBoard, onOpenMe, onOpenChallenge, onOpenQuestChain } = {}) {
-  const challenges = window.Z_CHALLENGES || [
-    { time: '6 min', text: 'Let yo bih go thru yo phone', pts: 20, hook: 'Oh hell naw jigsaw u tweaking bruh' },
-    { time: '9 min', text: 'Text your ex',                  pts: 10, hook: 'Yes.' },
-    { time: '2 hrs', text: 'Run 10 km',                     pts: 50, hook: 'Burn some calories' },
-    { time: '5 hrs', text: 'Larp having money',             pts: 60, hook: 'Larp larp larp sahur' },
-    { time: '1 min', text: 'Make a dumb joke',              pts: null, hook: 'Pure embarrassment' },
+function ZHome({ onOpenBoard, onOpenMe, onOpenChallenge, onOpenQuestChain, questDone = 1, questTotal = 5 } = {}) {
+  const [filter, setFilter] = React.useState('Recommended');
+  const allChallenges = window.Z_CHALLENGES || [
+    { time: '6 min', text: 'Let yo bih go thru yo phone', pts: 20, hook: 'Oh hell naw jigsaw u tweaking bruh', minutes: 6 },
+    { time: '9 min', text: 'Text your ex',                  pts: 10, hook: 'Yes.', minutes: 9 },
+    { time: '2 hrs', text: 'Run 10 km',                     pts: 50, hook: 'Burn some calories', minutes: 120 },
+    { time: '5 hrs', text: 'Larp having money',             pts: 60, hook: 'Larp larp larp sahur', minutes: 300 },
+    { time: '1 min', text: 'Make a dumb joke',              pts: null, hook: 'Pure embarrassment', minutes: 1 },
   ];
+
+  const challenges = React.useMemo(() => {
+    if (filter === 'Rewarding') return allChallenges.filter(c => c.pts);
+    if (filter === 'Short') return allChallenges.filter(c => (c.minutes ?? 999) <= 15);
+    if (filter === 'All') return allChallenges;
+    return allChallenges;
+  }, [filter, allChallenges]);
+
+  const pct = Math.round((questDone / questTotal) * 100);
 
   return (
     <ZScreen>
@@ -2287,7 +2363,7 @@ function ZHome({ onOpenBoard, onOpenMe, onOpenChallenge, onOpenQuestChain } = {}
           background: 'rgba(255,255,255,0.22)', filter: 'blur(20px)',
         }}/>
         <div style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ ...ZT.body(16, 700), color: '#0A0508' }}>1/5 daily challenges conquered</span>
+          <span style={{ ...ZT.body(16, 700), color: '#0A0508' }}>{questDone}/{questTotal} daily challenges conquered</span>
           <div style={{ flex: 1 }}/>
           <ZIcons.clock size={16} stroke="#0A0508" sw={2.2}/>
         </div>
@@ -2300,7 +2376,7 @@ function ZHome({ onOpenBoard, onOpenMe, onOpenChallenge, onOpenQuestChain } = {}
         </div>
         {/* progress bar */}
         <div style={{ position: 'relative', marginTop: 10, height: 6, borderRadius: 3, background: 'rgba(10,5,8,0.22)' }}>
-          <div style={{ width: '20%', height: '100%', borderRadius: 3, background: '#0A0508' }}/>
+          <div style={{ width: `${pct}%`, height: '100%', borderRadius: 3, background: '#0A0508' }}/>
         </div>
       </button>
 
@@ -2308,10 +2384,10 @@ function ZHome({ onOpenBoard, onOpenMe, onOpenChallenge, onOpenQuestChain } = {}
       <div style={{
         position: 'absolute', left: 24, top: 232, right: 24, display: 'flex', gap: 8, alignItems: 'center',
       }}>
-        <FilterChip>All</FilterChip>
-        <FilterChip active>Recommended</FilterChip>
-        <FilterChip>Rewarding</FilterChip>
-        <FilterChip>Short</FilterChip>
+        <FilterChip active={filter === 'All'} onClick={() => setFilter('All')}>All</FilterChip>
+        <FilterChip active={filter === 'Recommended'} onClick={() => setFilter('Recommended')}>Recommended</FilterChip>
+        <FilterChip active={filter === 'Rewarding'} onClick={() => setFilter('Rewarding')}>Rewarding</FilterChip>
+        <FilterChip active={filter === 'Short'} onClick={() => setFilter('Short')}>Short</FilterChip>
         <button style={{
           marginLeft: 'auto', width: 24, height: 24, borderRadius: 12, cursor: 'pointer',
           border: `1px solid ${Z.strokeHi}`, background: Z.card, display: 'grid', placeItems: 'center',
@@ -2348,9 +2424,9 @@ const iconChip = {
   display: 'grid', placeItems: 'center', padding: 0,
 };
 
-function FilterChip({ children, active = false }) {
+function FilterChip({ children, active = false, onClick }) {
   return (
-    <button style={{
+    <button onClick={onClick} style={{
       height: 26, padding: active ? '0 14px' : '0 12px', borderRadius: 13, cursor: 'pointer',
       border: `1px solid ${active ? 'transparent' : Z.strokeHi}`,
       background: active ? Z_GRAD.warm : 'transparent',
@@ -2435,16 +2511,24 @@ function Avatar({ size = 40, ring = 'transparent', emoji = '🦊', initials, glo
 }
 
 // ─── LEADERBOARD ─────────────────────────────────────────────────────────
+const LB_FRIENDS = [
+  { rank: 1, name: 'John Winner',    handle: '@IloveMyGTA6too',    pts: 981, emoji: '👑' },
+  { rank: 2, name: 'John Second',    handle: '@IloveMyGTA6137',    pts: 972, emoji: '🦊' },
+  { rank: 3, name: 'John Third',     handle: '@IhateMyElCinco2',   pts: 970, emoji: '🐺' },
+  { rank: 4, name: 'John Fourth',    handle: '@IloveMyElCinco5',   pts: 890, emoji: '🐸' },
+  { rank: 5, name: 'John Fifth',     handle: '@IhateMyAirfrier6',  pts: 690, emoji: '🦝' },
+  { rank: 67, name: 'John Airfrier', handle: '@IloveMyAirfrier48', pts: 70,  emoji: '🍳', me: true },
+];
+const LB_CLUB = LB_FRIENDS.map((r, i) => ({ ...r, rank: i + 1, pts: r.pts - 40 + i * 7 }));
+const LB_GLOBAL = LB_FRIENDS.map((r, i) => ({ ...r, rank: i + 1, pts: r.pts + 120 - i * 15, name: r.name.replace('John', 'Player') }));
+
 function ZLeaderboard({ onBack, onMe } = {}) {
-  // exact figma copy
-  const rows = [
-    { rank: 1, name: 'John Winner',    handle: '@IloveMyGTA6too',    pts: 981, emoji: '👑' },
-    { rank: 2, name: 'John Second',    handle: '@IloveMyGTA6137',    pts: 972, emoji: '🦊' },
-    { rank: 3, name: 'John Third',     handle: '@IhateMyElCinco2',   pts: 970, emoji: '🐺' },
-    { rank: 4, name: 'John Fourth',    handle: '@IloveMyElCinco5',   pts: 890, emoji: '🐸' },
-    { rank: 5, name: 'John Fifth',     handle: '@IhateMyAirfrier6',  pts: 690, emoji: '🦝' },
-    { rank: 67, name: 'John Airfrier', handle: '@IloveMyAirfrier48', pts: 70,  emoji: '🍳', me: true },
-  ];
+  const [tab, setTab] = React.useState(0);
+  const [page, setPage] = React.useState(0);
+  const tabs = ['Friends', 'Club', 'Global'];
+  const allRows = tab === 1 ? LB_CLUB : tab === 2 ? LB_GLOBAL : LB_FRIENDS;
+  const pageSize = 5;
+  const rows = allRows.slice(page * pageSize, page * pageSize + pageSize);
 
   return (
     <ZScreen>
@@ -2476,13 +2560,14 @@ function ZLeaderboard({ onBack, onMe } = {}) {
           }}>board</span>
         </h1>
         <div style={{ display: 'flex', gap: 18, marginTop: 14 }}>
-          {['Friends', 'Club', 'Global'].map((t, i) => (
-            <span key={t} style={{
-              ...ZT.body(15, i === 0 ? 700 : 500),
-              color: i === 0 ? Z.text : Z.textMute,
+          {tabs.map((t, i) => (
+            <button key={t} onClick={() => { setTab(i); setPage(0); }} style={{
+              all: 'unset', cursor: 'pointer',
+              ...ZT.body(15, i === tab ? 700 : 500),
+              color: i === tab ? Z.text : Z.textMute,
               position: 'relative', paddingBottom: 6,
-              borderBottom: i === 0 ? `2px solid ${Z.pink}` : '2px solid transparent',
-            }}>{t}</span>
+              borderBottom: i === tab ? `2px solid ${Z.pink}` : '2px solid transparent',
+            }}>{t}</button>
           ))}
         </div>
       </div>
@@ -2490,13 +2575,14 @@ function ZLeaderboard({ onBack, onMe } = {}) {
       {/* Rank pages (1 / 2 / 3 page tabs — small pills) */}
       <div style={{ position: 'absolute', left: 24, top: 202, right: 24, display: 'flex', gap: 6 }}>
         {['1', '2', '3'].map((p, i) => (
-          <span key={p} style={{
+          <button key={p} onClick={() => setPage(i)} style={{
+            all: 'unset', cursor: 'pointer',
             width: 28, height: 22, borderRadius: 11, display: 'grid', placeItems: 'center',
-            background: i === 0 ? Z.cardHi : 'transparent',
-            border: `1px solid ${i === 0 ? Z.strokeHi : Z.stroke}`,
-            color: i === 0 ? Z.text : Z.textDim,
+            background: i === page ? Z.cardHi : 'transparent',
+            border: `1px solid ${i === page ? Z.strokeHi : Z.stroke}`,
+            color: i === page ? Z.text : Z.textDim,
             ...ZT.mono(11, 700),
-          }}>{p}</span>
+          }}>{p}</button>
         ))}
       </div>
 
@@ -2506,8 +2592,8 @@ function ZLeaderboard({ onBack, onMe } = {}) {
         overflow: 'hidden',
       }}>
         {rows.map((r, i) => (
-          <LbRow key={r.rank} {...r}
-            sep={i === 4}  // visual break before the "you" row
+          <LbRow key={`${r.rank}-${r.name}`} {...r}
+            sep={i === rows.length - 2 && rows[rows.length - 1]?.me}
             onClick={r.me ? onMe : undefined}/>
         ))}
       </div>
@@ -2578,6 +2664,7 @@ function LbRow({ rank, name, handle, pts, emoji, me, sep, onClick }) {
 
 // ─── PROFILE ─────────────────────────────────────────────────────────────
 function ZProfile({ onBack, onHome, onBoard } = {}) {
+  const [confirm, setConfirm] = React.useState(null);
   const stats = [
     { k: 'Wins',                 v: '47'  },
     { k: 'Longest Streak',       v: '23'  },
@@ -2677,16 +2764,49 @@ function ZProfile({ onBack, onHome, onBoard } = {}) {
         borderRadius: 20, background: Z.card, border: `1px solid ${Z.stroke}`,
         overflow: 'hidden',
       }}>
-        <button style={accountBtn}>
+        <button onClick={() => setConfirm('logout')} style={accountBtn}>
           <span style={{ ...ZT.body(16, 500) }}>Log out</span>
           <ZIcons.chevR size={16} stroke={Z.textMute} sw={2}/>
         </button>
         <div style={{ height: 1, background: Z.stroke }}/>
-        <button style={{ ...accountBtn, color: Z.orange }}>
+        <button onClick={() => setConfirm('delete')} style={{ ...accountBtn, color: Z.orange }}>
           <span style={{ ...ZT.body(16, 500), color: Z.orange }}>Delete Account</span>
           <ZIcons.chevR size={16} stroke={Z.orange} sw={2}/>
         </button>
       </div>
+
+      {confirm && (
+        <div style={{
+          position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.45)',
+          display: 'grid', placeItems: 'center', padding: 24, zIndex: 20,
+        }}>
+          <div style={{
+            width: '100%', borderRadius: 20, background: Z.card, border: `1px solid ${Z.stroke}`,
+            padding: 20,
+          }}>
+            <div style={{ ...ZT.body(18, 700), color: Z.text }}>
+              {confirm === 'delete' ? 'Delete account?' : 'Log out?'}
+            </div>
+            <p style={{ ...ZT.body(14), color: Z.textMute, marginTop: 8 }}>
+              {confirm === 'delete'
+                ? 'This permanently removes your profile and progress.'
+                : 'You can sign back in anytime.'}
+            </p>
+            <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
+              <button onClick={() => setConfirm(null)} style={{
+                flex: 1, height: 44, borderRadius: 22, cursor: 'pointer',
+                background: Z.cardHi, color: Z.text, border: `1px solid ${Z.strokeHi}`, ...ZT.body(15, 600),
+              }}>Cancel</button>
+              <button onClick={() => setConfirm(null)} style={{
+                flex: 1, height: 44, borderRadius: 22, border: 'none', cursor: 'pointer',
+                background: Z_GRAD.warm, color: '#0A0508', ...ZT.body(15, 700),
+              }}>
+                {confirm === 'delete' ? 'Delete' : 'Log out'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <ZTabBar active="me" onChange={(t) => {
         if (t === 'home') onHome?.();
@@ -2709,7 +2829,7 @@ Object.assign(window, {
 
 ;// ── zuvaro-v2-proto.jsx ──
 // Zuvaro v2 — interactive prototype shell
-// Onboarding → auth → Home; challenge detail → complete; tab nav.
+// Onboarding → auth → Home; challenge detail → in-progress → complete; tab nav.
 
 function ZProto({ initial = 'splash' } = {}) {
   const [route, setRoute] = React.useState(initial);
@@ -2733,9 +2853,19 @@ function ZProto({ initial = 'splash' } = {}) {
     go('challenge');
   };
 
+  const startChallenge = () => {
+    go('inProgress');
+  };
+
   const finishChallenge = () => {
     setQuestDone((n) => Math.min(5, n + 1));
     go('complete');
+  };
+
+  const nextChallenge = () => {
+    const nextIdx = (challengeIdx + 1) % Math.max(challenges.length, 1);
+    setChallengeIdx(nextIdx);
+    go('challenge');
   };
 
   return (
@@ -2768,6 +2898,7 @@ function ZProto({ initial = 'splash' } = {}) {
           onToggleMode={() => setEmailMode((m) => (m === 'signup' ? 'signin' : 'signup'))}
         />}
         {route === 'home'     && <ZHome
+          questDone={questDone}
           onOpenBoard={() => go('board')}
           onOpenMe={() => go('me')}
           onOpenChallenge={openChallenge}
@@ -2783,14 +2914,19 @@ function ZProto({ initial = 'splash' } = {}) {
           questIndex={questDone}
           questTotal={5}
           onBack={() => go('home')}
-          onAccept={finishChallenge}
+          onAccept={startChallenge}
           onQuestChain={() => go('quest')}
+        />}
+        {route === 'inProgress' && <ZChallengeInProgress
+          challenge={activeChallenge}
+          onDone={finishChallenge}
+          onBack={() => go('challenge')}
         />}
         {route === 'complete' && <ZChallengeComplete
           points={activePts}
           questDone={questDone}
           onHome={() => go('home')}
-          onNext={() => go('home')}
+          onNext={nextChallenge}
         />}
         {route === 'board'    && <ZLeaderboard onBack={() => go('home')} onMe={() => go('me')}/>}
         {route === 'me'       && <ZProfile onBack={() => go('home')} onHome={() => go('home')} onBoard={() => go('board')}/>}

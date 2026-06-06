@@ -1,5 +1,5 @@
 // Zuvaro v2 — interactive prototype shell
-// Onboarding → auth → Home; challenge detail → complete; tab nav.
+// Onboarding → auth → Home; challenge detail → in-progress → complete; tab nav.
 
 function ZProto({ initial = 'splash' } = {}) {
   const [route, setRoute] = React.useState(initial);
@@ -23,9 +23,19 @@ function ZProto({ initial = 'splash' } = {}) {
     go('challenge');
   };
 
+  const startChallenge = () => {
+    go('inProgress');
+  };
+
   const finishChallenge = () => {
     setQuestDone((n) => Math.min(5, n + 1));
     go('complete');
+  };
+
+  const nextChallenge = () => {
+    const nextIdx = (challengeIdx + 1) % Math.max(challenges.length, 1);
+    setChallengeIdx(nextIdx);
+    go('challenge');
   };
 
   return (
@@ -58,6 +68,7 @@ function ZProto({ initial = 'splash' } = {}) {
           onToggleMode={() => setEmailMode((m) => (m === 'signup' ? 'signin' : 'signup'))}
         />}
         {route === 'home'     && <ZHome
+          questDone={questDone}
           onOpenBoard={() => go('board')}
           onOpenMe={() => go('me')}
           onOpenChallenge={openChallenge}
@@ -73,14 +84,19 @@ function ZProto({ initial = 'splash' } = {}) {
           questIndex={questDone}
           questTotal={5}
           onBack={() => go('home')}
-          onAccept={finishChallenge}
+          onAccept={startChallenge}
           onQuestChain={() => go('quest')}
+        />}
+        {route === 'inProgress' && <ZChallengeInProgress
+          challenge={activeChallenge}
+          onDone={finishChallenge}
+          onBack={() => go('challenge')}
         />}
         {route === 'complete' && <ZChallengeComplete
           points={activePts}
           questDone={questDone}
           onHome={() => go('home')}
-          onNext={() => go('home')}
+          onNext={nextChallenge}
         />}
         {route === 'board'    && <ZLeaderboard onBack={() => go('home')} onMe={() => go('me')}/>}
         {route === 'me'       && <ZProfile onBack={() => go('home')} onHome={() => go('home')} onBoard={() => go('board')}/>}

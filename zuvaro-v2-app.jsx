@@ -46,14 +46,24 @@ function ZTabBar({ active = 'home', onChange = () => {} }) {
 }
 
 // ─── HOME — Quest Chain + filters + 5 challenge cards ────────────────────
-function ZHome({ onOpenBoard, onOpenMe, onOpenChallenge, onOpenQuestChain } = {}) {
-  const challenges = window.Z_CHALLENGES || [
-    { time: '6 min', text: 'Let yo bih go thru yo phone', pts: 20, hook: 'Oh hell naw jigsaw u tweaking bruh' },
-    { time: '9 min', text: 'Text your ex',                  pts: 10, hook: 'Yes.' },
-    { time: '2 hrs', text: 'Run 10 km',                     pts: 50, hook: 'Burn some calories' },
-    { time: '5 hrs', text: 'Larp having money',             pts: 60, hook: 'Larp larp larp sahur' },
-    { time: '1 min', text: 'Make a dumb joke',              pts: null, hook: 'Pure embarrassment' },
+function ZHome({ onOpenBoard, onOpenMe, onOpenChallenge, onOpenQuestChain, questDone = 1, questTotal = 5 } = {}) {
+  const [filter, setFilter] = React.useState('Recommended');
+  const allChallenges = window.Z_CHALLENGES || [
+    { time: '6 min', text: 'Let yo bih go thru yo phone', pts: 20, hook: 'Oh hell naw jigsaw u tweaking bruh', minutes: 6 },
+    { time: '9 min', text: 'Text your ex',                  pts: 10, hook: 'Yes.', minutes: 9 },
+    { time: '2 hrs', text: 'Run 10 km',                     pts: 50, hook: 'Burn some calories', minutes: 120 },
+    { time: '5 hrs', text: 'Larp having money',             pts: 60, hook: 'Larp larp larp sahur', minutes: 300 },
+    { time: '1 min', text: 'Make a dumb joke',              pts: null, hook: 'Pure embarrassment', minutes: 1 },
   ];
+
+  const challenges = React.useMemo(() => {
+    if (filter === 'Rewarding') return allChallenges.filter(c => c.pts);
+    if (filter === 'Short') return allChallenges.filter(c => (c.minutes ?? 999) <= 15);
+    if (filter === 'All') return allChallenges;
+    return allChallenges;
+  }, [filter, allChallenges]);
+
+  const pct = Math.round((questDone / questTotal) * 100);
 
   return (
     <ZScreen>
@@ -95,7 +105,7 @@ function ZHome({ onOpenBoard, onOpenMe, onOpenChallenge, onOpenQuestChain } = {}
           background: 'rgba(255,255,255,0.22)', filter: 'blur(20px)',
         }}/>
         <div style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ ...ZT.body(16, 700), color: '#0A0508' }}>1/5 daily challenges conquered</span>
+          <span style={{ ...ZT.body(16, 700), color: '#0A0508' }}>{questDone}/{questTotal} daily challenges conquered</span>
           <div style={{ flex: 1 }}/>
           <ZIcons.clock size={16} stroke="#0A0508" sw={2.2}/>
         </div>
@@ -108,7 +118,7 @@ function ZHome({ onOpenBoard, onOpenMe, onOpenChallenge, onOpenQuestChain } = {}
         </div>
         {/* progress bar */}
         <div style={{ position: 'relative', marginTop: 10, height: 6, borderRadius: 3, background: 'rgba(10,5,8,0.22)' }}>
-          <div style={{ width: '20%', height: '100%', borderRadius: 3, background: '#0A0508' }}/>
+          <div style={{ width: `${pct}%`, height: '100%', borderRadius: 3, background: '#0A0508' }}/>
         </div>
       </button>
 
@@ -116,10 +126,10 @@ function ZHome({ onOpenBoard, onOpenMe, onOpenChallenge, onOpenQuestChain } = {}
       <div style={{
         position: 'absolute', left: 24, top: 232, right: 24, display: 'flex', gap: 8, alignItems: 'center',
       }}>
-        <FilterChip>All</FilterChip>
-        <FilterChip active>Recommended</FilterChip>
-        <FilterChip>Rewarding</FilterChip>
-        <FilterChip>Short</FilterChip>
+        <FilterChip active={filter === 'All'} onClick={() => setFilter('All')}>All</FilterChip>
+        <FilterChip active={filter === 'Recommended'} onClick={() => setFilter('Recommended')}>Recommended</FilterChip>
+        <FilterChip active={filter === 'Rewarding'} onClick={() => setFilter('Rewarding')}>Rewarding</FilterChip>
+        <FilterChip active={filter === 'Short'} onClick={() => setFilter('Short')}>Short</FilterChip>
         <button style={{
           marginLeft: 'auto', width: 24, height: 24, borderRadius: 12, cursor: 'pointer',
           border: `1px solid ${Z.strokeHi}`, background: Z.card, display: 'grid', placeItems: 'center',
@@ -156,9 +166,9 @@ const iconChip = {
   display: 'grid', placeItems: 'center', padding: 0,
 };
 
-function FilterChip({ children, active = false }) {
+function FilterChip({ children, active = false, onClick }) {
   return (
-    <button style={{
+    <button onClick={onClick} style={{
       height: 26, padding: active ? '0 14px' : '0 12px', borderRadius: 13, cursor: 'pointer',
       border: `1px solid ${active ? 'transparent' : Z.strokeHi}`,
       background: active ? Z_GRAD.warm : 'transparent',
@@ -243,16 +253,24 @@ function Avatar({ size = 40, ring = 'transparent', emoji = '🦊', initials, glo
 }
 
 // ─── LEADERBOARD ─────────────────────────────────────────────────────────
+const LB_FRIENDS = [
+  { rank: 1, name: 'John Winner',    handle: '@IloveMyGTA6too',    pts: 981, emoji: '👑' },
+  { rank: 2, name: 'John Second',    handle: '@IloveMyGTA6137',    pts: 972, emoji: '🦊' },
+  { rank: 3, name: 'John Third',     handle: '@IhateMyElCinco2',   pts: 970, emoji: '🐺' },
+  { rank: 4, name: 'John Fourth',    handle: '@IloveMyElCinco5',   pts: 890, emoji: '🐸' },
+  { rank: 5, name: 'John Fifth',     handle: '@IhateMyAirfrier6',  pts: 690, emoji: '🦝' },
+  { rank: 67, name: 'John Airfrier', handle: '@IloveMyAirfrier48', pts: 70,  emoji: '🍳', me: true },
+];
+const LB_CLUB = LB_FRIENDS.map((r, i) => ({ ...r, rank: i + 1, pts: r.pts - 40 + i * 7 }));
+const LB_GLOBAL = LB_FRIENDS.map((r, i) => ({ ...r, rank: i + 1, pts: r.pts + 120 - i * 15, name: r.name.replace('John', 'Player') }));
+
 function ZLeaderboard({ onBack, onMe } = {}) {
-  // exact figma copy
-  const rows = [
-    { rank: 1, name: 'John Winner',    handle: '@IloveMyGTA6too',    pts: 981, emoji: '👑' },
-    { rank: 2, name: 'John Second',    handle: '@IloveMyGTA6137',    pts: 972, emoji: '🦊' },
-    { rank: 3, name: 'John Third',     handle: '@IhateMyElCinco2',   pts: 970, emoji: '🐺' },
-    { rank: 4, name: 'John Fourth',    handle: '@IloveMyElCinco5',   pts: 890, emoji: '🐸' },
-    { rank: 5, name: 'John Fifth',     handle: '@IhateMyAirfrier6',  pts: 690, emoji: '🦝' },
-    { rank: 67, name: 'John Airfrier', handle: '@IloveMyAirfrier48', pts: 70,  emoji: '🍳', me: true },
-  ];
+  const [tab, setTab] = React.useState(0);
+  const [page, setPage] = React.useState(0);
+  const tabs = ['Friends', 'Club', 'Global'];
+  const allRows = tab === 1 ? LB_CLUB : tab === 2 ? LB_GLOBAL : LB_FRIENDS;
+  const pageSize = 5;
+  const rows = allRows.slice(page * pageSize, page * pageSize + pageSize);
 
   return (
     <ZScreen>
@@ -284,13 +302,14 @@ function ZLeaderboard({ onBack, onMe } = {}) {
           }}>board</span>
         </h1>
         <div style={{ display: 'flex', gap: 18, marginTop: 14 }}>
-          {['Friends', 'Club', 'Global'].map((t, i) => (
-            <span key={t} style={{
-              ...ZT.body(15, i === 0 ? 700 : 500),
-              color: i === 0 ? Z.text : Z.textMute,
+          {tabs.map((t, i) => (
+            <button key={t} onClick={() => { setTab(i); setPage(0); }} style={{
+              all: 'unset', cursor: 'pointer',
+              ...ZT.body(15, i === tab ? 700 : 500),
+              color: i === tab ? Z.text : Z.textMute,
               position: 'relative', paddingBottom: 6,
-              borderBottom: i === 0 ? `2px solid ${Z.pink}` : '2px solid transparent',
-            }}>{t}</span>
+              borderBottom: i === tab ? `2px solid ${Z.pink}` : '2px solid transparent',
+            }}>{t}</button>
           ))}
         </div>
       </div>
@@ -298,13 +317,14 @@ function ZLeaderboard({ onBack, onMe } = {}) {
       {/* Rank pages (1 / 2 / 3 page tabs — small pills) */}
       <div style={{ position: 'absolute', left: 24, top: 202, right: 24, display: 'flex', gap: 6 }}>
         {['1', '2', '3'].map((p, i) => (
-          <span key={p} style={{
+          <button key={p} onClick={() => setPage(i)} style={{
+            all: 'unset', cursor: 'pointer',
             width: 28, height: 22, borderRadius: 11, display: 'grid', placeItems: 'center',
-            background: i === 0 ? Z.cardHi : 'transparent',
-            border: `1px solid ${i === 0 ? Z.strokeHi : Z.stroke}`,
-            color: i === 0 ? Z.text : Z.textDim,
+            background: i === page ? Z.cardHi : 'transparent',
+            border: `1px solid ${i === page ? Z.strokeHi : Z.stroke}`,
+            color: i === page ? Z.text : Z.textDim,
             ...ZT.mono(11, 700),
-          }}>{p}</span>
+          }}>{p}</button>
         ))}
       </div>
 
@@ -314,8 +334,8 @@ function ZLeaderboard({ onBack, onMe } = {}) {
         overflow: 'hidden',
       }}>
         {rows.map((r, i) => (
-          <LbRow key={r.rank} {...r}
-            sep={i === 4}  // visual break before the "you" row
+          <LbRow key={`${r.rank}-${r.name}`} {...r}
+            sep={i === rows.length - 2 && rows[rows.length - 1]?.me}
             onClick={r.me ? onMe : undefined}/>
         ))}
       </div>
@@ -386,6 +406,7 @@ function LbRow({ rank, name, handle, pts, emoji, me, sep, onClick }) {
 
 // ─── PROFILE ─────────────────────────────────────────────────────────────
 function ZProfile({ onBack, onHome, onBoard } = {}) {
+  const [confirm, setConfirm] = React.useState(null);
   const stats = [
     { k: 'Wins',                 v: '47'  },
     { k: 'Longest Streak',       v: '23'  },
@@ -485,16 +506,49 @@ function ZProfile({ onBack, onHome, onBoard } = {}) {
         borderRadius: 20, background: Z.card, border: `1px solid ${Z.stroke}`,
         overflow: 'hidden',
       }}>
-        <button style={accountBtn}>
+        <button onClick={() => setConfirm('logout')} style={accountBtn}>
           <span style={{ ...ZT.body(16, 500) }}>Log out</span>
           <ZIcons.chevR size={16} stroke={Z.textMute} sw={2}/>
         </button>
         <div style={{ height: 1, background: Z.stroke }}/>
-        <button style={{ ...accountBtn, color: Z.orange }}>
+        <button onClick={() => setConfirm('delete')} style={{ ...accountBtn, color: Z.orange }}>
           <span style={{ ...ZT.body(16, 500), color: Z.orange }}>Delete Account</span>
           <ZIcons.chevR size={16} stroke={Z.orange} sw={2}/>
         </button>
       </div>
+
+      {confirm && (
+        <div style={{
+          position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.45)',
+          display: 'grid', placeItems: 'center', padding: 24, zIndex: 20,
+        }}>
+          <div style={{
+            width: '100%', borderRadius: 20, background: Z.card, border: `1px solid ${Z.stroke}`,
+            padding: 20,
+          }}>
+            <div style={{ ...ZT.body(18, 700), color: Z.text }}>
+              {confirm === 'delete' ? 'Delete account?' : 'Log out?'}
+            </div>
+            <p style={{ ...ZT.body(14), color: Z.textMute, marginTop: 8 }}>
+              {confirm === 'delete'
+                ? 'This permanently removes your profile and progress.'
+                : 'You can sign back in anytime.'}
+            </p>
+            <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
+              <button onClick={() => setConfirm(null)} style={{
+                flex: 1, height: 44, borderRadius: 22, cursor: 'pointer',
+                background: Z.cardHi, color: Z.text, border: `1px solid ${Z.strokeHi}`, ...ZT.body(15, 600),
+              }}>Cancel</button>
+              <button onClick={() => setConfirm(null)} style={{
+                flex: 1, height: 44, borderRadius: 22, border: 'none', cursor: 'pointer',
+                background: Z_GRAD.warm, color: '#0A0508', ...ZT.body(15, 700),
+              }}>
+                {confirm === 'delete' ? 'Delete' : 'Log out'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <ZTabBar active="me" onChange={(t) => {
         if (t === 'home') onHome?.();
