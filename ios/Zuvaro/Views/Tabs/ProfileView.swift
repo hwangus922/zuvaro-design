@@ -1,0 +1,119 @@
+import SwiftUI
+
+struct ProfileView: View {
+    @EnvironmentObject private var appModel: AppModel
+
+    var body: some View {
+        ZStack(alignment: .top) {
+            AuraBackground()
+            ScrollView {
+                VStack(spacing: 20) {
+                    HStack {
+                        Spacer()
+                        Button { appModel.navigate(to: .settings) } label: {
+                            Image(systemName: "gearshape")
+                                .foregroundStyle(ZuvaroTheme.textMute)
+                                .frame(width: 36, height: 36)
+                                .background(ZuvaroTheme.card)
+                                .clipShape(Circle())
+                        }
+                    }
+
+                    AvatarView(emoji: "👑", size: 80)
+                    VStack(spacing: 4) {
+                        Text("John Winner").font(.system(size: 16, weight: .semibold))
+                        Text("@IloveMyGTA6too").font(.system(size: 12)).foregroundStyle(ZuvaroTheme.textMute)
+                    }
+                    HStack(spacing: 6) {
+                        Image(systemName: "flame.fill").foregroundStyle(ZuvaroTheme.orange).font(.system(size: 12))
+                        Text("23 day streak · on fire")
+                            .font(.system(size: 11, weight: .bold))
+                            .foregroundStyle(ZuvaroTheme.orange)
+                    }
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 5)
+                    .background(ZuvaroTheme.orange.opacity(0.12))
+                    .clipShape(Capsule())
+
+                    statsCard
+                    accountSection
+                }
+                .padding(.horizontal, 24)
+                .padding(.bottom, 100)
+            }
+        }
+    }
+
+    private var statsCard: some View {
+        VStack(spacing: 0) {
+            HStack(alignment: .bottom) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("TOTAL POINTS").font(.system(size: 9, weight: .bold)).foregroundStyle(ZuvaroTheme.textMute)
+                    WarmGradientText(text: "\(appModel.totalPoints)", size: 44)
+                    Text("pts").font(.system(size: 18, weight: .bold)).foregroundStyle(ZuvaroTheme.textMute)
+                }
+                Spacer()
+                Text("+38 this wk")
+                    .font(.system(size: 11, weight: .bold))
+                    .foregroundStyle(ZuvaroTheme.orange)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 4)
+                    .background(ZuvaroTheme.orange.opacity(0.12))
+                    .clipShape(Capsule())
+            }
+            .padding(18)
+
+            ForEach([("Wins", "47"), ("Longest Streak", "23"), ("Total Points", "\(appModel.totalPoints)"), ("Challenges Completed", "184")], id: \.0) { label, value in
+                Divider()
+                HStack {
+                    Text(label).font(.system(size: 16))
+                    Spacer()
+                    Text(value).font(.system(size: 16, weight: .bold, design: .monospaced))
+                }
+                .padding(.horizontal, 18)
+                .padding(.vertical, 14)
+            }
+        }
+        .background(ZuvaroTheme.card)
+        .clipShape(RoundedRectangle(cornerRadius: 20))
+    }
+
+    private var accountSection: some View {
+        VStack(spacing: 0) {
+            accountRow("My submissions", badge: "1 pending") { appModel.navigate(to: .submissions) }
+            Divider()
+            accountRow("Invite friends") { appModel.navigate(to: .invite) }
+            Divider()
+            accountRow("Log out") {}
+            Divider()
+            accountRow("Delete Account", destructive: true) {}
+        }
+        .background(ZuvaroTheme.card)
+        .clipShape(RoundedRectangle(cornerRadius: 20))
+    }
+
+    private func accountRow(_ title: String, badge: String? = nil, destructive: Bool = false, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            HStack {
+                Text(title)
+                    .font(.system(size: 16))
+                    .foregroundStyle(destructive ? ZuvaroTheme.orange : ZuvaroTheme.text)
+                Spacer()
+                if let badge {
+                    Text(badge)
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundStyle(ZuvaroTheme.orange)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 3)
+                        .background(ZuvaroTheme.orange.opacity(0.08))
+                        .clipShape(Capsule())
+                } else {
+                    Image(systemName: "chevron.right")
+                        .foregroundStyle(destructive ? ZuvaroTheme.orange : ZuvaroTheme.textMute)
+                }
+            }
+            .padding(16)
+        }
+        .buttonStyle(.plain)
+    }
+}

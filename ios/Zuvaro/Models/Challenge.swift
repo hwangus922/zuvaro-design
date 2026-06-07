@@ -1,0 +1,64 @@
+import Foundation
+
+struct Challenge: Identifiable, Hashable, Codable {
+    let id: UUID
+    let time: String
+    let text: String
+    let points: Int?
+    let hook: String
+    let minutes: Int
+    let rules: String
+
+    var pointsLabel: String {
+        if let points { return "+\(points)pts" }
+        return "for the lulz"
+    }
+}
+
+enum SubmissionStatus: String, Codable, Hashable {
+    case pending
+    case approved
+    case rejected
+}
+
+struct Submission: Identifiable, Hashable {
+    let id: UUID
+    let dareTitle: String
+    let status: SubmissionStatus
+    let points: Int?
+    let timeAgo: String
+}
+
+struct LeaderboardEntry: Identifiable, Hashable {
+    let id = UUID()
+    let rank: Int
+    let name: String
+    let handle: String
+    let points: Int
+    let emoji: String
+    var isMe: Bool = false
+}
+
+struct ChatMessage: Identifiable, Hashable {
+    let id = UUID()
+    let author: String
+    let emoji: String
+    let text: String
+    let time: String
+    var isMe: Bool = false
+    var isDare: Bool = false
+    var darePoints: Int?
+}
+
+struct AppNotification: Identifiable, Hashable {
+    let id = UUID()
+    let title: String
+    let body: String
+    let time: String
+    let unread: Bool
+    let kind: Kind
+
+    enum Kind: Hashable {
+        case proof, dare, board, friend
+    }
+}

@@ -1,3 +1,10 @@
 .DS_Store
 *.fig
 uploads/
+
+# Xcode
+ios/**/xcuserdata/
+ios/**/*.xcuserstate
+ios/**/DerivedData/
+ios/**/build/
+*.pbxuser

@@ -94,3 +94,9 @@ scripts/bundle-painted-html.js
 ## Stack
 
 Static HTML + React 18 (CDN) + Babel standalone. No build step required to view — only to rebundle after JSX edits.
+
+## iOS app (SwiftUI)
+
+The native iOS app lives in **`ios/`** — open `ios/Zuvaro.xcodeproj` in Xcode and run on a simulator or device.
+
+See [ios/README.md](ios/README.md) for setup, structure, and next backend steps.
