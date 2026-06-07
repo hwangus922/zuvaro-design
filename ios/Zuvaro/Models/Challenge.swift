@@ -23,14 +23,21 @@ enum SubmissionStatus: String, Codable, Hashable {
 
 struct Submission: Identifiable, Hashable {
     let id: UUID
+    let challengeId: UUID
     let dareTitle: String
     let status: SubmissionStatus
     let points: Int?
-    let timeAgo: String
+    let createdAt: Date
+
+    var timeAgo: String {
+        let formatter = RelativeDateTimeFormatter()
+        formatter.unitsStyle = .abbreviated
+        return formatter.localizedString(for: createdAt, relativeTo: Date())
+    }
 }
 
 struct LeaderboardEntry: Identifiable, Hashable {
-    let id = UUID()
+    let id: UUID
     let rank: Int
     let name: String
     let handle: String
@@ -40,18 +47,19 @@ struct LeaderboardEntry: Identifiable, Hashable {
 }
 
 struct ChatMessage: Identifiable, Hashable {
-    let id = UUID()
+    let id: UUID
     let author: String
     let emoji: String
     let text: String
     let time: String
     var isMe: Bool = false
     var isDare: Bool = false
+    var dareChallengeId: UUID?
     var darePoints: Int?
 }
 
 struct AppNotification: Identifiable, Hashable {
-    let id = UUID()
+    let id: UUID
     let title: String
     let body: String
     let time: String

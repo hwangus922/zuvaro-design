@@ -3,11 +3,9 @@ import Supabase
 
 enum SupabaseManager {
     static let shared: SupabaseClient? = {
-        guard AppConfig.isBackendConfigured,
+        guard AppConfig.isConfigured,
               let url = AppConfig.supabaseURL,
-              let key = AppConfig.supabaseAnonKey else {
-            return nil
-        }
+              let key = AppConfig.supabaseAnonKey else { return nil }
         return SupabaseClient(supabaseURL: url, supabaseKey: key)
     }()
 }

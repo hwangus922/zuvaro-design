@@ -35,32 +35,44 @@ enum MockData {
     ]
 
     static let submissions: [Submission] = [
-        Submission(id: UUID(), dareTitle: "Let yo bih go thru yo phone", status: .pending, points: 20, timeAgo: "2m ago"),
-        Submission(id: UUID(), dareTitle: "Text your ex", status: .approved, points: 10, timeAgo: "Yesterday"),
-        Submission(id: UUID(), dareTitle: "Run 10 km", status: .rejected, points: 50, timeAgo: "3 days ago"),
+        Submission(
+            id: UUID(), challengeId: challenges[0].id,
+            dareTitle: "Let yo bih go thru yo phone", status: .pending, points: 20,
+            createdAt: Date().addingTimeInterval(-120)
+        ),
+        Submission(
+            id: UUID(), challengeId: challenges[1].id,
+            dareTitle: "Text your ex", status: .approved, points: 10,
+            createdAt: Date().addingTimeInterval(-86400)
+        ),
+        Submission(
+            id: UUID(), challengeId: challenges[2].id,
+            dareTitle: "Run 10 km", status: .rejected, points: 50,
+            createdAt: Date().addingTimeInterval(-259200)
+        ),
     ]
 
     static let friendsBoard: [LeaderboardEntry] = [
-        LeaderboardEntry(rank: 1, name: "John Winner", handle: "@IloveMyGTA6too", points: 981, emoji: "👑"),
-        LeaderboardEntry(rank: 2, name: "John Second", handle: "@IloveMyGTA6137", points: 972, emoji: "🦊"),
-        LeaderboardEntry(rank: 3, name: "John Third", handle: "@IhateMyElCinco2", points: 970, emoji: "🐺"),
-        LeaderboardEntry(rank: 4, name: "John Fourth", handle: "@IloveMyElCinco5", points: 890, emoji: "🐸"),
-        LeaderboardEntry(rank: 5, name: "John Fifth", handle: "@IhateMyAirfrier6", points: 690, emoji: "🦝"),
-        LeaderboardEntry(rank: 67, name: "John Airfrier", handle: "@IloveMyAirfrier48", points: 70, emoji: "🍳", isMe: true),
+        LeaderboardEntry(id: UUID(), rank: 1, name: "John Winner", handle: "@IloveMyGTA6too", points: 981, emoji: "👑"),
+        LeaderboardEntry(id: UUID(), rank: 2, name: "John Second", handle: "@IloveMyGTA6137", points: 972, emoji: "🦊"),
+        LeaderboardEntry(id: UUID(), rank: 3, name: "John Third", handle: "@IhateMyElCinco2", points: 970, emoji: "🐺"),
+        LeaderboardEntry(id: UUID(), rank: 4, name: "John Fourth", handle: "@IloveMyElCinco5", points: 890, emoji: "🐸"),
+        LeaderboardEntry(id: UUID(), rank: 5, name: "John Fifth", handle: "@IhateMyAirfrier6", points: 690, emoji: "🦝"),
+        LeaderboardEntry(id: UUID(), rank: 67, name: "John Airfrier", handle: "@IloveMyAirfrier48", points: 70, emoji: "🍳", isMe: true),
     ]
 
     static let chatMessages: [ChatMessage] = [
-        ChatMessage(author: "Maya", emoji: "🦊", text: "who's doing the phone dare tonight??", time: "2:14 PM"),
-        ChatMessage(author: "Alex", emoji: "🐺", text: "Let yo bih go thru yo phone", time: "2:18 PM", isDare: true, darePoints: 20),
-        ChatMessage(author: "You", emoji: "👑", text: "already submitted proof lol", time: "2:22 PM", isMe: true),
-        ChatMessage(author: "Jordan", emoji: "🦝", text: "LMAO the rejection on mine was brutal", time: "2:31 PM"),
-        ChatMessage(author: "Alex", emoji: "🐺", text: "Text your ex", time: "2:45 PM", isDare: true, darePoints: 10),
+        ChatMessage(id: UUID(), author: "Maya", emoji: "🦊", text: "who's doing the phone dare tonight??", time: "2:14 PM"),
+        ChatMessage(id: UUID(), author: "Alex", emoji: "🐺", text: "Let yo bih go thru yo phone", time: "2:18 PM", isDare: true, dareChallengeId: challenges[0].id, darePoints: 20),
+        ChatMessage(id: UUID(), author: "You", emoji: "👑", text: "already submitted proof lol", time: "2:22 PM", isMe: true),
+        ChatMessage(id: UUID(), author: "Jordan", emoji: "🦝", text: "LMAO the rejection on mine was brutal", time: "2:31 PM"),
+        ChatMessage(id: UUID(), author: "Alex", emoji: "🐺", text: "Text your ex", time: "2:45 PM", isDare: true, dareChallengeId: challenges[1].id, darePoints: 10),
     ]
 
     static let notifications: [AppNotification] = [
-        AppNotification(title: "Proof approved", body: "+20pts for \"Let yo bih go thru yo phone\"", time: "2m ago", unread: true, kind: .proof),
-        AppNotification(title: "New dare in Chaos Crew", body: "Alex posted \"Text your ex\" · +10pts", time: "18m ago", unread: true, kind: .dare),
-        AppNotification(title: "You dropped a rank", body: "Jordan passed you on the Friends board", time: "1h ago", unread: true, kind: .board),
-        AppNotification(title: "Maya joined Zuvaro", body: "Invite accepted — say hi in the group chat", time: "Yesterday", unread: false, kind: .friend),
+        AppNotification(id: UUID(), title: "Proof approved", body: "+20pts for \"Let yo bih go thru yo phone\"", time: "2m ago", unread: true, kind: .proof),
+        AppNotification(id: UUID(), title: "New dare in Chaos Crew", body: "Alex posted \"Text your ex\" · +10pts", time: "18m ago", unread: true, kind: .dare),
+        AppNotification(id: UUID(), title: "You dropped a rank", body: "Jordan passed you on the Friends board", time: "1h ago", unread: true, kind: .board),
+        AppNotification(id: UUID(), title: "Maya joined Zuvaro", body: "Invite accepted — say hi in the group chat", time: "Yesterday", unread: false, kind: .friend),
     ]
 }
