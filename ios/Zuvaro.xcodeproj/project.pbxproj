@@ -23,6 +23,7 @@
 		B10000000000000000000014 /* SocialViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000014 /* SocialViews.swift */; };
 		B10000000000000000000015 /* SettingsViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000015 /* SettingsViews.swift */; };
 		B10000000000000000000016 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000016 /* Assets.xcassets */; };
+		B10000000000000000000017 /* AuthViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000017 /* AuthViews.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +44,7 @@
 		F10000000000000000000014 /* SocialViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialViews.swift; sourceTree = "<group>"; };
 		F10000000000000000000015 /* SettingsViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViews.swift; sourceTree = "<group>"; };
 		F10000000000000000000016 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F10000000000000000000017 /* AuthViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViews.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -133,6 +135,7 @@
 			children = (
 				F10000000000000000000008 /* RootView.swift */,
 				G10000000000000000000010 /* Onboarding */,
+				G10000000000000000000015 /* Auth */,
 				G10000000000000000000011 /* Tabs */,
 				G10000000000000000000012 /* Challenge */,
 				G10000000000000000000013 /* Social */,
@@ -181,6 +184,14 @@
 				F10000000000000000000015 /* SettingsViews.swift */,
 			);
 			path = Settings;
+			sourceTree = "<group>";
+		};
+		G10000000000000000000015 /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				F10000000000000000000017 /* AuthViews.swift */,
+			);
+			path = Auth;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -267,6 +278,7 @@
 				B10000000000000000000013 /* ChallengeFlowViews.swift in Sources */,
 				B10000000000000000000014 /* SocialViews.swift in Sources */,
 				B10000000000000000000015 /* SettingsViews.swift in Sources */,
+				B10000000000000000000017 /* AuthViews.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
