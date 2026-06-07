@@ -3,13 +3,13 @@ import CryptoKit
 import Foundation
 import Supabase
 
-protocol AuthServiceProtocol {
-    var currentUserId: UUID? { get }
-    func restoreSession() async throws -> UUID?
-    func signUp(email: String, password: String) async throws -> UUID
-    func signIn(email: String, password: String) async throws -> UUID
-    func signInWithApple(idToken: String, nonce: String) async throws -> UUID
-    func signOut() async throws
+protocol AuthServiceProtocol: AnyObject {
+    @MainActor var currentUserId: UUID? { get }
+    @MainActor func restoreSession() async throws -> UUID?
+    @MainActor func signUp(email: String, password: String) async throws -> UUID
+    @MainActor func signIn(email: String, password: String) async throws -> UUID
+    @MainActor func signInWithApple(idToken: String, nonce: String) async throws -> UUID
+    @MainActor func signOut() async throws
 }
 
 enum AuthServiceError: LocalizedError {
@@ -70,7 +70,8 @@ final class LiveAuthService: AuthServiceProtocol {
 
     func signUp(email: String, password: String) async throws -> UUID {
         let response = try await client.auth.signUp(email: email, password: password)
-        guard let user = response.user, let id = UUID(uuidString: user.id.uuidString) else {
+        let user = response.user
+        guard let id = UUID(uuidString: user.id.uuidString) else {
             throw AuthServiceError.missingSession
         }
         return id
