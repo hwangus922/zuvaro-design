@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    width: 390px; height: 844px; overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', sans-serif;
+    background: #fff;
+    color: #0A0A0F;
+  }
+  .aura {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 100% 60% at 50% 0%, rgba(200,30,91,0.18), rgba(255,45,135,0.10) 40%, transparent 70%);
+    pointer-events: none;
+  }
+  .status {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 24px 0; font-size: 15px; font-weight: 600;
+  }
+  .island { width: 120px; height: 34px; background: #000; border-radius: 20px; margin: 8px auto 0; }
+  .header {
+    display: flex; align-items: center; gap: 8px; padding: 12px 24px 0;
+  }
+  .avatar { width: 32px; height: 32px; border-radius: 50%; background: #F4F3F8; display: grid; place-items: center; font-size: 16px; }
+  .icon-btn {
+    width: 32px; height: 32px; border-radius: 50%; background: #F4F3F8;
+    display: grid; place-items: center; font-size: 14px; color: #0A0A0F;
+  }
+  .spacer { flex: 1; }
+  .pts {
+    font-size: 13px; font-weight: 700; font-family: ui-monospace, monospace;
+    background: linear-gradient(135deg, #FF6A2C, #FF2D87, #C81E5B);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .quest {
+    margin: 16px 24px 0; padding: 16px; border-radius: 20px;
+    background: linear-gradient(135deg, #C81E5B, #FF2D87, #FF6A2C);
+    color: #170006;
+  }
+  .quest h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+  .quest .sub { font-size: 16px; font-weight: 700; opacity: .9; }
+  .quest .refresh { font-size: 13px; font-weight: 500; opacity: .75; }
+  .bar { height: 6px; background: rgba(0,0,0,.22); border-radius: 99px; margin-top: 10px; overflow: hidden; }
+  .bar > div { width: 40%; height: 100%; background: #000; border-radius: 99px; }
+  .filters { display: flex; gap: 8px; padding: 14px 24px 0; align-items: center; }
+  .chip {
+    padding: 8px 14px; border-radius: 99px; font-size: 12px; font-weight: 600;
+    background: #F4F3F8; color: rgba(0,0,0,.62);
+  }
+  .chip.on {
+    background: linear-gradient(135deg, #FF6A2C, #FF2D87, #C81E5B);
+    color: #170006;
+  }
+  .search { width: 24px; height: 24px; border-radius: 50%; background: #F4F3F8; margin-left: auto; }
+  .card {
+    margin: 12px 24px 0; padding: 16px; border-radius: 20px;
+    background: #F4F3F8; border: 1px solid rgba(0,0,0,.06);
+  }
+  .card-top { display: flex; justify-content: space-between; margin-bottom: 8px; }
+  .hook { font-size: 12px; color: rgba(0,0,0,.62); max-width: 70%; }
+  .time { font-size: 12px; font-weight: 600; font-family: ui-monospace, monospace; color: rgba(0,0,0,.38); }
+  .title { font-size: 17px; font-weight: 700; line-height: 1.25; margin-bottom: 10px; }
+  .badge-row { display: flex; justify-content: flex-end; }
+  .badge {
+    font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 99px;
+    background: linear-gradient(135deg, #FF6A2C, #FF2D87, #C81E5B); color: #170006;
+  }
+  .badge.mute { background: #EEEDF3; color: rgba(0,0,0,.62); }
+  .tabbar {
+    position: absolute; left: 24px; right: 24px; bottom: 28px;
+    display: flex; gap: 4px; padding: 6px; border-radius: 99px;
+    background: rgba(15,15,20,.92); border: 1px solid rgba(255,255,255,.12);
+  }
+  .tab {
+    display: flex; align-items: center; gap: 8px; padding: 10px 18px;
+    border-radius: 99px; font-size: 13px; font-weight: 700; color: rgba(255,255,255,.6);
+  }
+  .tab.on {
+    background: linear-gradient(135deg, #FF6A2C, #FF2D87, #C81E5B);
+    color: #170006;
+  }
+</style>
+</head>
+<body>
+  <div class="aura"></div>
+  <div class="status"><span>9:41</span><span>●●● ▮▮▮ 🔋</span></div>
+  <div class="island"></div>
+  <div class="header">
+    <div class="avatar">👑</div>
+    <div class="icon-btn">💬</div>
+    <div class="spacer"></div>
+    <div class="icon-btn">🔔</div>
+    <div class="icon-btn">📈</div>
+    <span style="font:700 13px ui-monospace,monospace">45</span>
+    <span style="color:#FF6A2C">⚡</span>
+    <span class="pts">340pts</span>
+  </div>
+  <div class="quest">
+    <h3>2/5 daily challenges conquered</h3>
+    <div class="sub">Quest Chain <span class="refresh">refreshes in 3 hours</span></div>
+    <div class="bar"><div></div></div>
+  </div>
+  <div class="filters">
+    <div class="chip on">Recommended</div>
+    <div class="chip">Rewarding</div>
+    <div class="chip">Short</div>
+    <div class="search"></div>
+  </div>
+  <div class="card">
+    <div class="card-top"><span class="hook">Oh hell naw jigsaw u tweaking bruh</span><span class="time">6 min</span></div>
+    <div class="title">Let yo bih go thru yo phone</div>
+    <div class="badge-row"><span class="badge">+20pts</span></div>
+  </div>
+  <div class="card">
+    <div class="card-top"><span class="hook">Yes.</span><span class="time">9 min</span></div>
+    <div class="title">Text your ex</div>
+    <div class="badge-row"><span class="badge">+10pts</span></div>
+  </div>
+  <div class="card">
+    <div class="card-top"><span class="hook">Burn some calories</span><span class="time">2 hrs</span></div>
+    <div class="title">Run 10 km</div>
+    <div class="badge-row"><span class="badge">+50pts</span></div>
+  </div>
+  <div class="tabbar">
+    <div class="tab on">🏠 Home</div>
+    <div class="tab">🏆</div>
+    <div class="tab">👤</div>
+  </div>
+</body>
+</html>

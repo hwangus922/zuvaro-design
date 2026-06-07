@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    width: 390px; height: 844px; overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', sans-serif;
+    background: #fff; color: #0A0A0F;
+  }
+  .aura {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 100% 60% at 50% 0%, rgba(200,30,91,0.18), rgba(255,45,135,0.10) 40%, transparent 70%);
+    pointer-events: none;
+  }
+  .status { display:flex; justify-content:space-between; padding:14px 24px 0; font-size:15px; font-weight:600; }
+  .island { width:120px; height:34px; background:#000; border-radius:20px; margin:8px auto 0; }
+  .top { display:flex; justify-content:flex-end; padding:12px 24px 0; font-size:10px; font-weight:700; color:rgba(0,0,0,.62); }
+  .title { padding: 8px 24px 0; font-size: 34px; font-weight: 700; line-height: 1; }
+  .title span {
+    background: linear-gradient(135deg, #FF6A2C, #FF2D87, #C81E5B);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .tabs { display:flex; gap:18px; padding: 16px 24px 0; }
+  .tab { font-size:15px; font-weight:700; padding-bottom:6px; border-bottom:2px solid transparent; color:rgba(0,0,0,.62); }
+  .tab.on { color:#0A0A0F; border-bottom-color:#FF2D87; }
+  .row {
+    display:flex; align-items:center; gap:12px; margin:12px 24px 0; padding:14px;
+    background:#F4F3F8; border:1px solid rgba(0,0,0,.06); border-radius:16px;
+  }
+  .row.me { background: rgba(255,45,135,.08); border-color: rgba(255,45,135,.3); }
+  .rank { width:28px; font:700 14px ui-monospace,monospace; }
+  .emoji { font-size: 24px; }
+  .name { font-size:15px; font-weight:600; }
+  .handle { font-size:12px; color:rgba(0,0,0,.62); }
+  .spacer { flex:1; }
+  .pts { font:700 14px ui-monospace,monospace; }
+  .pts.gold { color:#FF6A2C; }
+  .tabbar {
+    position:absolute; left:24px; right:24px; bottom:28px;
+    display:flex; gap:4px; padding:6px; border-radius:99px;
+    background:rgba(15,15,20,.92); border:1px solid rgba(255,255,255,.12);
+  }
+  .tabbtn { display:flex; align-items:center; gap:8px; padding:10px 18px; border-radius:99px; font-size:13px; font-weight:700; color:rgba(255,255,255,.6); }
+  .tabbtn.on { background:linear-gradient(135deg,#FF6A2C,#FF2D87,#C81E5B); color:#170006; }
+</style>
+</head>
+<body>
+  <div class="aura"></div>
+  <div class="status"><span>9:41</span><span>●●● ▮▮▮ 🔋</span></div>
+  <div class="island"></div>
+  <div class="top">6 DAYS LEFT</div>
+  <div class="title">Leader<span>board</span></div>
+  <div class="tabs">
+    <div class="tab on">Friends</div>
+    <div class="tab">Club</div>
+    <div class="tab">Global</div>
+  </div>
+  <div class="row"><span class="rank">1</span><span class="emoji">👑</span><div><div class="name">John Winner</div><div class="handle">@IloveMyGTA6too</div></div><span class="spacer"></span><span class="pts gold">981pts</span></div>
+  <div class="row"><span class="rank">2</span><span class="emoji">🦊</span><div><div class="name">John Second</div><div class="handle">@IloveMyGTA6137</div></div><span class="spacer"></span><span class="pts">972pts</span></div>
+  <div class="row"><span class="rank">3</span><span class="emoji">🐺</span><div><div class="name">John Third</div><div class="handle">@IhateMyElCinco2</div></div><span class="spacer"></span><span class="pts">970pts</span></div>
+  <div class="row"><span class="rank">4</span><span class="emoji">🐸</span><div><div class="name">John Fourth</div><div class="handle">@IloveMyElCinco5</div></div><span class="spacer"></span><span class="pts">890pts</span></div>
+  <div class="row me"><span class="rank">67</span><span class="emoji">🍳</span><div><div class="name">John Airfrier</div><div class="handle">@IloveMyAirfrier48</div></div><span class="spacer"></span><span class="pts">70pts</span></div>
+  <div class="tabbar">
+    <div class="tabbtn">🏠</div>
+    <div class="tabbtn on">🏆 Board</div>
+    <div class="tabbtn">👤</div>
+  </div>
+</body>
+</html>

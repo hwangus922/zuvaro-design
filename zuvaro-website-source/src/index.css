@@ -1,0 +1,139 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sora: "Sora", sans-serif;
+  --font-inter: "Inter", sans-serif;
+
+  --color-zuvaro-bg: #FFFFFF;
+  --color-zuvaro-pink: #FF2D95;
+  --color-zuvaro-magenta: #C01686;
+  --color-zuvaro-orange: #FF6A2C;
+  --color-zuvaro-text: #0A0A0F;
+}
+
+@layer base {
+  body {
+    font-family: var(--font-inter);
+    color: var(--color-zuvaro-text);
+    background-color: var(--color-zuvaro-bg);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+}
+
+::selection {
+  background: #FF2D95;
+  color: white;
+}
+
+@layer utilities {
+  .blob-window {
+    position: relative;
+    overflow: hidden;
+    background-color: #FFFFFF;
+  }
+
+  .blob-window::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    border-radius: inherit;
+    background-image:
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='4.0' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.09'/%3E%3C/svg%3E"),
+      radial-gradient(
+        ellipse var(--blob-rx, 130px) var(--blob-ry, 80px) at var(--blob-lx, 50%) var(--blob-ly, 50%),
+        rgba(255, 45, 149, 1.0) 0%,
+        rgba(255, 45, 149, 1.0) 50%,
+        transparent 80%
+      ),
+      radial-gradient(
+        ellipse var(--blob-rx-mid, 260px) var(--blob-ry-mid, 150px) at var(--blob-mx, 50%) var(--blob-my, 50%),
+        rgba(255, 106, 44, 1.0) 0%,
+        rgba(255, 106, 44, 1.0) 60%,
+        transparent 90%
+      ),
+      radial-gradient(
+        ellipse var(--blob-rx-trail, 160px) var(--blob-ry-trail, 170px) at var(--blob-tx, 50%) var(--blob-ty, 50%),
+        rgba(192, 22, 134, 1.0) 0%,
+        rgba(192, 22, 134, 1.0) 55%,
+        transparent 90%
+      );
+    background-blend-mode: normal, normal, normal, normal;
+    will-change: transform;
+    transform: translateZ(0);
+  }
+
+  .blob-text {
+    background-image:
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='4.0' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.09'/%3E%3C/svg%3E"),
+      radial-gradient(
+        ellipse var(--blob-rx, 130px) var(--blob-ry, 80px) at var(--blob-lx, 50%) var(--blob-ly, 50%),
+        rgba(255, 45, 149, 1.0) 0%,
+        rgba(255, 45, 149, 1.0) 50%,
+        transparent 80%
+      ),
+      radial-gradient(
+        ellipse var(--blob-rx-mid, 260px) var(--blob-ry-mid, 150px) at var(--blob-mx, 50%) var(--blob-my, 50%),
+        rgba(255, 106, 44, 1.0) 0%,
+        rgba(255, 106, 44, 1.0) 60%,
+        transparent 90%
+      ),
+      radial-gradient(
+        ellipse var(--blob-rx-trail, 160px) var(--blob-ry-trail, 170px) at var(--blob-tx, 50%) var(--blob-ty, 50%),
+        rgba(192, 22, 134, 1.0) 0%,
+        rgba(192, 22, 134, 1.0) 55%,
+        transparent 90%
+      );
+    background-blend-mode: normal, normal, normal, normal;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    will-change: transform;
+    transform: translateZ(0);
+  }
+
+  .blob-text::selection {
+    -webkit-text-fill-color: white;
+    color: white;
+  }
+
+  .section-vis {
+    content-visibility: auto;
+    contain-intrinsic-size: 700px;
+  }
+
+  .mobile-gradient-text {
+    background-image:
+      radial-gradient(ellipse 100% 100% at 50% 0%, rgba(255, 255, 255, 1) 15%, rgba(255, 45, 149, 0.95) 50%, transparent 80%),
+      radial-gradient(ellipse 80% 80% at 20% 100%, rgba(255, 255, 255, 1) 20%, rgba(255, 106, 44, 0.95) 65%, transparent 90%),
+      radial-gradient(ellipse 80% 80% at 80% 100%, rgba(255, 255, 255, 1) 20%, rgba(192, 22, 134, 0.9) 60%, transparent 90%);
+    background-blend-mode: normal, normal, normal;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .mobile-gradient-window {
+    position: relative;
+    overflow: hidden;
+    background-color: #FFFFFF;
+  }
+
+  .mobile-gradient-window::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    border-radius: inherit;
+    background-image:
+      radial-gradient(ellipse 100% 100% at 50% 0%, rgba(255, 255, 255, 1) 15%, rgba(255, 45, 149, 0.95) 50%, transparent 80%),
+      radial-gradient(ellipse 80% 80% at 20% 100%, rgba(255, 255, 255, 1) 20%, rgba(255, 106, 44, 0.95) 65%, transparent 90%),
+      radial-gradient(ellipse 80% 80% at 80% 100%, rgba(255, 255, 255, 1) 20%, rgba(192, 22, 134, 0.9) 60%, transparent 90%);
+    background-blend-mode: normal, normal, normal;
+    will-change: transform;
+    transform: translateZ(0);
+  }
+}
