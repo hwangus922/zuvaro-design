@@ -23,7 +23,19 @@
 		B10000000000000000000014 /* SocialViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000014 /* SocialViews.swift */; };
 		B10000000000000000000015 /* SettingsViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000015 /* SettingsViews.swift */; };
 		B10000000000000000000016 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000016 /* Assets.xcassets */; };
-		B10000000000000000000017 /* AuthViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000017 /* AuthViews.swift */; };
+		B10000000000000000000017 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000017 /* AppConfig.swift */; };
+		B10000000000000000000018 /* SupabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000018 /* SupabaseManager.swift */; };
+		B10000000000000000000019 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000019 /* AuthService.swift */; };
+		B10000000000000000000020 /* ChallengeRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000020 /* ChallengeRepository.swift */; };
+		B10000000000000000000021 /* SubmissionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000021 /* SubmissionService.swift */; };
+		B10000000000000000000022 /* ChatService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000022 /* ChatService.swift */; };
+		B10000000000000000000023 /* LeaderboardService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000023 /* LeaderboardService.swift */; };
+		B10000000000000000000024 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000024 /* NotificationService.swift */; };
+		B10000000000000000000025 /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000025 /* ProfileService.swift */; };
+		B10000000000000000000026 /* ZuvaroServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000026 /* ZuvaroServices.swift */; };
+		B10000000000000000000027 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000027 /* UserProfile.swift */; };
+		B10000000000000000000028 /* AuthViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000028 /* AuthViews.swift */; };
+		B10000000000000000000029 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = PKG002 /* Supabase */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,8 +56,20 @@
 		F10000000000000000000014 /* SocialViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialViews.swift; sourceTree = "<group>"; };
 		F10000000000000000000015 /* SettingsViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViews.swift; sourceTree = "<group>"; };
 		F10000000000000000000016 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		F10000000000000000000017 /* AuthViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViews.swift; sourceTree = "<group>"; };
-		F10000000000000000000018 /* Zuvaro.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Zuvaro.entitlements; sourceTree = "<group>"; };
+		F10000000000000000000017 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
+		F10000000000000000000018 /* SupabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseManager.swift; sourceTree = "<group>"; };
+		F10000000000000000000019 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
+		F10000000000000000000020 /* ChallengeRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeRepository.swift; sourceTree = "<group>"; };
+		F10000000000000000000021 /* SubmissionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmissionService.swift; sourceTree = "<group>"; };
+		F10000000000000000000022 /* ChatService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatService.swift; sourceTree = "<group>"; };
+		F10000000000000000000023 /* LeaderboardService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardService.swift; sourceTree = "<group>"; };
+		F10000000000000000000024 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		F10000000000000000000025 /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
+		F10000000000000000000026 /* ZuvaroServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZuvaroServices.swift; sourceTree = "<group>"; };
+		F10000000000000000000027 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
+		F10000000000000000000028 /* AuthViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViews.swift; sourceTree = "<group>"; };
+		F10000000000000000000029 /* Zuvaro.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Zuvaro.entitlements; sourceTree = "<group>"; };
+		X10000000000000000000001 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,6 +77,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B10000000000000000000029 /* Supabase in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -62,6 +87,7 @@
 		G10000000000000000000001 = {
 			isa = PBXGroup;
 			children = (
+				X10000000000000000000001 /* Secrets.xcconfig */,
 				G10000000000000000000002 /* Zuvaro */,
 				G10000000000000000000003 /* Products */,
 			);
@@ -71,14 +97,15 @@
 			isa = PBXGroup;
 			children = (
 				F10000000000000000000001 /* ZuvaroApp.swift */,
+				F10000000000000000000029 /* Zuvaro.entitlements */,
 				G10000000000000000000004 /* App */,
+				G10000000000000000000015 /* Services */,
 				G10000000000000000000005 /* Theme */,
 				G10000000000000000000006 /* Models */,
 				G10000000000000000000007 /* Data */,
 				G10000000000000000000008 /* Components */,
 				G10000000000000000000009 /* Views */,
 				F10000000000000000000016 /* Assets.xcassets */,
-				F10000000000000000000018 /* Zuvaro.entitlements */,
 			);
 			path = Zuvaro;
 			sourceTree = "<group>";
@@ -112,6 +139,7 @@
 			isa = PBXGroup;
 			children = (
 				F10000000000000000000005 /* Challenge.swift */,
+				F10000000000000000000027 /* UserProfile.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -136,8 +164,8 @@
 			isa = PBXGroup;
 			children = (
 				F10000000000000000000008 /* RootView.swift */,
+				G10000000000000000000016 /* Auth */,
 				G10000000000000000000010 /* Onboarding */,
-				G10000000000000000000015 /* Auth */,
 				G10000000000000000000011 /* Tabs */,
 				G10000000000000000000012 /* Challenge */,
 				G10000000000000000000013 /* Social */,
@@ -188,10 +216,27 @@
 			path = Settings;
 			sourceTree = "<group>";
 		};
-		G10000000000000000000015 /* Auth */ = {
+		G10000000000000000000015 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				F10000000000000000000017 /* AuthViews.swift */,
+				F10000000000000000000017 /* AppConfig.swift */,
+				F10000000000000000000018 /* SupabaseManager.swift */,
+				F10000000000000000000019 /* AuthService.swift */,
+				F10000000000000000000020 /* ChallengeRepository.swift */,
+				F10000000000000000000021 /* SubmissionService.swift */,
+				F10000000000000000000022 /* ChatService.swift */,
+				F10000000000000000000023 /* LeaderboardService.swift */,
+				F10000000000000000000024 /* NotificationService.swift */,
+				F10000000000000000000025 /* ProfileService.swift */,
+				F10000000000000000000026 /* ZuvaroServices.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		G10000000000000000000016 /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				F10000000000000000000028 /* AuthViews.swift */,
 			);
 			path = Auth;
 			sourceTree = "<group>";
@@ -212,6 +257,9 @@
 			dependencies = (
 			);
 			name = Zuvaro;
+			packageProductDependencies = (
+				PKG002 /* Supabase */,
+			);
 			productName = Zuvaro;
 			productReference = E10000000000000000000001 /* Zuvaro.app */;
 			productType = "com.apple.product-type.application";
@@ -240,6 +288,9 @@
 				Base,
 			);
 			mainGroup = G10000000000000000000001;
+			packageReferences = (
+				PKG001 /* XCRemoteSwiftPackageReference "supabase-swift" */,
+			);
 			productRefGroup = G10000000000000000000003 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -280,7 +331,18 @@
 				B10000000000000000000013 /* ChallengeFlowViews.swift in Sources */,
 				B10000000000000000000014 /* SocialViews.swift in Sources */,
 				B10000000000000000000015 /* SettingsViews.swift in Sources */,
-				B10000000000000000000017 /* AuthViews.swift in Sources */,
+				B10000000000000000000017 /* AppConfig.swift in Sources */,
+				B10000000000000000000018 /* SupabaseManager.swift in Sources */,
+				B10000000000000000000019 /* AuthService.swift in Sources */,
+				B10000000000000000000020 /* ChallengeRepository.swift in Sources */,
+				B10000000000000000000021 /* SubmissionService.swift in Sources */,
+				B10000000000000000000022 /* ChatService.swift in Sources */,
+				B10000000000000000000023 /* LeaderboardService.swift in Sources */,
+				B10000000000000000000024 /* NotificationService.swift in Sources */,
+				B10000000000000000000025 /* ProfileService.swift in Sources */,
+				B10000000000000000000026 /* ZuvaroServices.swift in Sources */,
+				B10000000000000000000027 /* UserProfile.swift in Sources */,
+				B10000000000000000000028 /* AuthViews.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -289,6 +351,7 @@
 /* Begin XCBuildConfiguration section */
 		D10000000000000000000001 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = X10000000000000000000001 /* Secrets.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_MODULES = YES;
@@ -313,6 +376,7 @@
 		};
 		D10000000000000000000002 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = X10000000000000000000001 /* Secrets.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_MODULES = YES;
@@ -331,6 +395,7 @@
 		};
 		D10000000000000000000003 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = X10000000000000000000001 /* Secrets.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -342,6 +407,8 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Zuvaro;
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Zuvaro needs photo access to submit dare proof.";
+				INFOPLIST_KEY_SUPABASE_ANON_KEY = "$(SUPABASE_ANON_KEY)";
+				INFOPLIST_KEY_SUPABASE_URL = "$(SUPABASE_URL)";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -360,6 +427,7 @@
 		};
 		D10000000000000000000004 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = X10000000000000000000001 /* Secrets.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -371,6 +439,8 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Zuvaro;
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Zuvaro needs photo access to submit dare proof.";
+				INFOPLIST_KEY_SUPABASE_ANON_KEY = "$(SUPABASE_ANON_KEY)";
+				INFOPLIST_KEY_SUPABASE_URL = "$(SUPABASE_URL)";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -409,6 +479,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		PKG001 /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase/supabase-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		PKG002 /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = PKG001 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = P10000000000000000000001 /* Project object */;
 }
