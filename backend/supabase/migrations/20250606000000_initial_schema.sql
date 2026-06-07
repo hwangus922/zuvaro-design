@@ -1,7 +1,7 @@
 -- Zuvaro production schema
 -- Auth: Supabase Auth (Apple, email). Moderation: admin review on submissions.
 
-create extension if not exists "pgcrypto";
+create extension if not exists "pgcrypto" with schema "extensions";
 
 -- ─── Profiles ───────────────────────────────────────────────────────────────
 
@@ -29,7 +29,7 @@ create index profiles_total_points_idx on public.profiles (total_points desc);
 create table public.groups (
   id uuid primary key default gen_random_uuid(),
   name text not null,
-  invite_code text not null unique default encode(gen_random_bytes(6), 'hex'),
+  invite_code text not null unique default encode(extensions.gen_random_bytes(6), 'hex'),
   created_by uuid references public.profiles (id) on delete set null,
   created_at timestamptz not null default now()
 );
@@ -366,7 +366,9 @@ create policy "Users read own proof photos"
 
 -- ─── Leaderboard helper view ───────────────────────────────────────────────────
 
-create or replace view public.friends_leaderboard as
+create or replace view public.friends_leaderboard
+with (security_invoker = true)
+as
 select
   gm.group_id,
   p.id as user_id,

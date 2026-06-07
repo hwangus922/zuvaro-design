@@ -10,7 +10,7 @@ const publicDir = path.join(root, 'public');
 const shots = [
   ['missions-original-style.html', 'MissionsUI.png'],
   ['leaderboard-original-style.html', 'LeaderboardUI.png'],
-  // ProofUI.png unchanged — restore from scripts/originals/public/ if needed
+  ['proof-original-style.html', 'ProofUI.png'],
 ];
 
 const browser = await chromium.launch();
