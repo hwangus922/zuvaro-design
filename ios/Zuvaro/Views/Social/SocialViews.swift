@@ -6,13 +6,13 @@ struct GroupChatView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            ScreenHeader(title: "Chaos Crew", onBack: { appModel.pop() })
+            ScreenHeader(title: appModel.primaryGroup?.name ?? "Chaos Crew", onBack: { appModel.pop() })
                 .padding(.horizontal, 24)
                 .padding(.top, 8)
 
             ScrollView {
                 LazyVStack(spacing: 14) {
-                    ForEach(MockData.chatMessages) { msg in
+                    ForEach(appModel.chatMessages) { msg in
                         chatBubble(msg)
                     }
                 }
@@ -33,12 +33,25 @@ struct GroupChatView: View {
                     .frame(height: 44)
                     .background(ZuvaroTheme.card)
                     .clipShape(Capsule())
+                    .onSubmit { sendMessage() }
             }
             .padding(.horizontal, 16)
             .padding(.bottom, 12)
         }
         .background(ZuvaroTheme.bg)
         .navigationBarHidden(true)
+    }
+
+    private func sendMessage() {
+        let text = draft.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty,
+              let groupId = appModel.primaryGroup?.id,
+              let userId = appModel.currentProfile?.id else { return }
+        draft = ""
+        Task {
+            try? await ZuvaroServices.shared.chat.sendMessage(groupId: groupId, userId: userId, text: text)
+            await appModel.refreshAll()
+        }
     }
 
     @ViewBuilder
@@ -49,7 +62,11 @@ struct GroupChatView: View {
                 Text(msg.emoji).font(.title3)
             }
             if msg.isDare {
-                Button { appModel.openChallenge(MockData.challenges[0]) } label: {
+                Button {
+                    if let id = msg.dareChallengeId, let challenge = appModel.challenge(for: id) {
+                        appModel.openChallenge(challenge)
+                    }
+                } label: {
                     VStack(alignment: .leading, spacing: 6) {
                         Text("NEW DARE").font(.system(size: 9, weight: .bold)).opacity(0.7)
                         Text(msg.text).font(.system(size: 15, weight: .bold))
@@ -114,7 +131,7 @@ struct NotificationsView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 10) {
                 ScreenHeader(title: "Notifications", onBack: { appModel.pop() })
-                ForEach(MockData.notifications) { n in
+                ForEach(appModel.notifications) { n in
                     Button {
                         switch n.kind {
                         case .dare: appModel.navigate(to: .chat)
@@ -155,7 +172,8 @@ struct InviteFriendsView: View {
                 ScreenHeader(title: "Invite friends", onBack: { appModel.pop() })
                 VStack(spacing: 12) {
                     Text("🎉").font(.largeTitle)
-                    Text("Bring your crew to Chaos Crew").font(.system(size: 16, weight: .bold))
+                    Text("Bring your crew to \(appModel.primaryGroup?.name ?? "Chaos Crew")")
+                        .font(.system(size: 16, weight: .bold))
                     Text("Share your link — when they join, you both get +15pts")
                         .font(.system(size: 13))
                         .foregroundStyle(ZuvaroTheme.textMute)
@@ -168,11 +186,14 @@ struct InviteFriendsView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 20))
 
                 HStack {
-                    Text("zuvaro.app/join/chaos-crew")
+                    Text("zuvaro.app/join/\(appModel.inviteCode)")
                         .font(.system(size: 13, weight: .semibold, design: .monospaced))
                     Spacer()
-                    Button(copied ? "Copied!" : "Copy") { copied = true }
-                        .font(.system(size: 13, weight: .bold))
+                    Button(copied ? "Copied!" : "Copy") {
+                        UIPasteboard.general.string = "zuvaro.app/join/\(appModel.inviteCode)"
+                        copied = true
+                    }
+                    .font(.system(size: 13, weight: .bold))
                 }
                 .padding(14)
                 .background(ZuvaroTheme.card)

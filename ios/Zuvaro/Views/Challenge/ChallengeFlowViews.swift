@@ -70,6 +70,7 @@ struct SubmitProofView: View {
     @State private var caption = ""
     @State private var pickerItem: PhotosPickerItem?
     @State private var selectedImage: Image?
+    @State private var imageData: Data?
 
     var body: some View {
         ScrollView {
@@ -99,6 +100,7 @@ struct SubmitProofView: View {
                     Task {
                         if let data = try? await item?.loadTransferable(type: Data.self),
                            let ui = UIImage(data: data) {
+                            imageData = data
                             selectedImage = Image(uiImage: ui)
                         }
                     }
@@ -115,7 +117,9 @@ struct SubmitProofView: View {
                     .background(ZuvaroTheme.card)
                     .clipShape(RoundedRectangle(cornerRadius: 16))
 
-                PrimaryButton(title: "Submit proof · \(challenge.pointsLabel)", enabled: selectedImage != nil) {
+                PrimaryButton(title: "Submit proof · \(challenge.pointsLabel)", enabled: imageData != nil) {
+                    appModel.pendingProofImageData = imageData
+                    appModel.pendingProofCaption = caption
                     appModel.navigate(to: .proofUploading(challenge))
                 }
             }
@@ -138,14 +142,35 @@ struct ProofUploadingView: View {
             Text(challenge.text)
                 .font(.system(size: 14))
                 .foregroundStyle(ZuvaroTheme.textMute)
+            if let error = appModel.uploadError {
+                Text(error)
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(ZuvaroTheme.orange)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 24)
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(ZuvaroTheme.bg)
         .navigationBarHidden(true)
-        .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.4) {
+        .task {
+            guard let data = appModel.pendingProofImageData else {
+                appModel.uploadError = "Missing photo data."
+                return
+            }
+            appModel.uploadError = nil
+            do {
+                try await appModel.submitProof(
+                    challenge: challenge,
+                    imageData: data,
+                    caption: appModel.pendingProofCaption ?? ""
+                )
+                appModel.pendingProofImageData = nil
+                appModel.pendingProofCaption = nil
                 if !appModel.path.isEmpty { appModel.path.removeLast() }
                 appModel.navigate(to: .proofPending(challenge))
+            } catch {
+                appModel.uploadError = error.localizedDescription
             }
         }
     }
@@ -170,6 +195,7 @@ struct ProofPendingView: View {
 
                 PrimaryButton(title: "Back to Home") { appModel.popToRoot() }
                 SecondaryTextButton(title: "View all submissions") { appModel.navigate(to: .submissions) }
+                #if DEBUG
                 SecondaryTextButton(title: "Demo: simulate approval") {
                     if !appModel.path.isEmpty { appModel.path.removeLast() }
                     appModel.approveProof(for: challenge)
@@ -178,6 +204,7 @@ struct ProofPendingView: View {
                     if !appModel.path.isEmpty { appModel.path.removeLast() }
                     appModel.rejectProof(for: challenge)
                 }
+                #endif
             }
             .padding(24)
         }
@@ -241,12 +268,13 @@ struct MySubmissionsView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 12) {
                 ScreenHeader(title: "My submissions", onBack: { appModel.pop() })
-                ForEach(MockData.submissions) { sub in
+                ForEach(appModel.submissions) { sub in
                     Button {
+                        guard let challenge = appModel.challenge(for: sub.challengeId) else { return }
                         switch sub.status {
-                        case .pending: appModel.navigate(to: .proofPending(MockData.challenges[0]))
-                        case .approved: appModel.navigate(to: .proofApproved(MockData.challenges[0]))
-                        case .rejected: appModel.navigate(to: .proofRejected(MockData.challenges[2]))
+                        case .pending: appModel.navigate(to: .proofPending(challenge))
+                        case .approved: appModel.navigate(to: .proofApproved(challenge))
+                        case .rejected: appModel.navigate(to: .proofRejected(challenge))
                         }
                     } label: {
                         HStack {

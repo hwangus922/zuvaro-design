@@ -6,9 +6,9 @@ struct HomeView: View {
 
     private var challenges: [Challenge] {
         switch filter {
-        case "Rewarding": return MockData.challenges.filter { $0.points != nil }
-        case "Short": return MockData.challenges.filter { $0.minutes <= 15 }
-        default: return MockData.challenges
+        case "Rewarding": return appModel.challenges.filter { $0.points != nil }
+        case "Short": return appModel.challenges.filter { $0.minutes <= 15 }
+        default: return appModel.challenges
         }
     }
 
@@ -41,10 +41,10 @@ struct HomeView: View {
 
     private var header: some View {
         HStack(spacing: 8) {
-            AvatarView()
+            AvatarView(emoji: appModel.currentProfile?.avatarEmoji ?? "👑")
             iconButton("message.fill") { appModel.navigate(to: .chat) }
             Spacer()
-            iconButton("bell.fill", badge: true) { appModel.navigate(to: .notifications) }
+            iconButton("bell.fill", badge: appModel.hasUnreadNotifications) { appModel.navigate(to: .notifications) }
             iconButton("chart.line.uptrend.xyaxis") {}
             Text("45")
                 .font(.system(size: 13, weight: .bold, design: .monospaced))
@@ -103,7 +103,7 @@ struct QuestChainView: View {
                     Text("TODAY'S DARES")
                         .font(.system(size: 10, weight: .bold))
                         .foregroundStyle(ZuvaroTheme.textMute)
-                    ForEach(MockData.challenges) { c in
+                    ForEach(appModel.challenges) { c in
                         Button { appModel.openChallenge(c) } label: {
                             ChallengeCardView(challenge: c)
                         }.buttonStyle(.plain)
@@ -122,8 +122,8 @@ struct SearchView: View {
 
     private var results: [Challenge] {
         let q = query.trimmingCharacters(in: .whitespaces).lowercased()
-        guard !q.isEmpty else { return MockData.challenges }
-        return MockData.challenges.filter {
+        guard !q.isEmpty else { return appModel.challenges }
+        return appModel.challenges.filter {
             $0.text.lowercased().contains(q) || $0.hook.lowercased().contains(q)
         }
     }

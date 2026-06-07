@@ -19,14 +19,17 @@ struct ProfileView: View {
                         }
                     }
 
-                    AvatarView(emoji: "👑", size: 80)
+                    AvatarView(emoji: appModel.currentProfile?.avatarEmoji ?? "👑", size: 80)
                     VStack(spacing: 4) {
-                        Text("John Winner").font(.system(size: 16, weight: .semibold))
-                        Text("@IloveMyGTA6too").font(.system(size: 12)).foregroundStyle(ZuvaroTheme.textMute)
+                        Text(appModel.currentProfile?.displayName ?? "Zuvaro Player")
+                            .font(.system(size: 16, weight: .semibold))
+                        Text(appModel.currentProfile?.handle ?? "@player")
+                            .font(.system(size: 12))
+                            .foregroundStyle(ZuvaroTheme.textMute)
                     }
                     HStack(spacing: 6) {
                         Image(systemName: "flame.fill").foregroundStyle(ZuvaroTheme.orange).font(.system(size: 12))
-                        Text("23 day streak · on fire")
+                        Text("\(appModel.currentProfile?.longestStreak ?? 0) day streak · on fire")
                             .font(.system(size: 11, weight: .bold))
                             .foregroundStyle(ZuvaroTheme.orange)
                     }
@@ -63,7 +66,12 @@ struct ProfileView: View {
             }
             .padding(18)
 
-            ForEach([("Wins", "47"), ("Longest Streak", "23"), ("Total Points", "\(appModel.totalPoints)"), ("Challenges Completed", "184")], id: \.0) { label, value in
+            ForEach([
+                ("Wins", "\(appModel.currentProfile?.wins ?? 0)"),
+                ("Longest Streak", "\(appModel.currentProfile?.longestStreak ?? 0)"),
+                ("Total Points", "\(appModel.totalPoints)"),
+                ("Challenges Completed", "\(appModel.currentProfile?.challengesCompleted ?? 0)")
+            ], id: \.0) { label, value in
                 Divider()
                 HStack {
                     Text(label).font(.system(size: 16))
@@ -80,13 +88,16 @@ struct ProfileView: View {
 
     private var accountSection: some View {
         VStack(spacing: 0) {
-            accountRow("My submissions", badge: "1 pending") { appModel.navigate(to: .submissions) }
+            accountRow(
+                "My submissions",
+                badge: appModel.pendingSubmissionsCount > 0 ? "\(appModel.pendingSubmissionsCount) pending" : nil
+            ) { appModel.navigate(to: .submissions) }
             Divider()
             accountRow("Invite friends") { appModel.navigate(to: .invite) }
             Divider()
-            accountRow("Log out") {}
+            accountRow("Log out") { Task { await appModel.signOut() } }
             Divider()
-            accountRow("Delete Account", destructive: true) {}
+            accountRow("Delete Account", destructive: true) { Task { await appModel.deleteAccount() } }
         }
         .background(ZuvaroTheme.card)
         .clipShape(RoundedRectangle(cornerRadius: 20))

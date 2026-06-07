@@ -1,19 +1,18 @@
 import SwiftUI
 
 struct LeaderboardView: View {
+    @EnvironmentObject private var appModel: AppModel
     @State private var tab = 0
-    @State private var page = 0
     private let tabs = ["Friends", "Club", "Global"]
 
     private var rows: [LeaderboardEntry] {
-        let base = MockData.friendsBoard
+        let base = appModel.leaderboard
         switch tab {
         case 1: return base.enumerated().map { i, e in
-            var copy = e; copy = LeaderboardEntry(rank: i + 1, name: e.name, handle: e.handle, points: e.points - 40 + i * 7, emoji: e.emoji, isMe: e.isMe)
-            return copy
+            LeaderboardEntry(id: e.id, rank: i + 1, name: e.name, handle: e.handle, points: e.points - 40 + i * 7, emoji: e.emoji, isMe: e.isMe)
         }
         case 2: return base.enumerated().map { i, e in
-            LeaderboardEntry(rank: i + 1, name: e.name.replacingOccurrences(of: "John", with: "Player"), handle: e.handle, points: e.points + 120 - i * 15, emoji: e.emoji, isMe: e.isMe)
+            LeaderboardEntry(id: e.id, rank: i + 1, name: e.name.replacingOccurrences(of: "John", with: "Player"), handle: e.handle, points: e.points + 120 - i * 15, emoji: e.emoji, isMe: e.isMe)
         }
         default: return base
         }
@@ -42,7 +41,7 @@ struct LeaderboardView: View {
 
                     HStack(spacing: 18) {
                         ForEach(Array(tabs.enumerated()), id: \.offset) { i, name in
-                            Button { tab = i; page = 0 } label: {
+                            Button { tab = i } label: {
                                 VStack(spacing: 6) {
                                     Text(name)
                                         .font(.system(size: 15, weight: tab == i ? .bold : .medium))

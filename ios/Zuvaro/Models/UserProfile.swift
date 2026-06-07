@@ -151,6 +151,7 @@ struct NotificationRecord: Codable {
 }
 
 struct NewSubmissionPayload: Encodable {
+    let id: UUID
     let userId: UUID
     let challengeId: UUID
     let groupId: UUID?
@@ -159,7 +160,7 @@ struct NewSubmissionPayload: Encodable {
     let status: String
 
     enum CodingKeys: String, CodingKey {
-        case caption, status
+        case id, caption, status
         case userId = "user_id"
         case challengeId = "challenge_id"
         case groupId = "group_id"

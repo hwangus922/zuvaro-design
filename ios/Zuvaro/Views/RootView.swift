@@ -5,13 +5,14 @@ struct RootView: View {
 
     var body: some View {
         Group {
-            if appModel.showOnboarding {
+            if !appModel.isAuthenticated || appModel.showOnboarding {
                 OnboardingFlowView()
             } else {
                 MainTabView()
             }
         }
         .preferredColorScheme(.light)
+        .task { await appModel.bootstrap() }
     }
 }
 
@@ -62,7 +63,18 @@ struct MainTabView: View {
         case .privacy: PrivacyView()
         case .blockedUsers: BlockedUsersView()
         case .help: HelpSupportView()
-        case .signIn, .emailAuth: Text("Auth — wire to Sign in with Apple / email")
+        case .signIn:
+            SignInView(
+                onBack: { appModel.pop() },
+                onEmailSignIn: { appModel.navigate(to: .emailAuth) },
+                onSignUp: { appModel.pop(); appModel.showOnboarding = true }
+            )
+        case .emailAuth:
+            EmailAuthView(
+                isSignUp: false,
+                onBack: { appModel.pop() },
+                onToggleMode: { appModel.navigate(to: .emailAuth) }
+            )
         }
     }
 }

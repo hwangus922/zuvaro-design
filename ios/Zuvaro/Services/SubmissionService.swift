@@ -1,6 +1,11 @@
 import Foundation
 import Supabase
 
+struct ChallengeTitleRecord: Decodable {
+    let id: UUID
+    let text: String
+}
+
 protocol SubmissionServiceProtocol {
     func fetchMySubmissions(userId: UUID) async throws -> [Submission]
     func submitProof(
@@ -62,6 +67,7 @@ final class LiveSubmissionService: SubmissionServiceProtocol {
             )
 
         let payload = NewSubmissionPayload(
+            id: submissionId,
             userId: userId,
             challengeId: challenge.id,
             groupId: groupId,
@@ -114,7 +120,7 @@ final class LiveSubmissionService: SubmissionServiceProtocol {
     private func challengeTitleMap(for ids: [UUID]) async throws -> [UUID: String] {
         guard !ids.isEmpty else { return [:] }
         let unique = Array(Set(ids))
-        let records: [ChallengeRecord] = try await client
+        let records: [ChallengeTitleRecord] = try await client
             .from("challenges")
             .select("id,text")
             .in("id", values: unique.map(\.uuidString))

@@ -1,6 +1,6 @@
 # Zuvaro iOS App
 
-Native **SwiftUI** iOS app built from the v3 light design prototype.
+Native **SwiftUI** iOS app with Supabase backend integration.
 
 ## Open in Xcode
 
@@ -11,55 +11,120 @@ Native **SwiftUI** iOS app built from the v3 light design prototype.
 
 ## First-time setup
 
+### 1. Code signing
+
 1. Select the **Zuvaro** target → **Signing & Capabilities**
-2. Set your **Team** (Apple ID) for code signing
-3. Optionally change **Bundle Identifier** from `com.zuvaro.app`
+2. Set your **Team** (Apple Developer account)
+3. Confirm **Bundle Identifier** (`com.zuvaro.app` or your own)
+4. Enable **Sign in with Apple** capability (entitlements file included)
 
-## What's implemented
+### 2. Supabase credentials
 
-| Area | Status |
-|------|--------|
-| v3 light theme (pink / magenta / orange) | ✅ |
-| Onboarding splash → welcome → sign-up | ✅ |
-| Tab bar (Home, Board, Me) | ✅ |
-| Quest chain + challenge cards | ✅ |
-| Full dare flow (detail → timer → proof → upload → pending → approved/rejected) | ✅ |
-| Photo picker for proof submission | ✅ |
-| Group chat + create dare | ✅ |
-| Notifications, invite friends | ✅ |
-| Settings + sub-screens | ✅ |
-| Search, my submissions | ✅ |
+1. Copy `ios/Secrets.xcconfig.template` → `ios/Secrets.xcconfig`
+2. Fill in `SUPABASE_URL` and `SUPABASE_ANON_KEY` from your Supabase project dashboard
+3. Rebuild — values are injected into Info.plist at build time
 
-Data is **mock/local** for now — ready to wire to a backend (Supabase, Firebase, or custom API).
+Without `Secrets.xcconfig`, the app runs in **mock mode** with local prototype data.
+
+### 3. Supabase project setup
+
+```bash
+# Install Supabase CLI: https://supabase.com/docs/guides/cli
+cd backend/supabase
+supabase login
+supabase link --project-ref YOUR_PROJECT_REF
+supabase db push
+supabase db seed   # optional — loads challenge catalog from seed.sql
+```
+
+In the Supabase dashboard:
+
+1. **Authentication → Providers → Apple** — enable Sign in with Apple
+   - Add your Apple Services ID, Team ID, Key ID, and `.p8` key
+   - Redirect URL: `zuvaro://auth-callback` (or your custom scheme)
+2. **Authentication → URL Configuration** — add redirect `zuvaro://auth-callback`
+3. **Storage** — confirm `proofs` bucket exists (created by migration)
+4. **Set yourself as admin** (for proof moderation):
+
+```sql
+update public.profiles set is_admin = true where id = 'YOUR_USER_UUID';
+```
+
+### 4. Admin proof moderation
+
+Submissions start as `pending`. Admins review in Supabase:
+
+```sql
+-- Approve
+update public.submissions
+set status = 'approved', reviewed_at = now()
+where id = 'SUBMISSION_UUID';
+
+-- Reject
+update public.submissions
+set status = 'rejected', review_note = 'Photo unclear', reviewed_at = now()
+where id = 'SUBMISSION_UUID';
+```
+
+The app polls every 5 seconds while a submission is pending and navigates to approved/rejected automatically.
 
 ## Project structure
 
 ```
 Zuvaro/
-  ZuvaroApp.swift          App entry
-  App/                     Navigation state + routes
-  Theme/                   Colors, gradients, shared UI
-  Models/                  Challenge, Submission, etc.
-  Data/MockData.swift      Prototype copy + sample dares
-  Components/              Tab bar, cards, buttons
+  ZuvaroApp.swift
+  App/                     AppModel, routes
+  Services/                Supabase + mock implementations
+  Theme/                   v3 light design tokens
+  Models/                  Domain + API DTOs
+  Data/MockData.swift      Fallback prototype data
+  Components/
   Views/
+    Auth/                  Sign in with Apple, email auth
     Onboarding/
-    Tabs/                  Home, Leaderboard, Profile
-    Challenge/             Dare + proof flow
-    Social/                Chat, notifications, invite
+    Tabs/
+    Challenge/
+    Social/
     Settings/
+backend/supabase/
+  migrations/              Postgres schema, RLS, storage, triggers
+  seed.sql                 Challenge catalog
 ```
 
-## Next steps (backend)
+## App Store Connect checklist
 
-1. Add **Sign in with Apple** + email auth
-2. Replace `MockData` with API calls
-3. Upload proof photos to cloud storage (S3 / Supabase Storage)
-4. Push notifications for dare refresh + proof approval
-5. Real-time group chat (WebSocket or Firebase)
+Before submitting to TestFlight / App Store:
+
+| Item | Notes |
+|------|-------|
+| Privacy Policy URL | Required — host at e.g. `zuvaro.app/privacy` |
+| Terms of Service URL | Required for account creation |
+| App icon | Replace placeholder in `Assets.xcassets/AppIcon` |
+| Screenshots | 6.7", 6.5", 5.5" iPhone sizes minimum |
+| Age rating | Likely 17+ due to user-generated dare content |
+| UGC moderation | Document admin review workflow in App Review notes |
+| Sign in with Apple | Required (you offer email auth) |
+| Photo library usage | Already declared in Info.plist |
+| Push notifications | Entitlement included (development); configure APNs for production |
+| Export compliance | Standard encryption (HTTPS) — typically "No" for exempt |
+
+### App Review notes (suggested)
+
+> Zuvaro is a social dare app. Users submit photo proof of completed challenges. All proof photos are reviewed by human moderators before points are awarded. Users can block others and report content via Help & Support. Test account: [provide email/password].
+
+## TestFlight → Production
+
+1. Archive in Xcode (**Product → Archive**)
+2. Upload to App Store Connect (**Distribute App**)
+3. Complete App Store Connect listing (description, keywords, support URL)
+4. Submit build to **TestFlight** internal testing first
+5. Fix any crashes / review feedback
+6. Submit for **App Review** with moderation documentation
+7. Release manually or automatically after approval
 
 ## Requirements
 
 - Xcode 15+
 - iOS 17.0+ deployment target
-- macOS for building and simulator
+- Apple Developer Program membership
+- Supabase project (free tier works for development)

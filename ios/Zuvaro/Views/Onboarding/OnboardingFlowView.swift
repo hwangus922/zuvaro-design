@@ -3,26 +3,47 @@ import SwiftUI
 struct OnboardingFlowView: View {
     @EnvironmentObject private var appModel: AppModel
     @State private var step = 0
+    @State private var emailIsSignUp = true
 
     var body: some View {
-        ZStack {
-            ZuvaroTheme.bg.ignoresSafeArea()
-            AuraBackground()
+        Group {
+            if step == 3 {
+                SignInView(
+                    onBack: { withAnimation { step = 1 } },
+                    onEmailSignIn: { withAnimation { emailIsSignUp = false; step = 4 } },
+                    onSignUp: { withAnimation { step = 2 } }
+                )
+            } else if step == 4 {
+                EmailAuthView(
+                    isSignUp: emailIsSignUp,
+                    onBack: { withAnimation { step = emailIsSignUp ? 2 : 3 } },
+                    onToggleMode: { emailIsSignUp.toggle() }
+                )
+            } else {
+                ZStack {
+                    ZuvaroTheme.bg.ignoresSafeArea()
+                    AuraBackground()
 
-            VStack(spacing: 24) {
-                Spacer()
+                    VStack(spacing: 24) {
+                        Spacer()
 
-                if step == 0 {
-                    splashContent
-                } else if step == 1 {
-                    welcomeContent
-                } else {
-                    signupContent
+                        if step == 0 {
+                            splashContent
+                        } else if step == 1 {
+                            welcomeContent
+                        } else {
+                            SignUpProvidersView(
+                                onBack: { withAnimation { step = 1 } },
+                                onEmailSignUp: { withAnimation { emailIsSignUp = true; step = 4 } },
+                                onSignIn: { withAnimation { step = 3 } }
+                            )
+                        }
+
+                        Spacer()
+                    }
+                    .padding(24)
                 }
-
-                Spacer()
             }
-            .padding(24)
         }
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
@@ -48,17 +69,7 @@ struct OnboardingFlowView: View {
                 .foregroundStyle(ZuvaroTheme.textMute)
                 .multilineTextAlignment(.center)
             PrimaryButton(title: "Continue") { withAnimation { step = 2 } }
-            SecondaryTextButton(title: "Sign in") { appModel.completeOnboarding() }
-        }
-    }
-
-    private var signupContent: some View {
-        VStack(spacing: 16) {
-            Text("Create account")
-                .font(.system(size: 24, weight: .bold))
-            PrimaryButton(title: "Continue with Apple") { appModel.completeOnboarding() }
-            PrimaryButton(title: "Continue with Google") { appModel.completeOnboarding() }
-            SecondaryTextButton(title: "Use email instead") { appModel.completeOnboarding() }
+            SecondaryTextButton(title: "Sign in") { withAnimation { step = 3 } }
         }
     }
 }
