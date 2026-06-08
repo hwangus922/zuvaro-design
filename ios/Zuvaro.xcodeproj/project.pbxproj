@@ -1,0 +1,503 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		B10000000000000000000001 /* ZuvaroApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000001 /* ZuvaroApp.swift */; };
+		B10000000000000000000002 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000002 /* AppModel.swift */; };
+		B10000000000000000000003 /* AppRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000003 /* AppRoute.swift */; };
+		B10000000000000000000004 /* ZuvaroTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000004 /* ZuvaroTheme.swift */; };
+		B10000000000000000000005 /* Challenge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000005 /* Challenge.swift */; };
+		B10000000000000000000006 /* MockData.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000006 /* MockData.swift */; };
+		B10000000000000000000007 /* ZuvaroComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000007 /* ZuvaroComponents.swift */; };
+		B10000000000000000000008 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000008 /* RootView.swift */; };
+		B10000000000000000000009 /* OnboardingFlowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000009 /* OnboardingFlowView.swift */; };
+		B10000000000000000000010 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000010 /* HomeView.swift */; };
+		B10000000000000000000011 /* LeaderboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000011 /* LeaderboardView.swift */; };
+		B10000000000000000000012 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000012 /* ProfileView.swift */; };
+		B10000000000000000000013 /* ChallengeFlowViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000013 /* ChallengeFlowViews.swift */; };
+		B10000000000000000000014 /* SocialViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000014 /* SocialViews.swift */; };
+		B10000000000000000000015 /* SettingsViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000015 /* SettingsViews.swift */; };
+		B10000000000000000000016 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000016 /* Assets.xcassets */; };
+		B10000000000000000000017 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000017 /* AppConfig.swift */; };
+		B10000000000000000000018 /* SupabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000018 /* SupabaseManager.swift */; };
+		B10000000000000000000019 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000019 /* AuthService.swift */; };
+		B10000000000000000000020 /* ChallengeRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000020 /* ChallengeRepository.swift */; };
+		B10000000000000000000021 /* SubmissionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000021 /* SubmissionService.swift */; };
+		B10000000000000000000022 /* ChatService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000022 /* ChatService.swift */; };
+		B10000000000000000000023 /* LeaderboardService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000023 /* LeaderboardService.swift */; };
+		B10000000000000000000024 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000024 /* NotificationService.swift */; };
+		B10000000000000000000025 /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000025 /* ProfileService.swift */; };
+		B10000000000000000000026 /* ZuvaroServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000026 /* ZuvaroServices.swift */; };
+		B10000000000000000000027 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000027 /* UserProfile.swift */; };
+		B10000000000000000000028 /* AuthViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000028 /* AuthViews.swift */; };
+		B10000000000000000000029 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = PKG002 /* Supabase */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		E10000000000000000000001 /* Zuvaro.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Zuvaro.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F10000000000000000000001 /* ZuvaroApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZuvaroApp.swift; sourceTree = "<group>"; };
+		F10000000000000000000002 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
+		F10000000000000000000003 /* AppRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRoute.swift; sourceTree = "<group>"; };
+		F10000000000000000000004 /* ZuvaroTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZuvaroTheme.swift; sourceTree = "<group>"; };
+		F10000000000000000000005 /* Challenge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Challenge.swift; sourceTree = "<group>"; };
+		F10000000000000000000006 /* MockData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockData.swift; sourceTree = "<group>"; };
+		F10000000000000000000007 /* ZuvaroComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZuvaroComponents.swift; sourceTree = "<group>"; };
+		F10000000000000000000008 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		F10000000000000000000009 /* OnboardingFlowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFlowView.swift; sourceTree = "<group>"; };
+		F10000000000000000000010 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		F10000000000000000000011 /* LeaderboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardView.swift; sourceTree = "<group>"; };
+		F10000000000000000000012 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		F10000000000000000000013 /* ChallengeFlowViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeFlowViews.swift; sourceTree = "<group>"; };
+		F10000000000000000000014 /* SocialViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialViews.swift; sourceTree = "<group>"; };
+		F10000000000000000000015 /* SettingsViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViews.swift; sourceTree = "<group>"; };
+		F10000000000000000000016 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F10000000000000000000017 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
+		F10000000000000000000018 /* SupabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseManager.swift; sourceTree = "<group>"; };
+		F10000000000000000000019 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
+		F10000000000000000000020 /* ChallengeRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeRepository.swift; sourceTree = "<group>"; };
+		F10000000000000000000021 /* SubmissionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmissionService.swift; sourceTree = "<group>"; };
+		F10000000000000000000022 /* ChatService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatService.swift; sourceTree = "<group>"; };
+		F10000000000000000000023 /* LeaderboardService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardService.swift; sourceTree = "<group>"; };
+		F10000000000000000000024 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		F10000000000000000000025 /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
+		F10000000000000000000026 /* ZuvaroServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZuvaroServices.swift; sourceTree = "<group>"; };
+		F10000000000000000000027 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
+		F10000000000000000000028 /* AuthViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViews.swift; sourceTree = "<group>"; };
+		F10000000000000000000029 /* Zuvaro.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Zuvaro.entitlements; sourceTree = "<group>"; };
+		X10000000000000000000001 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C10000000000000000000003 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B10000000000000000000029 /* Supabase in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		G10000000000000000000001 = {
+			isa = PBXGroup;
+			children = (
+				X10000000000000000000001 /* Secrets.xcconfig */,
+				G10000000000000000000002 /* Zuvaro */,
+				G10000000000000000000003 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		G10000000000000000000002 /* Zuvaro */ = {
+			isa = PBXGroup;
+			children = (
+				F10000000000000000000001 /* ZuvaroApp.swift */,
+				F10000000000000000000029 /* Zuvaro.entitlements */,
+				G10000000000000000000004 /* App */,
+				G10000000000000000000015 /* Services */,
+				G10000000000000000000005 /* Theme */,
+				G10000000000000000000006 /* Models */,
+				G10000000000000000000007 /* Data */,
+				G10000000000000000000008 /* Components */,
+				G10000000000000000000009 /* Views */,
+				F10000000000000000000016 /* Assets.xcassets */,
+			);
+			path = Zuvaro;
+			sourceTree = "<group>";
+		};
+		G10000000000000000000003 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E10000000000000000000001 /* Zuvaro.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		G10000000000000000000004 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				F10000000000000000000002 /* AppModel.swift */,
+				F10000000000000000000003 /* AppRoute.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		G10000000000000000000005 /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				F10000000000000000000004 /* ZuvaroTheme.swift */,
+			);
+			path = Theme;
+			sourceTree = "<group>";
+		};
+		G10000000000000000000006 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				F10000000000000000000005 /* Challenge.swift */,
+				F10000000000000000000027 /* UserProfile.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		G10000000000000000000007 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				F10000000000000000000006 /* MockData.swift */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		G10000000000000000000008 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				F10000000000000000000007 /* ZuvaroComponents.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		G10000000000000000000009 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				F10000000000000000000008 /* RootView.swift */,
+				G10000000000000000000016 /* Auth */,
+				G10000000000000000000010 /* Onboarding */,
+				G10000000000000000000011 /* Tabs */,
+				G10000000000000000000012 /* Challenge */,
+				G10000000000000000000013 /* Social */,
+				G10000000000000000000014 /* Settings */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		G10000000000000000000010 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				F10000000000000000000009 /* OnboardingFlowView.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		G10000000000000000000011 /* Tabs */ = {
+			isa = PBXGroup;
+			children = (
+				F10000000000000000000010 /* HomeView.swift */,
+				F10000000000000000000011 /* LeaderboardView.swift */,
+				F10000000000000000000012 /* ProfileView.swift */,
+			);
+			path = Tabs;
+			sourceTree = "<group>";
+		};
+		G10000000000000000000012 /* Challenge */ = {
+			isa = PBXGroup;
+			children = (
+				F10000000000000000000013 /* ChallengeFlowViews.swift */,
+			);
+			path = Challenge;
+			sourceTree = "<group>";
+		};
+		G10000000000000000000013 /* Social */ = {
+			isa = PBXGroup;
+			children = (
+				F10000000000000000000014 /* SocialViews.swift */,
+			);
+			path = Social;
+			sourceTree = "<group>";
+		};
+		G10000000000000000000014 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				F10000000000000000000015 /* SettingsViews.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		G10000000000000000000015 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				F10000000000000000000017 /* AppConfig.swift */,
+				F10000000000000000000018 /* SupabaseManager.swift */,
+				F10000000000000000000019 /* AuthService.swift */,
+				F10000000000000000000020 /* ChallengeRepository.swift */,
+				F10000000000000000000021 /* SubmissionService.swift */,
+				F10000000000000000000022 /* ChatService.swift */,
+				F10000000000000000000023 /* LeaderboardService.swift */,
+				F10000000000000000000024 /* NotificationService.swift */,
+				F10000000000000000000025 /* ProfileService.swift */,
+				F10000000000000000000026 /* ZuvaroServices.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		G10000000000000000000016 /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				F10000000000000000000028 /* AuthViews.swift */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		T10000000000000000000001 /* Zuvaro */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = L10000000000000000000003 /* Build configuration list for PBXNativeTarget "Zuvaro" */;
+			buildPhases = (
+				C10000000000000000000001 /* Sources */,
+				C10000000000000000000003 /* Frameworks */,
+				C10000000000000000000002 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Zuvaro;
+			packageProductDependencies = (
+				PKG002 /* Supabase */,
+			);
+			productName = Zuvaro;
+			productReference = E10000000000000000000001 /* Zuvaro.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		P10000000000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					T10000000000000000000001 = {
+						CreatedOnToolsVersion = 16.0;
+					};
+				};
+			};
+			buildConfigurationList = L10000000000000000000001 /* Build configuration list for PBXProject "Zuvaro" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = G10000000000000000000001;
+			packageReferences = (
+				PKG001 /* XCRemoteSwiftPackageReference "supabase-swift" */,
+			);
+			productRefGroup = G10000000000000000000003 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				T10000000000000000000001 /* Zuvaro */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C10000000000000000000002 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B10000000000000000000016 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C10000000000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B10000000000000000000001 /* ZuvaroApp.swift in Sources */,
+				B10000000000000000000002 /* AppModel.swift in Sources */,
+				B10000000000000000000003 /* AppRoute.swift in Sources */,
+				B10000000000000000000004 /* ZuvaroTheme.swift in Sources */,
+				B10000000000000000000005 /* Challenge.swift in Sources */,
+				B10000000000000000000006 /* MockData.swift in Sources */,
+				B10000000000000000000007 /* ZuvaroComponents.swift in Sources */,
+				B10000000000000000000008 /* RootView.swift in Sources */,
+				B10000000000000000000009 /* OnboardingFlowView.swift in Sources */,
+				B10000000000000000000010 /* HomeView.swift in Sources */,
+				B10000000000000000000011 /* LeaderboardView.swift in Sources */,
+				B10000000000000000000012 /* ProfileView.swift in Sources */,
+				B10000000000000000000013 /* ChallengeFlowViews.swift in Sources */,
+				B10000000000000000000014 /* SocialViews.swift in Sources */,
+				B10000000000000000000015 /* SettingsViews.swift in Sources */,
+				B10000000000000000000017 /* AppConfig.swift in Sources */,
+				B10000000000000000000018 /* SupabaseManager.swift in Sources */,
+				B10000000000000000000019 /* AuthService.swift in Sources */,
+				B10000000000000000000020 /* ChallengeRepository.swift in Sources */,
+				B10000000000000000000021 /* SubmissionService.swift in Sources */,
+				B10000000000000000000022 /* ChatService.swift in Sources */,
+				B10000000000000000000023 /* LeaderboardService.swift in Sources */,
+				B10000000000000000000024 /* NotificationService.swift in Sources */,
+				B10000000000000000000025 /* ProfileService.swift in Sources */,
+				B10000000000000000000026 /* ZuvaroServices.swift in Sources */,
+				B10000000000000000000027 /* UserProfile.swift in Sources */,
+				B10000000000000000000028 /* AuthViews.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		D10000000000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = X10000000000000000000001 /* Secrets.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		D10000000000000000000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = X10000000000000000000001 /* Secrets.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		D10000000000000000000003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = X10000000000000000000001 /* Secrets.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Zuvaro/Zuvaro.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Zuvaro;
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Zuvaro needs photo access to submit dare proof.";
+				INFOPLIST_KEY_SUPABASE_ANON_KEY = "$(SUPABASE_ANON_KEY)";
+				INFOPLIST_KEY_SUPABASE_URL = "$(SUPABASE_URL)";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zuvaro.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D10000000000000000000004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = X10000000000000000000001 /* Secrets.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Zuvaro/Zuvaro.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Zuvaro;
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Zuvaro needs photo access to submit dare proof.";
+				INFOPLIST_KEY_SUPABASE_ANON_KEY = "$(SUPABASE_ANON_KEY)";
+				INFOPLIST_KEY_SUPABASE_URL = "$(SUPABASE_URL)";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zuvaro.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		L10000000000000000000001 /* Build configuration list for PBXProject "Zuvaro" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D10000000000000000000001 /* Debug */,
+				D10000000000000000000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		L10000000000000000000003 /* Build configuration list for PBXNativeTarget "Zuvaro" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D10000000000000000000003 /* Debug */,
+				D10000000000000000000004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		PKG001 /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase/supabase-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		PKG002 /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = PKG001 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = P10000000000000000000001 /* Project object */;
+}
