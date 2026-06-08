@@ -4,7 +4,7 @@ import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
   return {
-    base: '/Zuvaro-Website/',
+    base: '/zuvaro-design/',
     plugins: [react(), tailwindcss()],
     server: {
       // HMR is disabled in AI Studio via DISABLE_HMR env var.

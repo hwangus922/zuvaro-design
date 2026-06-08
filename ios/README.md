@@ -97,8 +97,8 @@ Before submitting to TestFlight / App Store:
 
 | Item | Notes |
 |------|-------|
-| Privacy Policy URL | Required — host at e.g. `zuvaro.app/privacy` |
-| Terms of Service URL | Required for account creation |
+| Privacy Policy URL | **https://hwangus922.github.io/zuvaro-design/privacy.html** |
+| Terms of Service URL | **https://hwangus922.github.io/zuvaro-design/terms.html** |
 | App icon | Replace placeholder in `Assets.xcassets/AppIcon` |
 | Screenshots | 6.7", 6.5", 5.5" iPhone sizes minimum |
 | Age rating | Likely 17+ due to user-generated dare content |

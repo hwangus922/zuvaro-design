@@ -73,9 +73,12 @@ Then commit both the `.jsx` sources **and** the updated HTML files.
 
 ## Live preview (GitHub Pages)
 
-A deploy workflow is in `.github/workflows/pages.yml`. Pushes to `main` deploy automatically once Pages is enabled.
+| Site | Workflow | URL |
+|------|----------|-----|
+| Design canvas (legacy) | `.github/workflows/pages.yml` | **https://hwangus922.github.io/zuvaro-design/** |
+| Zuvaro marketing site | `.github/workflows/zuvaro-website.yml` | **https://hwangus922.github.io/zuvaro-design/** (same origin after merge) |
 
-Public URL: **https://hwangus922.github.io/zuvaro-design/**
+Pushes to `main` deploy automatically once Pages is enabled (Settings → Pages → GitHub Actions).
 
 ## Project structure
 

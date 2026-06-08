@@ -12,6 +12,52 @@ const Z = {
   display: "'Sora', 'Inter', system-ui, sans-serif",
 };
 
+const asset = (name: string) => `${import.meta.env.BASE_URL}${name}`;
+const INSTALL_URL = (import.meta.env.VITE_INSTALL_URL as string | undefined)?.trim() ?? '';
+
+const installButtonClass =
+  'px-9 py-4 rounded-full bg-[#0A0A0F] text-white border border-zinc-800/80 hover:border-transparent hover:bg-gradient-to-r hover:from-[#FF2D95] hover:to-[#FF6A2C] hover:shadow-lg hover:shadow-pink-500/25 active:scale-95 transition-all duration-300 text-xs md:text-sm font-bold uppercase tracking-widest flex items-center gap-2.5 shadow-xl group';
+
+function InstallButton() {
+  const label = (
+    <>
+      <Smartphone className="w-5 h-5 text-pink-500 group-hover:text-white transition-colors duration-300" />
+      Install App
+    </>
+  );
+  const motionProps = {
+    whileHover: { scale: 1.05 },
+    whileTap: { scale: 0.95 },
+    transition: { type: 'spring' as const, stiffness: 400, damping: 20 },
+  };
+
+  if (INSTALL_URL) {
+    return (
+      <motion.a
+        href={INSTALL_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        {...motionProps}
+        className={`${installButtonClass} cursor-pointer`}
+      >
+        {label}
+      </motion.a>
+    );
+  }
+
+  return (
+    <motion.button
+      type="button"
+      disabled
+      title="App Store link coming soon"
+      {...motionProps}
+      className={`${installButtonClass} opacity-75 cursor-not-allowed`}
+    >
+      {label}
+    </motion.button>
+  );
+}
+
 interface ZMarkProps {
   size?: number;
   gradient?: boolean;
@@ -359,7 +405,7 @@ export default function App() {
                 style={{ borderRadius: `${phoneScale * 2.5}rem` }}
               >
                 <img 
-                  src="/Zuvaro-Website/MissionsUI.png" 
+                  src={asset('MissionsUI.png')} 
                   alt="Zuvaro home screen with daily dares" 
                   className="w-full h-full object-cover"
                   loading="lazy" decoding="async"
@@ -421,15 +467,7 @@ export default function App() {
         {/* BOTTOM RIGHT TEXT AND INSTALL BUTTON (MOVED & ENLARGED) */}
         <div className="absolute bottom-[30px] right-[20px] md:bottom-[40px] md:right-[40px] z-20 max-w-[280px] md:max-w-[420px] flex flex-col items-end gap-3 md:gap-4 text-right pointer-events-auto select-none">
           {/* INSTALL BUTTON IN HERO (ENLARGED) */}
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-            className="px-9 py-4 rounded-full bg-[#0A0A0F] text-white border border-zinc-800/80 hover:border-transparent hover:bg-gradient-to-r hover:from-[#FF2D95] hover:to-[#FF6A2C] hover:shadow-lg hover:shadow-pink-500/25 active:scale-95 transition-all duration-300 text-xs md:text-sm font-bold uppercase tracking-widest flex items-center gap-2.5 cursor-pointer shadow-xl group"
-          >
-            <Smartphone className="w-5 h-5 text-pink-500 group-hover:text-white transition-colors duration-300" />
-            Install App
-          </motion.button>
+          <InstallButton />
           
           <p className="text-[#050508] font-black text-xl md:text-3xl tracking-tight leading-none mt-1">
             Daily dares. Real chaos.
@@ -467,7 +505,7 @@ export default function App() {
 
               {/* The Phone UI with Missions Image */}
               <motion.div whileHover={{ scale: 1.05 }} transition={{ type: 'spring', stiffness: 400, damping: 20 }} className="relative z-10 w-full flex justify-center">
-                <PhoneMockup2D imageUrl="/Zuvaro-Website/MissionsUI.png" />
+                <PhoneMockup2D imageUrl={asset('MissionsUI.png')} />
               </motion.div>
 
             </motion.div>
@@ -577,7 +615,7 @@ export default function App() {
 
               {/* The Phone UI with Leaderboard Image */}
               <motion.div whileHover={{ scale: 1.05 }} transition={{ type: 'spring', stiffness: 400, damping: 20 }} className="relative z-10 w-full flex justify-center">
-                <PhoneMockup2D imageUrl="/Zuvaro-Website/LeaderboardUI.png" />
+                <PhoneMockup2D imageUrl={asset('LeaderboardUI.png')} />
               </motion.div>
 
             </motion.div>
@@ -607,7 +645,7 @@ export default function App() {
 
               {/* The Phone UI with Proof Image */}
               <motion.div whileHover={{ scale: 1.05 }} transition={{ type: 'spring', stiffness: 400, damping: 20 }} className="relative z-10 w-full flex justify-center">
-                <PhoneMockup2D imageUrl="/Zuvaro-Website/ProofUI.png" />
+                <PhoneMockup2D imageUrl={asset('ProofUI.png')} />
               </motion.div>
 
             </motion.div>
@@ -690,19 +728,16 @@ export default function App() {
 
         {/* INSTALL BUTTON IN FOOTER */}
         <div className="z-10 pointer-events-auto">
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-            className="px-9 py-4 rounded-full bg-[#0A0A0F] text-white border border-zinc-800/80 hover:border-transparent hover:bg-gradient-to-r hover:from-[#FF2D95] hover:to-[#FF6A2C] hover:shadow-lg hover:shadow-pink-500/25 active:scale-95 transition-all duration-300 text-xs md:text-sm font-bold uppercase tracking-widest flex items-center gap-2.5 cursor-pointer shadow-xl group"
-          >
-            <Smartphone className="w-5 h-5 text-pink-500 group-hover:text-white transition-colors duration-300" />
-            Install App
-          </motion.button>
+          <InstallButton />
         </div>
 
         {/* Small Nyvø Credit */}
-        <div className="z-10 max-w-7xl mx-auto w-full text-center mt-12">
+        <div className="z-10 max-w-7xl mx-auto w-full text-center mt-12 space-y-2">
+          <p className="text-zinc-500 text-[11px] tracking-wide select-text flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+            <a href={asset('privacy.html')} className="text-zinc-400 hover:text-white underline transition-colors">Privacy</a>
+            <span className="text-zinc-600">·</span>
+            <a href={asset('terms.html')} className="text-zinc-400 hover:text-white underline transition-colors">Terms</a>
+          </p>
           <p className="text-zinc-500 text-[11px] tracking-wide select-text">
             Website designed and developed by <a href="https://nyvo.is-a.dev" target="_blank" rel="noopener noreferrer" className="text-zinc-400 hover:text-white underline transition-colors font-medium">Nyvø</a>
           </p>
