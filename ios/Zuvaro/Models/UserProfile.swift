@@ -12,6 +12,10 @@ struct UserProfile: Identifiable, Hashable, Codable {
     var longestStreak: Int
     var challengesCompleted: Int
     var isAdmin: Bool
+    var regionId: UUID?
+    var referralCount: Int
+    var referralBonusClaimed: Bool
+    var usernameCustomized: Bool
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -25,6 +29,67 @@ struct UserProfile: Identifiable, Hashable, Codable {
         case longestStreak = "longest_streak"
         case challengesCompleted = "challenges_completed"
         case isAdmin = "is_admin"
+        case regionId = "region_id"
+        case referralCount = "referral_count"
+        case referralBonusClaimed = "referral_bonus_claimed"
+        case usernameCustomized = "username_customized"
+    }
+
+    var needsRegionSetup: Bool { regionId == nil }
+    var needsUsernameSetup: Bool { !usernameCustomized }
+    var referralsUntilBonus: Int { max(0, 5 - referralCount) }
+
+    init(
+        id: UUID,
+        displayName: String,
+        handle: String,
+        avatarEmoji: String,
+        totalPoints: Int,
+        questDone: Int,
+        questTotal: Int,
+        wins: Int,
+        longestStreak: Int,
+        challengesCompleted: Int,
+        isAdmin: Bool,
+        regionId: UUID? = nil,
+        referralCount: Int = 0,
+        referralBonusClaimed: Bool = false,
+        usernameCustomized: Bool = true
+    ) {
+        self.id = id
+        self.displayName = displayName
+        self.handle = handle
+        self.avatarEmoji = avatarEmoji
+        self.totalPoints = totalPoints
+        self.questDone = questDone
+        self.questTotal = questTotal
+        self.wins = wins
+        self.longestStreak = longestStreak
+        self.challengesCompleted = challengesCompleted
+        self.isAdmin = isAdmin
+        self.regionId = regionId
+        self.referralCount = referralCount
+        self.referralBonusClaimed = referralBonusClaimed
+        self.usernameCustomized = usernameCustomized
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(UUID.self, forKey: .id)
+        displayName = try container.decode(String.self, forKey: .displayName)
+        handle = try container.decode(String.self, forKey: .handle)
+        avatarEmoji = try container.decode(String.self, forKey: .avatarEmoji)
+        totalPoints = try container.decode(Int.self, forKey: .totalPoints)
+        questDone = try container.decode(Int.self, forKey: .questDone)
+        questTotal = try container.decode(Int.self, forKey: .questTotal)
+        wins = try container.decode(Int.self, forKey: .wins)
+        longestStreak = try container.decode(Int.self, forKey: .longestStreak)
+        challengesCompleted = try container.decode(Int.self, forKey: .challengesCompleted)
+        isAdmin = try container.decode(Bool.self, forKey: .isAdmin)
+        regionId = try container.decodeIfPresent(UUID.self, forKey: .regionId)
+        referralCount = try container.decodeIfPresent(Int.self, forKey: .referralCount) ?? 0
+        referralBonusClaimed = try container.decodeIfPresent(Bool.self, forKey: .referralBonusClaimed) ?? false
+        usernameCustomized = try container.decodeIfPresent(Bool.self, forKey: .usernameCustomized) ?? true
     }
 }
 
@@ -69,7 +134,8 @@ struct ChallengeRecord: Codable {
 struct SubmissionRecord: Codable {
     let id: UUID
     let userId: UUID
-    let challengeId: UUID
+    let challengeId: UUID?
+    let customChallengeId: UUID?
     let caption: String?
     let photoPath: String
     let status: SubmissionStatus
@@ -80,6 +146,7 @@ struct SubmissionRecord: Codable {
         case id, caption, status
         case userId = "user_id"
         case challengeId = "challenge_id"
+        case customChallengeId = "custom_challenge_id"
         case photoPath = "photo_path"
         case pointsAwarded = "points_awarded"
         case createdAt = "created_at"
@@ -93,6 +160,9 @@ struct ChatMessageRecord: Codable {
     let text: String
     let isDare: Bool
     let dareChallengeId: UUID?
+    let dareCustomChallengeId: UUID?
+    let dareChallenge: DareChallengeRecord?
+    let dareCustomChallenge: DareChallengeRecord?
     let createdAt: Date
     let profiles: ChatAuthorRecord?
 
@@ -102,12 +172,19 @@ struct ChatMessageRecord: Codable {
         case userId = "user_id"
         case isDare = "is_dare"
         case dareChallengeId = "dare_challenge_id"
+        case dareCustomChallengeId = "dare_custom_challenge_id"
+        case dareChallenge = "dare_challenge"
+        case dareCustomChallenge = "dare_custom_challenge"
         case createdAt = "created_at"
         case profiles
     }
 }
 
-struct ChatAuthorRecord: Codable {
+struct DareChallengeRecord: Codable {
+    let points: Int?
+}
+
+struct ChatAuthorRecord: Codable, Hashable {
     let displayName: String
     let avatarEmoji: String
 
@@ -150,10 +227,83 @@ struct NotificationRecord: Codable {
     }
 }
 
+struct AdminSubmissionRecord: Decodable {
+    let id: UUID
+    let userId: UUID
+    let challengeId: UUID?
+    let customChallengeId: UUID?
+    let caption: String?
+    let photoPath: String
+    let status: SubmissionStatus
+    let createdAt: Date
+    let profiles: AdminSubmitterProfile?
+    let challenge: AdminDareInfo?
+    let customChallenge: AdminDareInfo?
+
+    enum CodingKeys: String, CodingKey {
+        case id, caption, status
+        case userId = "user_id"
+        case challengeId = "challenge_id"
+        case customChallengeId = "custom_challenge_id"
+        case photoPath = "photo_path"
+        case createdAt = "created_at"
+        case profiles
+        case challenge
+        case customChallenge = "custom_challenge"
+    }
+
+    var asAdminSubmission: AdminSubmission {
+        let dare = challenge ?? customChallenge
+        return AdminSubmission(
+            id: id,
+            userId: userId,
+            submitterName: profiles?.displayName ?? "Player",
+            submitterHandle: profiles?.handle ?? "@player",
+            submitterEmoji: profiles?.avatarEmoji ?? "🍳",
+            dareTitle: dare?.text ?? "Dare",
+            points: dare?.points,
+            caption: caption,
+            photoPath: photoPath,
+            status: status,
+            createdAt: createdAt
+        )
+    }
+}
+
+struct AdminSubmitterProfile: Decodable {
+    let displayName: String
+    let handle: String
+    let avatarEmoji: String
+
+    enum CodingKeys: String, CodingKey {
+        case handle
+        case displayName = "display_name"
+        case avatarEmoji = "avatar_emoji"
+    }
+}
+
+struct AdminDareInfo: Decodable {
+    let text: String
+    let points: Int?
+}
+
+struct SubmissionReviewPayload: Encodable {
+    let status: String
+    let reviewNote: String?
+    let reviewedBy: UUID
+
+    enum CodingKeys: String, CodingKey {
+        case status
+        case reviewNote = "review_note"
+        case reviewedBy = "reviewed_by"
+    }
+}
+
 struct NewSubmissionPayload: Encodable {
     let id: UUID
     let userId: UUID
-    let challengeId: UUID
+    let challengeId: UUID?
+    let customChallengeId: UUID?
     let groupId: UUID?
     let caption: String?
     let photoPath: String
@@ -163,6 +313,7 @@ struct NewSubmissionPayload: Encodable {
         case id, caption, status
         case userId = "user_id"
         case challengeId = "challenge_id"
+        case customChallengeId = "custom_challenge_id"
         case groupId = "group_id"
         case photoPath = "photo_path"
     }
@@ -174,6 +325,7 @@ struct NewChatMessagePayload: Encodable {
     let text: String
     let isDare: Bool
     let dareChallengeId: UUID?
+    let dareCustomChallengeId: UUID?
 
     enum CodingKeys: String, CodingKey {
         case text
@@ -181,6 +333,7 @@ struct NewChatMessagePayload: Encodable {
         case userId = "user_id"
         case isDare = "is_dare"
         case dareChallengeId = "dare_challenge_id"
+        case dareCustomChallengeId = "dare_custom_challenge_id"
     }
 }
 
@@ -194,4 +347,53 @@ struct ProfileUpdatePayload: Encodable {
         case displayName = "display_name"
         case avatarEmoji = "avatar_emoji"
     }
+}
+
+struct BlockedUserRecord: Identifiable, Codable, Hashable {
+    let blockerId: UUID
+    let blockedId: UUID
+    let createdAt: Date
+    let blockedProfile: ChatAuthorRecord?
+
+    var id: UUID { blockedId }
+
+    enum CodingKeys: String, CodingKey {
+        case blockerId = "blocker_id"
+        case blockedId = "blocked_id"
+        case createdAt = "created_at"
+        case blockedProfile = "blocked_profile"
+    }
+}
+
+struct UserReportPayload: Encodable {
+    let reporterId: UUID
+    let details: String
+    let reportType: String
+    let reportedUserId: UUID?
+    let reportedMessageId: UUID?
+
+    enum CodingKeys: String, CodingKey {
+        case reporterId = "reporter_id"
+        case details
+        case reportType = "report_type"
+        case reportedUserId = "reported_user_id"
+        case reportedMessageId = "reported_message_id"
+    }
+}
+
+struct NewCustomChallengePayload: Encodable {
+    let groupId: UUID
+    let createdBy: UUID
+    let text: String
+    let points: Int
+
+    enum CodingKeys: String, CodingKey {
+        case text, points
+        case groupId = "group_id"
+        case createdBy = "created_by"
+    }
+}
+
+struct CustomChallengeRecord: Decodable {
+    let id: UUID
 }

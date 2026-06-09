@@ -48,7 +48,10 @@ struct SignInView: View {
                 Spacer()
 
                 VStack(spacing: 20) {
-                    WarmGradientText(text: "Sign in", size: 28, weight: .bold)
+                    ZuvaroLogo(style: .wordmark, size: .medium)
+                    Text("Sign in")
+                        .font(.system(size: 28, weight: .bold))
+                        .foregroundStyle(ZuvaroTheme.text)
                     Text("Pick up where you left off.")
                         .font(.system(size: 15))
                         .foregroundStyle(ZuvaroTheme.textMute)
@@ -76,10 +79,7 @@ struct SignInView: View {
 
                     SecondaryTextButton(title: "New here? Sign up") { onSignUp() }
 
-                    Text("By continuing you agree to our Terms & Privacy.")
-                        .font(.system(size: 11))
-                        .foregroundStyle(ZuvaroTheme.textDim)
-                        .multilineTextAlignment(.center)
+                    TermsPrivacyFooter()
                 }
                 .padding(24)
 
@@ -95,8 +95,13 @@ struct EmailAuthView: View {
     var onBack: () -> Void
     var onToggleMode: () -> Void
 
+    @AppStorage("zuvaro_age_confirmed") private var ageConfirmed = false
     @State private var email = ""
     @State private var password = ""
+
+    private var canSubmit: Bool {
+        !email.isEmpty && !password.isEmpty && !appModel.isAuthenticating && (!isSignUp || ageConfirmed)
+    }
 
     var body: some View {
         ZStack {
@@ -120,6 +125,7 @@ struct EmailAuthView: View {
 
                 ScrollView {
                     VStack(alignment: .leading, spacing: 16) {
+                        ZuvaroLogo(style: .wordmark, size: .medium)
                         Text(isSignUp ? "Create account" : "Sign in")
                             .font(.system(size: 28, weight: .bold))
                         Text(isSignUp ? "Email in, dignity optional." : "Same email you used last time.")
@@ -142,6 +148,10 @@ struct EmailAuthView: View {
                                 .clipShape(RoundedRectangle(cornerRadius: 12))
                         }
 
+                        if isSignUp {
+                            AgeConfirmationGate(confirmed: $ageConfirmed)
+                        }
+
                         if let message = appModel.authError {
                             Text(message)
                                 .font(.system(size: 12, weight: .semibold))
@@ -154,7 +164,7 @@ struct EmailAuthView: View {
 
                         PrimaryButton(
                             title: isSignUp ? "Create account" : "Sign in",
-                            enabled: !email.isEmpty && !password.isEmpty && !appModel.isAuthenticating
+                            enabled: canSubmit
                         ) {
                             Task {
                                 if isSignUp {
@@ -168,6 +178,11 @@ struct EmailAuthView: View {
                         SecondaryTextButton(
                             title: isSignUp ? "Already have an account? Sign in" : "New here? Create account"
                         ) { onToggleMode() }
+
+                        if isSignUp {
+                            TermsPrivacyFooter()
+                                .frame(maxWidth: .infinity)
+                        }
                     }
                     .padding(24)
                 }
@@ -178,6 +193,7 @@ struct EmailAuthView: View {
 
 struct SignUpProvidersView: View {
     @EnvironmentObject private var appModel: AppModel
+    @AppStorage("zuvaro_age_confirmed") private var ageConfirmed = false
     var onBack: () -> Void
     var onEmailSignUp: () -> Void
     var onSignIn: () -> Void
@@ -196,6 +212,8 @@ struct SignUpProvidersView: View {
                 Spacer()
             }
 
+            ZuvaroLogo(style: .wordmark, size: .medium)
+
             Text("Create account")
                 .font(.system(size: 24, weight: .bold))
 
@@ -209,23 +227,24 @@ struct SignUpProvidersView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 12))
             }
 
+            AgeConfirmationGate(confirmed: $ageConfirmed)
+
             SignInWithAppleButtonView(
                 onRequest: { request in appModel.prepareAppleSignIn(request) },
                 onCompletion: { result in
                     Task { await appModel.handleAppleSignIn(result) }
                 }
             )
+            .disabled(!ageConfirmed || appModel.isAuthenticating)
+            .opacity(ageConfirmed ? 1 : 0.5)
 
-            PrimaryButton(title: "Use email instead", enabled: !appModel.isAuthenticating) {
+            PrimaryButton(title: "Use email instead", enabled: ageConfirmed && !appModel.isAuthenticating) {
                 onEmailSignUp()
             }
 
             SecondaryTextButton(title: "Already have an account? Sign in") { onSignIn() }
 
-            Text("By continuing you agree to our Terms & Privacy.")
-                .font(.system(size: 11))
-                .foregroundStyle(ZuvaroTheme.textDim)
-                .multilineTextAlignment(.center)
+            TermsPrivacyFooter()
         }
     }
 }

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct OnboardingFlowView: View {
     @EnvironmentObject private var appModel: AppModel
+    @AppStorage("zuvaro_age_confirmed") private var ageConfirmed = false
     @State private var step = 0
     @State private var emailIsSignUp = true
 
@@ -54,7 +55,7 @@ struct OnboardingFlowView: View {
 
     private var splashContent: some View {
         VStack(spacing: 16) {
-            WarmGradientText(text: "zuvaro", size: 42, weight: .bold)
+            ZuvaroLogo(style: .wordmark, size: .large)
             Text("Daily dares. Real chaos.")
                 .font(.system(size: 16))
                 .foregroundStyle(ZuvaroTheme.textMute)
@@ -63,12 +64,16 @@ struct OnboardingFlowView: View {
 
     private var welcomeContent: some View {
         VStack(spacing: 20) {
-            WarmGradientText(text: "Welcome to Zuvaro", size: 28, weight: .bold)
+            ZuvaroLogo(style: .wordmark, size: .medium)
+            Text("Welcome to Zuvaro")
+                .font(.system(size: 28, weight: .bold))
+                .foregroundStyle(ZuvaroTheme.text)
             Text("Daily dares from the group chat. Climb the board. Get clout, lose dignity, repeat.")
                 .font(.system(size: 15))
                 .foregroundStyle(ZuvaroTheme.textMute)
                 .multilineTextAlignment(.center)
-            PrimaryButton(title: "Continue") { withAnimation { step = 2 } }
+            AgeConfirmationGate(confirmed: $ageConfirmed)
+            PrimaryButton(title: "Continue", enabled: ageConfirmed) { withAnimation { step = 2 } }
             SecondaryTextButton(title: "Sign in") { withAnimation { step = 3 } }
         }
     }

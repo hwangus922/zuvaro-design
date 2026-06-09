@@ -8,6 +8,7 @@ struct Challenge: Identifiable, Hashable, Codable {
     let hook: String
     let minutes: Int
     let rules: String
+    var isCustomChallenge: Bool = false
 
     var pointsLabel: String {
         if let points { return "+\(points)pts" }
@@ -36,6 +37,26 @@ struct Submission: Identifiable, Hashable {
     }
 }
 
+struct AdminSubmission: Identifiable, Hashable {
+    let id: UUID
+    let userId: UUID
+    let submitterName: String
+    let submitterHandle: String
+    let submitterEmoji: String
+    let dareTitle: String
+    let points: Int?
+    let caption: String?
+    let photoPath: String
+    let status: SubmissionStatus
+    let createdAt: Date
+
+    var timeAgo: String {
+        let formatter = RelativeDateTimeFormatter()
+        formatter.unitsStyle = .abbreviated
+        return formatter.localizedString(for: createdAt, relativeTo: Date())
+    }
+}
+
 struct LeaderboardEntry: Identifiable, Hashable {
     let id: UUID
     let rank: Int
@@ -48,6 +69,7 @@ struct LeaderboardEntry: Identifiable, Hashable {
 
 struct ChatMessage: Identifiable, Hashable {
     let id: UUID
+    let userId: UUID
     let author: String
     let emoji: String
     let text: String
@@ -55,6 +77,7 @@ struct ChatMessage: Identifiable, Hashable {
     var isMe: Bool = false
     var isDare: Bool = false
     var dareChallengeId: UUID?
+    var dareCustomChallengeId: UUID?
     var darePoints: Int?
 }
 

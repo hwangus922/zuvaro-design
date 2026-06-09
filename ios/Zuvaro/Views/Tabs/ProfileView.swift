@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ProfileView: View {
     @EnvironmentObject private var appModel: AppModel
+    @State private var showDeleteConfirmation = false
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -9,6 +10,7 @@ struct ProfileView: View {
             ScrollView {
                 VStack(spacing: 20) {
                     HStack {
+                        PageTitle(text: "Profile")
                         Spacer()
                         Button { appModel.navigate(to: .settings) } label: {
                             Image(systemName: "gearshape")
@@ -16,7 +18,9 @@ struct ProfileView: View {
                                 .frame(width: 36, height: 36)
                                 .background(ZuvaroTheme.card)
                                 .clipShape(Circle())
+                                .shadow(color: .black.opacity(0.05), radius: 6, y: 2)
                         }
+                        .buttonStyle(.plain)
                     }
 
                     AvatarView(emoji: appModel.currentProfile?.avatarEmoji ?? "👑", size: 80)
@@ -26,6 +30,9 @@ struct ProfileView: View {
                         Text(appModel.currentProfile?.handle ?? "@player")
                             .font(.system(size: 12))
                             .foregroundStyle(ZuvaroTheme.textMute)
+                    }
+                    if appModel.isAdmin {
+                        AdminBadge()
                     }
                     HStack(spacing: 6) {
                         Image(systemName: "flame.fill").foregroundStyle(ZuvaroTheme.orange).font(.system(size: 12))
@@ -45,6 +52,14 @@ struct ProfileView: View {
                 .padding(.bottom, 100)
             }
         }
+        .alert("Delete account?", isPresented: $showDeleteConfirmation) {
+            Button("Delete", role: .destructive) {
+                Task { await appModel.deleteAccount() }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This permanently deletes your profile, photos, messages, and all associated data. This cannot be undone.")
+        }
     }
 
     private var statsCard: some View {
@@ -56,13 +71,6 @@ struct ProfileView: View {
                     Text("pts").font(.system(size: 18, weight: .bold)).foregroundStyle(ZuvaroTheme.textMute)
                 }
                 Spacer()
-                Text("+38 this wk")
-                    .font(.system(size: 11, weight: .bold))
-                    .foregroundStyle(ZuvaroTheme.orange)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 4)
-                    .background(ZuvaroTheme.orange.opacity(0.12))
-                    .clipShape(Capsule())
             }
             .padding(18)
 
@@ -84,10 +92,20 @@ struct ProfileView: View {
         }
         .background(ZuvaroTheme.card)
         .clipShape(RoundedRectangle(cornerRadius: 20))
+        .shadow(color: .black.opacity(0.05), radius: 10, y: 3)
     }
 
     private var accountSection: some View {
         VStack(spacing: 0) {
+            if appModel.isAdmin {
+                accountRow(
+                    "Review proofs",
+                    badge: appModel.adminPendingCount > 0 ? "\(appModel.adminPendingCount) pending" : nil
+                ) { appModel.navigate(to: .adminReview) }
+                Divider()
+            }
+            accountRow("Change username") { appModel.navigate(to: .setUsername) }
+            Divider()
             accountRow(
                 "My submissions",
                 badge: appModel.pendingSubmissionsCount > 0 ? "\(appModel.pendingSubmissionsCount) pending" : nil
@@ -97,10 +115,11 @@ struct ProfileView: View {
             Divider()
             accountRow("Log out") { Task { await appModel.signOut() } }
             Divider()
-            accountRow("Delete Account", destructive: true) { Task { await appModel.deleteAccount() } }
+            accountRow("Delete Account", destructive: true) { showDeleteConfirmation = true }
         }
         .background(ZuvaroTheme.card)
         .clipShape(RoundedRectangle(cornerRadius: 20))
+        .shadow(color: .black.opacity(0.05), radius: 10, y: 3)
     }
 
     private func accountRow(_ title: String, badge: String? = nil, destructive: Bool = false, action: @escaping () -> Void) -> some View {

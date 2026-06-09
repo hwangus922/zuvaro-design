@@ -1,4 +1,4 @@
-import { useState, useEffect, useLayoutEffect, useRef, useId } from 'react';
+import { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform, useMotionTemplate, useVelocity, useAnimationFrame } from 'motion/react';
 import { 
   Compass, 
@@ -6,6 +6,7 @@ import {
   Award,
   TrendingUp
 } from 'lucide-react';
+import { ZMark, ZuvaroLockup } from './components/ZuvaroBrand';
 
 const Z = {
   text: '#0A0A0F',
@@ -55,47 +56,6 @@ function InstallButton() {
     >
       {label}
     </motion.button>
-  );
-}
-
-interface ZMarkProps {
-  size?: number;
-  gradient?: boolean;
-  color?: string;
-  stroke?: number;
-}
-
-function ZMark({ size = 64, gradient = false, color = Z.text, stroke = 7 }: ZMarkProps) {
-  const uid = useId();
-  const gid = `zg${uid}`, mid = `zm${uid}`;
-  const pillX = 12, pillY = 38, pillW = 76, pillH = 24, pillR = 12;
-  const strokeProps = {
-    stroke: gradient ? `url(#${gid})` : color,
-    strokeWidth: stroke, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const, fill: 'none',
-  };
-  return (
-    <svg width={size} height={size} viewBox="0 0 100 100" fill="none" aria-label="Zuvaro">
-      <defs>
-        <linearGradient id={gid} x1="0" y1="100%" x2="100%" y2="0">
-          <stop offset="0%" stopColor={color}/>
-          <stop offset="55%" stopColor={color}/>
-          <stop offset="100%" stopColor={color}/>
-        </linearGradient>
-        <mask id={mid} maskUnits="userSpaceOnUse">
-          <rect width="100" height="100" fill="white"/>
-          <circle cx="62" cy="38" r={stroke * 1.4} fill="black"/>
-        </mask>
-      </defs>
-      <g mask={`url(#${mid})`}>
-        <rect x={pillX} y={pillY} width={pillW} height={pillH} rx={pillR}
-              transform="rotate(-45 50 50)" {...strokeProps}/>
-      </g>
-      <g>
-        <rect x={pillX} y={pillY} width={pillW} height={pillH} rx={pillR}
-              transform="rotate(45 50 50)" {...strokeProps}/>
-        <path d="M76 14 L86 14 L86 24" {...strokeProps}/>
-      </g>
-    </svg>
   );
 }
 
@@ -339,29 +299,30 @@ export default function App() {
           }}
         />
         
-        {/* LOGO WITH BLOB TRAIL EFFECT */}
-        <div className="absolute top-[20px] left-[20px] right-[20px] z-0 pointer-events-none flex justify-center items-start overflow-hidden">
-          <motion.div 
+        {/* HERO LOGO — mark + wordmark with blob trail on text */}
+        <div className="absolute top-[20px] left-[20px] right-[20px] z-0 pointer-events-none flex flex-col items-center gap-3 overflow-hidden">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <ZMark size={56} />
+          </motion.div>
+          <motion.div
             className="w-full"
             style={{ fontSize: logoFontSize, display: 'grid', gridTemplateColumns: '1fr' }}
-            initial={{ paddingTop: 50, opacity: 0 }}
+            initial={{ paddingTop: 30, opacity: 0 }}
             animate={{ paddingTop: 0, opacity: 1 }}
-            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
             transformTemplate={() => 'none'}
           >
-            {/* Solid black text layer */}
-            <h1 className="col-start-1 row-start-1 w-full text-center font-sora font-extrabold tracking-[-0.05em] uppercase leading-[0.8] select-none whitespace-nowrap text-black"
-              aria-hidden="true"
-            >
+            <h1 className="col-start-1 row-start-1 w-full text-center font-sora font-extrabold tracking-[-0.05em] uppercase leading-[0.8] select-none whitespace-nowrap text-black" aria-hidden="true">
               ZUVARO
             </h1>
-            {/* Blob overlay layer on top (same grid cell) */}
-            <h1 className={`col-start-1 row-start-1 w-full text-center font-sora font-extrabold tracking-[-0.05em] uppercase leading-[0.8] select-none whitespace-nowrap ${isMobile ? 'mobile-gradient-text' : 'blob-text'}`}
-              aria-hidden="true"
-            >
+            <h1 className={`col-start-1 row-start-1 w-full text-center font-sora font-extrabold tracking-[-0.05em] uppercase leading-[0.8] select-none whitespace-nowrap ${isMobile ? 'mobile-gradient-text' : 'blob-text'}`} aria-hidden="true">
               ZUVARO
             </h1>
-            <span className="sr-only">ZUVARO</span>
+            <span className="sr-only">Zuvaro</span>
           </motion.div>
         </div>
 
@@ -459,9 +420,9 @@ export default function App() {
         
         </div>
 
-        {/* BOTTOM LEFT TEXT: LOGO BRAND MARK ONLY (ENLARGED) */}
+        {/* BOTTOM LEFT: brand lockup */}
         <div className="absolute bottom-[30px] left-[20px] md:bottom-[40px] md:left-[40px] z-20 flex items-center">
-          <ZMark size={64} />
+          <ZuvaroLockup markSize={44} wordSize={22} />
         </div>
 
         {/* BOTTOM RIGHT TEXT AND INSTALL BUTTON (MOVED & ENLARGED) */}
@@ -699,7 +660,10 @@ export default function App() {
       {/* REVOLUTIONARY DARK FOOTER WITH GLOWING WHITE LOGO */}
       <footer className="relative bg-[#050508] border-t border-zinc-900 px-[20px] select-none overflow-hidden text-center flex flex-col items-center pt-[20px] pb-8">
         
-        {/* BIG LOGO WITH EXCLUSIVE WHITE BLOB EFFECT - Absolute positioned matching hero */}
+        {/* FOOTER LOGO — mark + blob wordmark */}
+        <div className="w-full flex flex-col items-center gap-4 overflow-hidden pointer-events-none select-none z-10 mb-8">
+          <ZMark size={48} color="#FFFFFF" />
+        </div>
         <div className="w-full flex justify-center items-start overflow-hidden pointer-events-none select-none z-10 mb-[60px] md:mb-[100px]">
           <motion.div 
             className="w-full"
