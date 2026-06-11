@@ -37,6 +37,7 @@ final class AppModel: ObservableObject {
     @Published var regions: [Region] = []
     @Published var regionalLeaderboard: [LeaderboardEntry] = []
     @Published var globalLeaderboard: [LeaderboardEntry] = []
+    @Published var activePrizePool: PrizePool?
     @Published var regionError: String?
     @Published var currentRegionName: String?
     @Published var usernameError: String?
@@ -192,11 +193,14 @@ final class AppModel: ObservableObject {
                 chatMessages = allMessages.filter { !blockedIds.contains($0.userId) }
             }
             if let regionId = currentProfile?.regionId {
-                regionalLeaderboard = try await services.leaderboard.fetchRegionalBoard(
+                activePrizePool = try await services.leaderboard.fetchActivePrizePool(regionId: regionId)
+                let regionalRows = try await services.leaderboard.fetchRegionalBoard(
                     regionId: regionId,
                     currentUserId: userId
                 )
+                regionalLeaderboard = regionalRows.map { $0.withPayout(from: activePrizePool) }
             } else {
+                activePrizePool = nil
                 regionalLeaderboard = []
             }
             globalLeaderboard = try await services.leaderboard.fetchGlobalBoard(currentUserId: userId)

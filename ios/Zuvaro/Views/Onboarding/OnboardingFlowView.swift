@@ -56,7 +56,7 @@ struct OnboardingFlowView: View {
     private var splashContent: some View {
         VStack(spacing: 16) {
             ZuvaroLogo(style: .wordmark, size: .large)
-            Text("Daily dares. Real chaos.")
+            Text("Sponsored dares. Real payouts.")
                 .font(.system(size: 16))
                 .foregroundStyle(ZuvaroTheme.textMute)
         }
@@ -68,7 +68,7 @@ struct OnboardingFlowView: View {
             Text("Welcome to Zuvaro")
                 .font(.system(size: 28, weight: .bold))
                 .foregroundStyle(ZuvaroTheme.text)
-            Text("Daily dares from the group chat. Climb the board. Get clout, lose dignity, repeat.")
+            Text("Brands sponsor missions. You complete dares, earn points, and fight for a spot in the top 5 to split the weekly prize pool.")
                 .font(.system(size: 15))
                 .foregroundStyle(ZuvaroTheme.textMute)
                 .multilineTextAlignment(.center)

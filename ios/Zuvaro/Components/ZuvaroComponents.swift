@@ -50,6 +50,12 @@ struct ChallengeCardView: View {
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
             VStack(alignment: .leading, spacing: 6) {
+                if let sponsorLabel = challenge.sponsorLabel {
+                    Text(sponsorLabel)
+                        .font(.system(size: 10, weight: .bold))
+                        .foregroundStyle(ZuvaroTheme.magenta)
+                        .textCase(.uppercase)
+                }
                 Text(challenge.text)
                     .font(.system(size: 17, weight: .bold))
                     .foregroundStyle(challenge.points == nil ? ZuvaroTheme.textDim : ZuvaroTheme.text)
@@ -72,6 +78,63 @@ struct ChallengeCardView: View {
                         Capsule().fill(ZuvaroTheme.cardHi)
                     }
                 }
+        }
+        .padding(16)
+        .background(ZuvaroTheme.card)
+        .clipShape(RoundedRectangle(cornerRadius: 20))
+        .shadow(color: .black.opacity(0.05), radius: 10, y: 3)
+    }
+}
+
+struct PrizePoolCard: View {
+    let pool: PrizePool
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text("PRIZE POOL")
+                    .font(.system(size: 10, weight: .bold))
+                    .foregroundStyle(ZuvaroTheme.textMute)
+                Spacer()
+                HStack(spacing: 4) {
+                    Image(systemName: "clock")
+                        .font(.system(size: 11, weight: .semibold))
+                    Text(pool.refreshLabel)
+                        .font(.system(size: 11, weight: .semibold))
+                }
+                .foregroundStyle(ZuvaroTheme.textDim)
+            }
+
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Text(pool.formattedTotal)
+                    .font(.system(size: 34, weight: .bold))
+                    .foregroundStyle(ZuvaroTheme.text)
+                Text("top 5 split")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(ZuvaroTheme.textMute)
+            }
+
+            Text("Brands sponsor dares to fill the pool. Finish missions, earn points, and land in the top 5 to get paid.")
+                .font(.system(size: 12))
+                .foregroundStyle(ZuvaroTheme.textMute)
+                .fixedSize(horizontal: false, vertical: true)
+
+            HStack(spacing: 8) {
+                ForEach(Array(PrizePool.topFiveSplit.enumerated()), id: \.offset) { index, share in
+                    VStack(spacing: 4) {
+                        Text("#\(index + 1)")
+                            .font(.system(size: 10, weight: .bold))
+                            .foregroundStyle(ZuvaroTheme.textMute)
+                        Text("\(Int(share * 100))%")
+                            .font(.system(size: 12, weight: .bold))
+                            .foregroundStyle(index == 0 ? ZuvaroTheme.orange : ZuvaroTheme.text)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 8)
+                    .background(ZuvaroTheme.cardHi)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                }
+            }
         }
         .padding(16)
         .background(ZuvaroTheme.card)

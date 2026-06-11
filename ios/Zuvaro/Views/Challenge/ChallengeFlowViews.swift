@@ -10,6 +10,26 @@ struct ChallengeDetailView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 ScreenHeader(title: "Challenge", onBack: { appModel.pop() })
+                if let sponsor = challenge.sponsor, sponsor.isSponsored {
+                    HStack(spacing: 10) {
+                        Text(sponsor.logoEmoji)
+                            .font(.system(size: 28))
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Sponsored by \(sponsor.name)")
+                                .font(.system(size: 12, weight: .bold))
+                                .foregroundStyle(ZuvaroTheme.magenta)
+                            if let tagline = sponsor.tagline {
+                                Text(tagline)
+                                    .font(.system(size: 12))
+                                    .foregroundStyle(ZuvaroTheme.textMute)
+                            }
+                        }
+                    }
+                    .padding(14)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(ZuvaroTheme.magenta.opacity(0.08))
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                }
                 Text(challenge.hook)
                     .font(.system(size: 12, weight: .bold))
                     .foregroundStyle(ZuvaroTheme.textMute)

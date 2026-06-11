@@ -431,7 +431,7 @@ export default function App() {
           <InstallButton />
           
           <p className="text-[#050508] font-black text-xl md:text-3xl tracking-tight leading-none mt-1">
-            Daily dares. Real chaos.
+            Sponsored dares. Real payouts.
           </p>
         </div>
 
@@ -489,7 +489,7 @@ export default function App() {
                 className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F4F3F8] border border-gray-200 w-fit select-none"
               >
                 <Compass className="w-3.5 h-3.5 text-zuvaro-pink" />
-                <span className="text-[10px] font-bold tracking-widest text-[#FF2D95] uppercase">01 / Dare Feed</span>
+                <span className="text-[10px] font-bold tracking-widest text-[#FF2D95] uppercase">01 / Brand Missions</span>
               </motion.div>
               <motion.h3 
                 variants={{
@@ -498,7 +498,7 @@ export default function App() {
                 }}
                 className="font-sora font-extrabold text-3xl md:text-4xl tracking-tight text-neutral-900"
               >
-                Pick Your Dare
+                Brands Sponsor the Dares
               </motion.h3>
               <motion.p 
                 variants={{
@@ -507,7 +507,7 @@ export default function App() {
                 }}
                 className="text-zinc-650 text-base md:text-lg leading-relaxed font-normal"
               >
-                Browse dares from your crew's group chat or the daily quest chain. Filter by recommended, rewarding, or short — harder dares earn more points, and some are just for the lulz. Accept one, start the timer, and see how much clout you're willing to lose.
+                Companies fund missions for organic, real-world marketing. Browse sponsored dares from brands and your crew, filter by payout potential or time, accept one, start the timer, and turn branded challenges into leaderboard points.
               </motion.p>
             </motion.div>
 
@@ -534,7 +534,7 @@ export default function App() {
                 className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F4F3F8] border border-gray-200 w-fit select-none"
               >
                 <Award className="w-3.5 h-3.5 text-zuvaro-orange" />
-                <span className="text-[10px] font-bold tracking-widest text-[#FF6A2C] uppercase">02 / Friends Board</span>
+                <span className="text-[10px] font-bold tracking-widest text-[#FF6A2C] uppercase">02 / Prize Pool</span>
               </motion.div>
               <motion.h3 
                 variants={{
@@ -543,7 +543,7 @@ export default function App() {
                 }}
                 className="font-sora font-extrabold text-3xl md:text-4xl tracking-tight text-neutral-900"
               >
-                Climb the Leaderboard
+                Top 5 Split the Pool
               </motion.h3>
               <motion.p 
                 variants={{
@@ -552,7 +552,7 @@ export default function App() {
                 }}
                 className="text-zinc-650 text-base md:text-lg leading-relaxed font-normal"
               >
-                See who's actually doing the dares. Rank against friends, your club, or globally on a live points board. Watch your streak, track who passed you, and fight for the top spot — bragging rights only, dignity not included.
+                Sponsor spend fills a weekly regional prize pool. Compete on your club board, stack points from approved proof, and fight for ranks 1–5. The top five split the pool — 40%, 25%, 15%, 12%, and 8% — and get paid when the week closes.
               </motion.p>
             </motion.div>
 
@@ -647,7 +647,7 @@ export default function App() {
                 }}
                 className="text-zinc-650 text-base md:text-lg leading-relaxed font-normal"
               >
-                Finished the dare? Snap a photo, add an optional caption, and submit proof. Your submission goes to review — once approved, the points hit your total and your quest chain advances. Get rejected? Resubmit and try again.
+                Finished the dare? Snap a photo, add an optional caption, and submit proof. Once a moderator approves it, points count toward your regional ranking and quest chain. More approved missions means a better shot at cracking the top five and earning from the pool.
               </motion.p>
             </motion.div>
 

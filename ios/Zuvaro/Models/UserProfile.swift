@@ -104,6 +104,30 @@ struct GroupRecord: Codable {
     }
 }
 
+struct SponsorRecord: Codable {
+    let id: UUID?
+    let name: String
+    let tagline: String?
+    let logoEmoji: String
+    let websiteUrl: String?
+
+    enum CodingKeys: String, CodingKey {
+        case id, name, tagline
+        case logoEmoji = "logo_emoji"
+        case websiteUrl = "website_url"
+    }
+
+    var asSponsor: Sponsor {
+        Sponsor(
+            id: id,
+            name: name,
+            tagline: tagline,
+            logoEmoji: logoEmoji,
+            websiteURL: websiteUrl
+        )
+    }
+}
+
 struct ChallengeRecord: Codable {
     let id: UUID
     let timeLabel: String
@@ -112,9 +136,10 @@ struct ChallengeRecord: Codable {
     let hook: String
     let minutes: Int
     let rules: String
+    let sponsor: SponsorRecord?
 
     enum CodingKeys: String, CodingKey {
-        case id, text, points, hook, minutes, rules
+        case id, text, points, hook, minutes, rules, sponsor
         case timeLabel = "time_label"
     }
 
@@ -126,7 +151,8 @@ struct ChallengeRecord: Codable {
             points: points,
             hook: hook,
             minutes: minutes,
-            rules: rules
+            rules: rules,
+            sponsor: sponsor?.asSponsor
         )
     }
 }
