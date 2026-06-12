@@ -16,12 +16,14 @@ enum AuthServiceError: LocalizedError {
     case notConfigured
     case missingSession
     case invalidCredential
+    case emailConfirmationRequired
 
     var errorDescription: String? {
         switch self {
         case .notConfigured: return "Supabase is not configured."
         case .missingSession: return "No active session."
         case .invalidCredential: return "Invalid sign-in credentials."
+        case .emailConfirmationRequired: return "Check your email to confirm your account, then sign in."
         }
     }
 }
@@ -70,6 +72,9 @@ final class LiveAuthService: AuthServiceProtocol {
 
     func signUp(email: String, password: String) async throws -> UUID {
         let response = try await client.auth.signUp(email: email, password: password)
+        guard response.session != nil else {
+            throw AuthServiceError.emailConfirmationRequired
+        }
         let user = response.user
         guard let id = UUID(uuidString: user.id.uuidString) else {
             throw AuthServiceError.missingSession

@@ -1,6 +1,6 @@
 {
   "name": "Zuvaro",
-  "description": "Get paid to go outside and do missions. Discover rewards, complete outdoor tasks, and stay active.",
+  "description": "Complete brand-sponsored dares, climb the regional leaderboard, and split the weekly prize pool with the top 5.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

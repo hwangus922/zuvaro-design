@@ -16,7 +16,7 @@ final class LiveChallengeRepository: ChallengeRepositoryProtocol {
     func fetchActiveChallenges() async throws -> [Challenge] {
         let records: [ChallengeRecord] = try await client
             .from("challenges")
-            .select()
+            .select("*, sponsor:sponsors(id, name, tagline, logo_emoji, website_url)")
             .eq("is_active", value: true)
             .order("sort_order")
             .execute()

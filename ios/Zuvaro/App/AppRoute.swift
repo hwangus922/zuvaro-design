@@ -21,9 +21,12 @@ enum AppRoute: Hashable {
     case invite
     case settings
     case editProfile
+    case setUsername
     case privacy
     case blockedUsers
     case help
+    case adminReview
+    case adminSubmission(AdminSubmission)
     case signIn
     case emailAuth
 }

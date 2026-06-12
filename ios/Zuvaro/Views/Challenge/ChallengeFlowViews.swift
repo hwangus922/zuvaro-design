@@ -10,6 +10,26 @@ struct ChallengeDetailView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 ScreenHeader(title: "Challenge", onBack: { appModel.pop() })
+                if let sponsor = challenge.sponsor, sponsor.isSponsored {
+                    HStack(spacing: 10) {
+                        Text(sponsor.logoEmoji)
+                            .font(.system(size: 28))
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Sponsored by \(sponsor.name)")
+                                .font(.system(size: 12, weight: .bold))
+                                .foregroundStyle(ZuvaroTheme.magenta)
+                            if let tagline = sponsor.tagline {
+                                Text(tagline)
+                                    .font(.system(size: 12))
+                                    .foregroundStyle(ZuvaroTheme.textMute)
+                            }
+                        }
+                    }
+                    .padding(14)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(ZuvaroTheme.magenta.opacity(0.08))
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                }
                 Text(challenge.hook)
                     .font(.system(size: 12, weight: .bold))
                     .foregroundStyle(ZuvaroTheme.textMute)
@@ -74,25 +94,53 @@ struct SubmitProofView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
-                ScreenHeader(title: "Submit proof", onBack: { appModel.pop() })
-                Text(challenge.text).font(.system(size: 24, weight: .bold))
-                Text("Upload a photo showing you completed this dare.")
-                    .font(.system(size: 14))
-                    .foregroundStyle(ZuvaroTheme.textMute)
+            VStack(alignment: .leading, spacing: 18) {
+                HStack {
+                    Button { appModel.pop() } label: {
+                        Image(systemName: "xmark")
+                            .font(.system(size: 14, weight: .bold))
+                            .foregroundStyle(ZuvaroTheme.textMute)
+                            .frame(width: 36, height: 36)
+                            .background(ZuvaroTheme.cardHi)
+                            .clipShape(Circle())
+                    }
+                    Spacer()
+                }
+                PageTitle(text: "Submit proof")
+                Text(challenge.text)
+                    .font(.system(size: 22, weight: .bold))
+                    .foregroundStyle(ZuvaroTheme.text)
 
                 PhotosPicker(selection: $pickerItem, matching: .images) {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 20)
-                            .stroke(selectedImage == nil ? ZuvaroTheme.strokeHi : ZuvaroTheme.success, style: StrokeStyle(lineWidth: 1, dash: selectedImage == nil ? [6] : []))
-                            .frame(height: 180)
+                    ZStack(alignment: .topLeading) {
+                        RoundedRectangle(cornerRadius: 22)
+                            .fill(ZuvaroTheme.cardWarmGradient)
+                            .frame(height: 220)
                         if let selectedImage {
-                            selectedImage.resizable().scaledToFill().frame(height: 180).clipShape(RoundedRectangle(cornerRadius: 20))
+                            selectedImage
+                                .resizable()
+                                .scaledToFill()
+                                .frame(height: 220)
+                                .clipShape(RoundedRectangle(cornerRadius: 22))
                         } else {
-                            VStack(spacing: 8) {
-                                Text("📷").font(.largeTitle)
-                                Text("Tap to add photo proof").font(.system(size: 15, weight: .semibold))
+                            VStack {
+                                Spacer()
+                                Text("Tap to add photo")
+                                    .font(.system(size: 15, weight: .semibold))
+                                    .foregroundStyle(ZuvaroTheme.inkOnWarm.opacity(0.8))
+                                Spacer()
                             }
+                            .frame(maxWidth: .infinity)
+                        }
+                        if selectedImage != nil {
+                            Text("Photo added ✓")
+                                .font(.system(size: 11, weight: .bold))
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 6)
+                                .background(Color.white)
+                                .clipShape(Capsule())
+                                .padding(12)
+                                .frame(maxWidth: .infinity, alignment: .topTrailing)
                         }
                     }
                 }
@@ -106,16 +154,11 @@ struct SubmitProofView: View {
                     }
                 }
 
-                TextField("Caption (optional)", text: $caption)
+                TextField("Add a caption…", text: $caption)
                     .padding(14)
                     .background(ZuvaroTheme.card)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-
-                Text(challenge.rules)
-                    .font(.system(size: 13))
-                    .padding(14)
-                    .background(ZuvaroTheme.card)
-                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                    .clipShape(RoundedRectangle(cornerRadius: 14))
+                    .shadow(color: .black.opacity(0.04), radius: 6, y: 2)
 
                 PrimaryButton(title: "Submit proof · \(challenge.pointsLabel)", enabled: imageData != nil) {
                     appModel.pendingProofImageData = imageData
@@ -125,7 +168,7 @@ struct SubmitProofView: View {
             }
             .padding(24)
         }
-        .background(ZuvaroTheme.bg)
+        .background(ZuvaroTheme.screenBg)
         .navigationBarHidden(true)
     }
 }

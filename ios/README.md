@@ -1,6 +1,6 @@
 # Zuvaro iOS App
 
-Native **SwiftUI** iOS app with Supabase backend integration.
+Native **SwiftUI** iOS app with Supabase backend integration. Users complete brand-sponsored dares, earn points, and compete for regional prize pools where the top five split sponsor-funded payouts.
 
 ## Open in Xcode
 
@@ -21,7 +21,7 @@ Native **SwiftUI** iOS app with Supabase backend integration.
 ### 2. Supabase credentials
 
 1. Copy `ios/Secrets.xcconfig.template` → `ios/Secrets.xcconfig`
-2. Fill in `SUPABASE_URL` and `SUPABASE_ANON_KEY` from your Supabase project dashboard
+2. Fill in `SUPABASE_HOST` (e.g. `YOUR_PROJECT_REF.supabase.co`) and `SUPABASE_ANON_KEY` from your Supabase project dashboard
 3. Rebuild — values are injected into Info.plist at build time
 
 Without `Secrets.xcconfig`, the app runs in **mock mode** with local prototype data.
@@ -50,7 +50,17 @@ In the Supabase dashboard:
 update public.profiles set is_admin = true where id = 'YOUR_USER_UUID';
 ```
 
-### 4. Admin proof moderation
+### 4. Sponsors & prize pools
+
+The `20260610010000_sponsors_and_prize_pools.sql` migration adds:
+
+- `sponsors` — brands that fund missions
+- `prize_pools` — weekly regional pools (top 5 split: 40% / 25% / 15% / 12% / 8%)
+- `prize_payouts` — settlement records after a pool closes
+
+Admins can create pools and link challenges to sponsors from the Supabase dashboard. The app shows the active pool on the **Club** leaderboard tab.
+
+### 5. Admin proof moderation
 
 Submissions start as `pending`. Admins review in Supabase:
 
@@ -101,7 +111,8 @@ Before submitting to TestFlight / App Store:
 | Terms of Service URL | **https://hwangus922.github.io/zuvaro-design/terms.html** |
 | App icon | Replace placeholder in `Assets.xcassets/AppIcon` |
 | Screenshots | 6.7", 6.5", 5.5" iPhone sizes minimum |
-| Age rating | Likely 17+ due to user-generated dare content |
+| Age rating | **13+** — must match in-app age gate, Terms, Privacy Policy, and App Store questionnaire |
+| License Agreement | Apple **Standard EULA** (default); link Terms + Privacy URLs in metadata |
 | UGC moderation | Document admin review workflow in App Review notes |
 | Sign in with Apple | Required (you offer email auth) |
 | Photo library usage | Already declared in Info.plist |
@@ -110,7 +121,11 @@ Before submitting to TestFlight / App Store:
 
 ### App Review notes (suggested)
 
-> Zuvaro is a social dare app. Users submit photo proof of completed challenges. All proof photos are reviewed by human moderators before points are awarded. Users can block others and report content via Help & Support. Test account: [provide email/password].
+> Zuvaro is a social dare app for users 13+. Brands sponsor missions and weekly regional prize pools; users earn points from human-moderated photo proof and the top five split each pool. Users confirm age at onboarding, accept Terms/Privacy in-app, can block/report in chat, and disable analytics in Settings → Privacy preferences. Catalog missions are family-friendly; custom crew dares are user-generated and moderated. Test account: [provide email/password].
+
+## Sponsor onboarding (B2B)
+
+Brands pay to sponsor catalog or custom dares; that spend feeds the regional prize pool users compete for. Document payout verification and tax handling in App Review notes when real-money pools are live.
 
 ## TestFlight → Production
 

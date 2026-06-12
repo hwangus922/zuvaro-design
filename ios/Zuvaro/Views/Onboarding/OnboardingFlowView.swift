@@ -2,6 +2,7 @@ import SwiftUI
 
 struct OnboardingFlowView: View {
     @EnvironmentObject private var appModel: AppModel
+    @AppStorage("zuvaro_age_confirmed") private var ageConfirmed = false
     @State private var step = 0
     @State private var emailIsSignUp = true
 
@@ -46,16 +47,26 @@ struct OnboardingFlowView: View {
             }
         }
         .onAppear {
+            appModel.trackScreen("onboarding_splash")
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
                 if step == 0 { withAnimation { step = 1 } }
+            }
+        }
+        .onChange(of: step) { _, newStep in
+            switch newStep {
+            case 1: appModel.trackScreen("onboarding_welcome")
+            case 2: appModel.trackScreen("onboarding_sign_up")
+            case 3: appModel.trackScreen("onboarding_sign_in")
+            case 4: appModel.trackScreen("onboarding_email_auth")
+            default: break
             }
         }
     }
 
     private var splashContent: some View {
         VStack(spacing: 16) {
-            WarmGradientText(text: "zuvaro", size: 42, weight: .bold)
-            Text("Daily dares. Real chaos.")
+            ZuvaroLogo(style: .wordmark, size: .large)
+            Text("Sponsored dares. Real payouts.")
                 .font(.system(size: 16))
                 .foregroundStyle(ZuvaroTheme.textMute)
         }
@@ -63,12 +74,19 @@ struct OnboardingFlowView: View {
 
     private var welcomeContent: some View {
         VStack(spacing: 20) {
-            WarmGradientText(text: "Welcome to Zuvaro", size: 28, weight: .bold)
-            Text("Daily dares from the group chat. Climb the board. Get clout, lose dignity, repeat.")
+            ZuvaroLogo(style: .wordmark, size: .medium)
+            Text("Welcome to Zuvaro")
+                .font(.system(size: 28, weight: .bold))
+                .foregroundStyle(ZuvaroTheme.text)
+            Text("Brands sponsor missions. You complete dares, earn points, and fight for a spot in the top 5 to split the weekly prize pool.")
                 .font(.system(size: 15))
                 .foregroundStyle(ZuvaroTheme.textMute)
                 .multilineTextAlignment(.center)
-            PrimaryButton(title: "Continue") { withAnimation { step = 2 } }
+            AgeConfirmationGate(confirmed: $ageConfirmed)
+                .onChange(of: ageConfirmed) { _, confirmed in
+                    if confirmed { appModel.trackAgeConfirmed() }
+                }
+            PrimaryButton(title: "Continue", enabled: ageConfirmed) { withAnimation { step = 2 } }
             SecondaryTextButton(title: "Sign in") { withAnimation { step = 3 } }
         }
     }

@@ -16,6 +16,9 @@ protocol SubmissionServiceProtocol {
         caption: String?
     ) async throws -> Submission
     func fetchSubmission(id: UUID) async throws -> Submission?
+    func fetchAdminSubmissions(status: SubmissionStatus?) async throws -> [AdminSubmission]
+    func reviewSubmission(id: UUID, reviewerId: UUID, status: SubmissionStatus, reviewNote: String?) async throws
+    func downloadProofPhoto(path: String) async throws -> Data
 }
 
 @MainActor
@@ -35,12 +38,25 @@ final class LiveSubmissionService: SubmissionServiceProtocol {
             .execute()
             .value
 
-        let challengeMap = try await challengeTitleMap(for: records.map(\.challengeId))
+        let challengeMap = try await challengeTitleMap(for: records.compactMap(\.challengeId))
+        let customMap = try await customChallengeTitleMap(for: records.compactMap(\.customChallengeId))
         return records.map { record in
-            Submission(
+            let dareTitle: String
+            let challengeId: UUID
+            if let catalogId = record.challengeId {
+                dareTitle = challengeMap[catalogId] ?? "Dare"
+                challengeId = catalogId
+            } else if let customId = record.customChallengeId {
+                dareTitle = customMap[customId] ?? "Custom dare"
+                challengeId = customId
+            } else {
+                dareTitle = "Dare"
+                challengeId = record.id
+            }
+            return Submission(
                 id: record.id,
-                challengeId: record.challengeId,
-                dareTitle: challengeMap[record.challengeId] ?? "Dare",
+                challengeId: challengeId,
+                dareTitle: dareTitle,
                 status: record.status,
                 points: record.pointsAwarded,
                 createdAt: record.createdAt
@@ -56,7 +72,8 @@ final class LiveSubmissionService: SubmissionServiceProtocol {
         caption: String?
     ) async throws -> Submission {
         let submissionId = UUID()
-        let path = "\(userId.uuidString)/\(submissionId.uuidString).jpg"
+        // Storage RLS compares folder name to auth.uid()::text (lowercase).
+        let path = "\(userId.uuidString.lowercased())/\(submissionId.uuidString.lowercased()).jpg"
 
         try await client.storage
             .from("proofs")
@@ -69,7 +86,8 @@ final class LiveSubmissionService: SubmissionServiceProtocol {
         let payload = NewSubmissionPayload(
             id: submissionId,
             userId: userId,
-            challengeId: challenge.id,
+            challengeId: challenge.isCustomChallenge ? nil : challenge.id,
+            customChallengeId: challenge.isCustomChallenge ? challenge.id : nil,
             groupId: groupId,
             caption: caption?.isEmpty == true ? nil : caption,
             photoPath: path,
@@ -89,7 +107,7 @@ final class LiveSubmissionService: SubmissionServiceProtocol {
 
         return Submission(
             id: record.id,
-            challengeId: record.challengeId,
+            challengeId: challenge.id,
             dareTitle: challenge.text,
             status: record.status,
             points: record.pointsAwarded,
@@ -106,10 +124,17 @@ final class LiveSubmissionService: SubmissionServiceProtocol {
             .execute()
             .value
         guard let record = records.first else { return nil }
-        let title = try await challengeTitleMap(for: [record.challengeId])[record.challengeId] ?? "Dare"
+        let title: String
+        if let catalogId = record.challengeId {
+            title = try await challengeTitleMap(for: [catalogId])[catalogId] ?? "Dare"
+        } else if let customId = record.customChallengeId {
+            title = try await customChallengeTitleMap(for: [customId])[customId] ?? "Custom dare"
+        } else {
+            title = "Dare"
+        }
         return Submission(
             id: record.id,
-            challengeId: record.challengeId,
+            challengeId: record.challengeId ?? record.customChallengeId ?? record.id,
             dareTitle: title,
             status: record.status,
             points: record.pointsAwarded,
@@ -127,6 +152,59 @@ final class LiveSubmissionService: SubmissionServiceProtocol {
             .execute()
             .value
         return Dictionary(uniqueKeysWithValues: records.map { ($0.id, $0.text) })
+    }
+
+    private func customChallengeTitleMap(for ids: [UUID]) async throws -> [UUID: String] {
+        guard !ids.isEmpty else { return [:] }
+        let unique = Array(Set(ids))
+        let records: [ChallengeTitleRecord] = try await client
+            .from("custom_challenges")
+            .select("id,text")
+            .in("id", values: unique.map(\.uuidString))
+            .execute()
+            .value
+        return Dictionary(uniqueKeysWithValues: records.map { ($0.id, $0.text) })
+    }
+
+    func fetchAdminSubmissions(status: SubmissionStatus?) async throws -> [AdminSubmission] {
+        let select = "*, profiles:profiles!submissions_user_id_fkey(display_name, handle, avatar_emoji), challenge:challenges!submissions_challenge_id_fkey(text, points), custom_challenge:custom_challenges!submissions_custom_challenge_id_fkey(text, points)"
+        let records: [AdminSubmissionRecord]
+        if let status {
+            records = try await client
+                .from("submissions")
+                .select(select)
+                .eq("status", value: status.rawValue)
+                .order("created_at", ascending: false)
+                .execute()
+                .value
+        } else {
+            records = try await client
+                .from("submissions")
+                .select(select)
+                .order("created_at", ascending: false)
+                .execute()
+                .value
+        }
+        return records.map(\.asAdminSubmission)
+    }
+
+    func reviewSubmission(id: UUID, reviewerId: UUID, status: SubmissionStatus, reviewNote: String?) async throws {
+        let payload = SubmissionReviewPayload(
+            status: status.rawValue,
+            reviewNote: reviewNote,
+            reviewedBy: reviewerId
+        )
+        try await client
+            .from("submissions")
+            .update(payload)
+            .eq("id", value: id.uuidString)
+            .execute()
+    }
+
+    func downloadProofPhoto(path: String) async throws -> Data {
+        try await client.storage
+            .from("proofs")
+            .download(path: path)
     }
 }
 
@@ -167,5 +245,35 @@ final class MockSubmissionService: SubmissionServiceProtocol {
 
     func fetchSubmission(id: UUID) async throws -> Submission? {
         stored.first { $0.id == id }
+    }
+
+    func fetchAdminSubmissions(status: SubmissionStatus?) async throws -> [AdminSubmission] {
+        let pending = AdminSubmission(
+            id: UUID(),
+            userId: UUID(),
+            submitterName: "Alex",
+            submitterHandle: "@alex",
+            submitterEmoji: "🐺",
+            dareTitle: "Give a genuine compliment",
+            points: 15,
+            caption: "Done fr",
+            photoPath: "mock/photo.jpg",
+            status: .pending,
+            createdAt: Date().addingTimeInterval(-3600)
+        )
+        guard status == nil || status == .pending else { return [] }
+        return [pending]
+    }
+
+    func reviewSubmission(id: UUID, reviewerId: UUID, status: SubmissionStatus, reviewNote: String?) async throws {
+        _ = id
+        _ = reviewerId
+        _ = status
+        _ = reviewNote
+    }
+
+    func downloadProofPhoto(path: String) async throws -> Data {
+        _ = path
+        return Data()
     }
 }

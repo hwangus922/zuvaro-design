@@ -1,6 +1,6 @@
 # Zuvaro Design
 
-Interactive UI prototype and design canvas for **Zuvaro** — daily dares, quest chains, leaderboards, group chat, and proof submission.
+Interactive UI prototype and design canvas for **Zuvaro** — brand-sponsored dares, quest chains, regional prize pools (top 5 split), leaderboards, group chat, and proof submission.
 
 **Canonical version:** `Zuvaro Painted v3 light.html` (light theme)
 

@@ -6,59 +6,44 @@ struct LeaderboardView: View {
     private let tabs = ["Friends", "Club", "Global"]
 
     private var rows: [LeaderboardEntry] {
-        let base = appModel.leaderboard
         switch tab {
-        case 1: return base.enumerated().map { i, e in
-            LeaderboardEntry(id: e.id, rank: i + 1, name: e.name, handle: e.handle, points: e.points - 40 + i * 7, emoji: e.emoji, isMe: e.isMe)
+        case 1: return appModel.regionalLeaderboard
+        case 2: return appModel.globalLeaderboard
+        default: return appModel.leaderboard
         }
-        case 2: return base.enumerated().map { i, e in
-            LeaderboardEntry(id: e.id, rank: i + 1, name: e.name.replacingOccurrences(of: "John", with: "Player"), handle: e.handle, points: e.points + 120 - i * 15, emoji: e.emoji, isMe: e.isMe)
-        }
-        default: return base
-        }
+    }
+
+    private var showsPrizePool: Bool {
+        tab == 1 && appModel.activePrizePool != nil
     }
 
     var body: some View {
         ZStack(alignment: .top) {
             AuraBackground()
             ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    HStack {
-                        Spacer()
-                        Text("6 DAYS LEFT")
-                            .font(.system(size: 10, weight: .bold))
-                            .foregroundStyle(ZuvaroTheme.textMute)
-                    }
-                    .padding(.top, 8)
+                VStack(alignment: .leading, spacing: 18) {
+                    PageTitle(text: "Leaderboard")
 
-                    HStack(spacing: 0) {
-                        Text("Leader")
-                            .font(.system(size: 34, weight: .bold))
-                        Text("board")
-                            .font(.system(size: 34, weight: .bold))
-                            .foregroundStyle(ZuvaroTheme.warmGradient)
-                    }
-
-                    HStack(spacing: 18) {
+                    HStack(spacing: 8) {
                         ForEach(Array(tabs.enumerated()), id: \.offset) { i, name in
-                            Button { tab = i } label: {
-                                VStack(spacing: 6) {
-                                    Text(name)
-                                        .font(.system(size: 15, weight: tab == i ? .bold : .medium))
-                                        .foregroundStyle(tab == i ? ZuvaroTheme.text : ZuvaroTheme.textMute)
-                                    Rectangle()
-                                        .fill(tab == i ? ZuvaroTheme.pink : .clear)
-                                        .frame(height: 2)
-                                }
-                            }.buttonStyle(.plain)
+                            FilterChip(title: name, isSelected: tab == i) { tab = i }
                         }
+                    }
+
+                    if showsPrizePool, let pool = appModel.activePrizePool {
+                        PrizePoolCard(pool: pool)
+                    } else if tab == 0 {
+                        Text("Crew rankings are for bragging rights. Switch to Club to compete for the weekly prize pool.")
+                            .font(.system(size: 12))
+                            .foregroundStyle(ZuvaroTheme.textMute)
                     }
 
                     ForEach(rows) { row in
                         leaderboardRow(row)
                     }
                 }
-                .padding(.horizontal, 24)
+                .padding(.horizontal, 20)
+                .padding(.top, 12)
                 .padding(.bottom, 100)
             }
         }
@@ -67,21 +52,32 @@ struct LeaderboardView: View {
     private func leaderboardRow(_ row: LeaderboardEntry) -> some View {
         HStack(spacing: 12) {
             Text("\(row.rank)")
-                .font(.system(size: 14, weight: .bold, design: .monospaced))
-                .frame(width: 28)
-            Text(row.emoji).font(.title2)
+                .font(.system(size: 14, weight: .bold, design: .rounded))
+                .foregroundStyle(row.rank == 1 ? ZuvaroTheme.orange : ZuvaroTheme.textMute)
+                .frame(width: 24, alignment: .leading)
+            AvatarView(emoji: row.emoji, size: 44)
             VStack(alignment: .leading, spacing: 2) {
-                Text(row.name).font(.system(size: 15, weight: .semibold))
-                Text(row.handle).font(.system(size: 12)).foregroundStyle(ZuvaroTheme.textMute)
+                Text(row.isMe ? "You" : row.name)
+                    .font(.system(size: 15, weight: .semibold))
+                Text(row.handle)
+                    .font(.system(size: 12))
+                    .foregroundStyle(ZuvaroTheme.textMute)
             }
             Spacer()
-            Text("\(row.points)pts")
-                .font(.system(size: 14, weight: .bold, design: .monospaced))
-                .foregroundStyle(row.rank == 1 ? ZuvaroTheme.orange : ZuvaroTheme.text)
+            VStack(alignment: .trailing, spacing: 2) {
+                if let payout = row.estimatedPayoutLabel, showsPrizePool {
+                    Text(payout)
+                        .font(.system(size: 13, weight: .bold, design: .rounded))
+                        .foregroundStyle(ZuvaroTheme.orange)
+                }
+                Text("\(row.points)pts")
+                    .font(.system(size: 14, weight: .bold, design: .rounded))
+                    .foregroundStyle(row.rank == 1 ? ZuvaroTheme.orange : ZuvaroTheme.text)
+            }
         }
         .padding(14)
         .background(row.isMe ? ZuvaroTheme.pink.opacity(0.08) : ZuvaroTheme.card)
-        .overlay(RoundedRectangle(cornerRadius: 16).stroke(row.isMe ? ZuvaroTheme.pink.opacity(0.3) : ZuvaroTheme.stroke, lineWidth: 1))
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .clipShape(RoundedRectangle(cornerRadius: 18))
+        .shadow(color: .black.opacity(row.isMe ? 0.06 : 0.04), radius: 8, y: 2)
     }
 }

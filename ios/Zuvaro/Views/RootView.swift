@@ -7,12 +7,26 @@ struct RootView: View {
         Group {
             if !appModel.isAuthenticated || appModel.showOnboarding {
                 OnboardingFlowView()
+            } else if appModel.needsRegionSetup {
+                RegionOnboardingView()
+            } else if appModel.needsUsernameSetup {
+                UsernameOnboardingView()
             } else {
                 MainTabView()
             }
         }
         .preferredColorScheme(.light)
         .task { await appModel.bootstrap() }
+        .onChange(of: appModel.needsRegionSetup) { _, needsSetup in
+            if needsSetup {
+                appModel.trackScreen("region_onboarding")
+            }
+        }
+        .onChange(of: appModel.needsUsernameSetup) { _, needsSetup in
+            if needsSetup {
+                appModel.trackScreen("username_onboarding")
+            }
+        }
     }
 }
 
@@ -33,7 +47,13 @@ struct MainTabView: View {
 
                 ZuvaroTabBar(selection: $appModel.selectedTab)
             }
-            .background(ZuvaroTheme.bg)
+            .onAppear {
+                appModel.trackScreen("main_tabs")
+            }
+            .onChange(of: appModel.selectedTab) { _, tab in
+                appModel.trackTabSelected(tab)
+            }
+            .background(ZuvaroTheme.screenBg)
             .navigationBarHidden(true)
             .navigationDestination(for: AppRoute.self) { route in
                 routeView(for: route)
@@ -60,9 +80,12 @@ struct MainTabView: View {
         case .invite: InviteFriendsView()
         case .settings: SettingsView()
         case .editProfile: EditProfileView()
+        case .setUsername: SetUsernameView()
         case .privacy: PrivacyView()
         case .blockedUsers: BlockedUsersView()
         case .help: HelpSupportView()
+        case .adminReview: AdminReviewView()
+        case .adminSubmission(let submission): AdminSubmissionDetailView(submission: submission)
         case .signIn:
             SignInView(
                 onBack: { appModel.pop() },

@@ -11,6 +11,8 @@ final class ZuvaroServices {
     let leaderboard: LeaderboardServiceProtocol
     let notifications: NotificationServiceProtocol
     let profiles: ProfileServiceProtocol
+    let safety: SafetyServiceProtocol
+    let analytics: AnalyticsServiceProtocol
 
     private init() {
         if let client = SupabaseManager.shared {
@@ -21,7 +23,12 @@ final class ZuvaroServices {
             leaderboard = LiveLeaderboardService(client: client)
             notifications = LiveNotificationService(client: client)
             profiles = LiveProfileService(client: client)
+            safety = LiveSafetyService(client: client)
+            analytics = LiveAnalyticsService(client: client)
         } else {
+            #if !DEBUG
+            fatalError("Supabase is required in non-debug builds. Configure SUPABASE_URL and SUPABASE_ANON_KEY.")
+            #endif
             auth = MockAuthService()
             challenges = MockChallengeRepository()
             submissions = MockSubmissionService()
@@ -29,6 +36,8 @@ final class ZuvaroServices {
             leaderboard = MockLeaderboardService()
             notifications = MockNotificationService()
             profiles = MockProfileService()
+            safety = MockSafetyService()
+            analytics = MockAnalyticsService()
         }
     }
 }

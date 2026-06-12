@@ -20,6 +20,8 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      VITE_INSTALL_URL: ${{ vars.ZUVARO_INSTALL_URL || 'https://testflight.apple.com/join/REPLACE_WITH_REAL_CODE' }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
