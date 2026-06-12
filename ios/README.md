@@ -116,6 +116,8 @@ Before submitting to TestFlight / App Store:
 | UGC moderation | Document admin review workflow in App Review notes |
 | Sign in with Apple | Required (you offer email auth) |
 | Photo library usage | Already declared in Info.plist |
+| Contacts usage | Find friends — `NSContactsUsageDescription` in Xcode build settings |
+| Phone / SMS | Optional verification + `sms_outbox` queue (wire Twilio or similar for production SMS delivery) |
 | Push notifications | Entitlement included (development); configure APNs for production |
 | Export compliance | Standard encryption (HTTPS) — typically "No" for exempt |
 

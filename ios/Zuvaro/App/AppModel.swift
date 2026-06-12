@@ -41,6 +41,8 @@ final class AppModel: ObservableObject {
     @Published var regionError: String?
     @Published var currentRegionName: String?
     @Published var usernameError: String?
+    @Published var phoneError: String?
+    @Published var contactMatches: [ContactFriendMatch] = []
 
     private let services = ZuvaroServices.shared
     private var appleNonce = ""
@@ -533,6 +535,79 @@ final class AppModel: ObservableObject {
         } catch {
             supportError = error.localizedDescription
             return false
+        }
+    }
+
+    func requestPhoneVerification(phone: String) async -> Bool {
+        phoneError = nil
+        do {
+            _ = try await services.phone.requestVerification(phone: phone)
+            track(AnalyticsEvent(name: "phone_verification_requested", properties: [:]))
+            return true
+        } catch {
+            phoneError = error.localizedDescription
+            return false
+        }
+    }
+
+    func verifyPhoneCode(_ code: String) async -> Bool {
+        phoneError = nil
+        do {
+            currentProfile = try await services.phone.verifyCode(code)
+            track(AnalyticsEvent(name: "phone_verified", properties: [:]))
+            return true
+        } catch {
+            phoneError = error.localizedDescription
+            return false
+        }
+    }
+
+    func updatePhonePreferences(discoverable: Bool, smsEnabled: Bool) async {
+        phoneError = nil
+        do {
+            currentProfile = try await services.phone.updatePreferences(
+                discoverable: discoverable,
+                smsEnabled: smsEnabled
+            )
+            track(AnalyticsEvent(
+                name: "phone_preferences_updated",
+                properties: [
+                    "discoverable": discoverable ? "true" : "false",
+                    "sms_enabled": smsEnabled ? "true" : "false"
+                ]
+            ))
+        } catch {
+            phoneError = error.localizedDescription
+        }
+    }
+
+    func removePhoneNumber() async {
+        phoneError = nil
+        do {
+            currentProfile = try await services.phone.removePhone()
+            track(AnalyticsEvent(name: "phone_removed", properties: [:]))
+        } catch {
+            phoneError = error.localizedDescription
+        }
+    }
+
+    func findFriendsFromContacts() async {
+        phoneError = nil
+        do {
+            let numbers = try await ContactsService.fetchPhoneNumbers()
+            guard !numbers.isEmpty else {
+                contactMatches = []
+                phoneError = "No phone numbers found in your contacts."
+                return
+            }
+            contactMatches = try await services.phone.findFriends(phoneNumbers: numbers)
+            track(AnalyticsEvent(
+                name: "contacts_matched",
+                properties: ["match_count": "\(contactMatches.count)"]
+            ))
+        } catch {
+            phoneError = error.localizedDescription
+            contactMatches = []
         }
     }
 

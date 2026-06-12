@@ -113,6 +113,8 @@ struct ProfileView: View {
             Divider()
             accountRow("Invite friends") { appModel.navigate(to: .invite) }
             Divider()
+            accountRow("Find friends") { appModel.navigate(to: .findFriends) }
+            Divider()
             accountRow("Log out") { Task { await appModel.signOut() } }
             Divider()
             accountRow("Delete Account", destructive: true) { showDeleteConfirmation = true }

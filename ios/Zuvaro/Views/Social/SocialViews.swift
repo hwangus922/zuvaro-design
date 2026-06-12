@@ -343,6 +343,10 @@ struct InviteFriendsView: View {
                         .background(ZuvaroTheme.warmGradient)
                         .clipShape(Capsule())
                 }
+
+                PrimaryButton(title: "Find friends from contacts") {
+                    appModel.navigate(to: .findFriends)
+                }
             }
             .padding(24)
         }

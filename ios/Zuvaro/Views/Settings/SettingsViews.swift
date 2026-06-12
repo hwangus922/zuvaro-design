@@ -34,6 +34,8 @@ struct SettingsView: View {
                 Text("ACCOUNT").font(.system(size: 10, weight: .bold)).foregroundStyle(ZuvaroTheme.textMute)
                 settingsRow("Edit profile") { appModel.navigate(to: .editProfile) }
                 settingsRow("Change username") { appModel.navigate(to: .setUsername) }
+                settingsRow("Phone & SMS") { appModel.navigate(to: .phoneSettings) }
+                settingsRow("Find friends from contacts") { appModel.navigate(to: .findFriends) }
                 settingsRow("Privacy preferences") { appModel.navigate(to: .privacy) }
                 settingsRow("Blocked users") { appModel.navigate(to: .blockedUsers) }
                 settingsRow("Help & support") { appModel.navigate(to: .help) }

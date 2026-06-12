@@ -78,6 +78,8 @@ struct MainTabView: View {
         case .createDare: CreateDareView()
         case .notifications: NotificationsView()
         case .invite: InviteFriendsView()
+        case .findFriends: FindFriendsView()
+        case .phoneSettings: PhoneSettingsView()
         case .settings: SettingsView()
         case .editProfile: EditProfileView()
         case .setUsername: SetUsernameView()

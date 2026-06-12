@@ -19,6 +19,8 @@ enum AppRoute: Hashable {
     case createDare
     case notifications
     case invite
+    case findFriends
+    case phoneSettings
     case settings
     case editProfile
     case setUsername

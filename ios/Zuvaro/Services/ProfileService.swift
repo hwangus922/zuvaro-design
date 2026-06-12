@@ -114,7 +114,7 @@ enum ProfileServiceError: LocalizedError {
 @MainActor
 final class MockProfileService: ProfileServiceProtocol {
     func fetchProfile(userId: UUID) async throws -> UserProfile {
-        UserProfile(
+        let profile = UserProfile(
             id: userId,
             displayName: "John Winner",
             handle: "@IloveMyGTA6too",
@@ -131,6 +131,7 @@ final class MockProfileService: ProfileServiceProtocol {
             referralBonusClaimed: false,
             usernameCustomized: true
         )
+        return MockPhoneState.apply(to: profile)
     }
 
     func setUsername(_ username: String) async throws -> UserProfile {

@@ -162,6 +162,21 @@ enum MockData {
         ChatMessage(id: UUID(), userId: UUID(), author: "Alex", emoji: "🐺", text: "Reach out to an old friend", time: "2:45 PM", isDare: true, dareChallengeId: challenges[1].id, darePoints: 20),
     ]
 
+    static let contactFriends: [ContactFriendMatch] = [
+        ContactFriendMatch(
+            userId: UUID(uuidString: "00000000-0000-0000-0000-000000000201")!,
+            displayName: "Maya Chen",
+            handle: "@mayachen",
+            avatarEmoji: "🦊"
+        ),
+        ContactFriendMatch(
+            userId: UUID(uuidString: "00000000-0000-0000-0000-000000000202")!,
+            displayName: "Alex Rivera",
+            handle: "@alexr",
+            avatarEmoji: "🐺"
+        )
+    ]
+
     static let notifications: [AppNotification] = [
         AppNotification(id: UUID(), title: "Proof approved", body: "+15pts for \"Give a genuine compliment\"", time: "2m ago", unread: true, kind: .proof),
         AppNotification(id: UUID(), title: "New dare in Chaos Crew", body: "Alex posted \"Reach out to an old friend\" · +20pts", time: "18m ago", unread: true, kind: .dare),

@@ -13,6 +13,7 @@ final class ZuvaroServices {
     let profiles: ProfileServiceProtocol
     let safety: SafetyServiceProtocol
     let analytics: AnalyticsServiceProtocol
+    let phone: PhoneServiceProtocol
 
     private init() {
         if let client = SupabaseManager.shared {
@@ -25,6 +26,7 @@ final class ZuvaroServices {
             profiles = LiveProfileService(client: client)
             safety = LiveSafetyService(client: client)
             analytics = LiveAnalyticsService(client: client)
+            phone = LivePhoneService(client: client)
         } else {
             #if !DEBUG
             fatalError("Supabase is required in non-debug builds. Configure SUPABASE_URL and SUPABASE_ANON_KEY.")
@@ -38,6 +40,7 @@ final class ZuvaroServices {
             profiles = MockProfileService()
             safety = MockSafetyService()
             analytics = MockAnalyticsService()
+            phone = MockPhoneService()
         }
     }
 }

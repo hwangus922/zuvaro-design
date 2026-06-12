@@ -44,6 +44,10 @@
 		B10000000000000000000036 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000036 /* PrivacyInfo.xcprivacy */; };
 		B10000000000000000000037 /* LegalViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000037 /* LegalViews.swift */; };
 		B10000000000000000000038 /* AnalyticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000038 /* AnalyticsService.swift */; };
+		B10000000000000000000039 /* PhoneService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000039 /* PhoneService.swift */; };
+		B10000000000000000000040 /* ContactsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000040 /* ContactsService.swift */; };
+		B10000000000000000000041 /* PhoneNormalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000041 /* PhoneNormalizer.swift */; };
+		B10000000000000000000042 /* PhoneSocialViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000042 /* PhoneSocialViews.swift */; };
 		B10000000000000000000029 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = PKG002 /* Supabase */; };
 /* End PBXBuildFile section */
 
@@ -86,6 +90,10 @@
 		F10000000000000000000036 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		F10000000000000000000037 /* LegalViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegalViews.swift; sourceTree = "<group>"; };
 		F10000000000000000000038 /* AnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsService.swift; sourceTree = "<group>"; };
+		F10000000000000000000039 /* PhoneService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneService.swift; sourceTree = "<group>"; };
+		F10000000000000000000040 /* ContactsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsService.swift; sourceTree = "<group>"; };
+		F10000000000000000000041 /* PhoneNormalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneNormalizer.swift; sourceTree = "<group>"; };
+		F10000000000000000000042 /* PhoneSocialViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneSocialViews.swift; sourceTree = "<group>"; };
 		F10000000000000000000029 /* Zuvaro.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Zuvaro.entitlements; sourceTree = "<group>"; };
 		X10000000000000000000001 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -211,6 +219,7 @@
 			isa = PBXGroup;
 			children = (
 				F10000000000000000000035 /* UsernameValidator.swift */,
+				F10000000000000000000041 /* PhoneNormalizer.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -237,6 +246,7 @@
 			isa = PBXGroup;
 			children = (
 				F10000000000000000000014 /* SocialViews.swift */,
+				F10000000000000000000042 /* PhoneSocialViews.swift */,
 			);
 			path = Social;
 			sourceTree = "<group>";
@@ -264,6 +274,8 @@
 				F10000000000000000000025 /* ProfileService.swift */,
 				F10000000000000000000026 /* ZuvaroServices.swift */,
 				F10000000000000000000038 /* AnalyticsService.swift */,
+				F10000000000000000000039 /* PhoneService.swift */,
+				F10000000000000000000040 /* ContactsService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -380,6 +392,10 @@
 				B10000000000000000000025 /* ProfileService.swift in Sources */,
 				B10000000000000000000026 /* ZuvaroServices.swift in Sources */,
 				B10000000000000000000038 /* AnalyticsService.swift in Sources */,
+				B10000000000000000000039 /* PhoneService.swift in Sources */,
+				B10000000000000000000040 /* ContactsService.swift in Sources */,
+				B10000000000000000000041 /* PhoneNormalizer.swift in Sources */,
+				B10000000000000000000042 /* PhoneSocialViews.swift in Sources */,
 				B10000000000000000000027 /* UserProfile.swift in Sources */,
 				B10000000000000000000028 /* AuthViews.swift in Sources */,
 				B10000000000000000000030 /* AdminViews.swift in Sources */,
@@ -507,6 +523,7 @@
 				INFOPLIST_FILE = Zuvaro/SupabaseConfig.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Zuvaro;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_NSContactsUsageDescription = "Zuvaro uses your contacts to find friends who already use the app. Contact names are not uploaded.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Zuvaro needs photo access to submit dare proof.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -539,6 +556,7 @@
 				INFOPLIST_FILE = Zuvaro/SupabaseConfig.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Zuvaro;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_NSContactsUsageDescription = "Zuvaro uses your contacts to find friends who already use the app. Contact names are not uploaded.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Zuvaro needs photo access to submit dare proof.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

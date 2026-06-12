@@ -59,6 +59,8 @@ extension AppRoute {
         case .createDare: return "create_dare"
         case .notifications: return "notifications"
         case .invite: return "invite_friends"
+        case .findFriends: return "find_friends"
+        case .phoneSettings: return "phone_settings"
         case .settings: return "settings"
         case .editProfile: return "edit_profile"
         case .setUsername: return "set_username"

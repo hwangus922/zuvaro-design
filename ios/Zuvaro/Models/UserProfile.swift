@@ -16,6 +16,10 @@ struct UserProfile: Identifiable, Hashable, Codable {
     var referralCount: Int
     var referralBonusClaimed: Bool
     var usernameCustomized: Bool
+    var phoneE164: String?
+    var phoneVerified: Bool
+    var phoneDiscoverable: Bool
+    var smsNotificationsEnabled: Bool
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -33,9 +37,18 @@ struct UserProfile: Identifiable, Hashable, Codable {
         case referralCount = "referral_count"
         case referralBonusClaimed = "referral_bonus_claimed"
         case usernameCustomized = "username_customized"
+        case phoneE164 = "phone_e164"
+        case phoneVerified = "phone_verified"
+        case phoneDiscoverable = "phone_discoverable"
+        case smsNotificationsEnabled = "sms_notifications_enabled"
     }
 
     var needsRegionSetup: Bool { regionId == nil }
+    var hasVerifiedPhone: Bool { phoneVerified && phoneE164 != nil }
+    var phoneDisplayLabel: String? {
+        guard let phoneE164 else { return nil }
+        return PhoneNormalizer.formatForDisplay(phoneE164)
+    }
     var needsUsernameSetup: Bool { !usernameCustomized }
     var referralsUntilBonus: Int { max(0, 5 - referralCount) }
 
@@ -54,7 +67,11 @@ struct UserProfile: Identifiable, Hashable, Codable {
         regionId: UUID? = nil,
         referralCount: Int = 0,
         referralBonusClaimed: Bool = false,
-        usernameCustomized: Bool = true
+        usernameCustomized: Bool = true,
+        phoneE164: String? = nil,
+        phoneVerified: Bool = false,
+        phoneDiscoverable: Bool = false,
+        smsNotificationsEnabled: Bool = false
     ) {
         self.id = id
         self.displayName = displayName
@@ -71,6 +88,10 @@ struct UserProfile: Identifiable, Hashable, Codable {
         self.referralCount = referralCount
         self.referralBonusClaimed = referralBonusClaimed
         self.usernameCustomized = usernameCustomized
+        self.phoneE164 = phoneE164
+        self.phoneVerified = phoneVerified
+        self.phoneDiscoverable = phoneDiscoverable
+        self.smsNotificationsEnabled = smsNotificationsEnabled
     }
 
     init(from decoder: Decoder) throws {
@@ -90,6 +111,10 @@ struct UserProfile: Identifiable, Hashable, Codable {
         referralCount = try container.decodeIfPresent(Int.self, forKey: .referralCount) ?? 0
         referralBonusClaimed = try container.decodeIfPresent(Bool.self, forKey: .referralBonusClaimed) ?? false
         usernameCustomized = try container.decodeIfPresent(Bool.self, forKey: .usernameCustomized) ?? true
+        phoneE164 = try container.decodeIfPresent(String.self, forKey: .phoneE164)
+        phoneVerified = try container.decodeIfPresent(Bool.self, forKey: .phoneVerified) ?? false
+        phoneDiscoverable = try container.decodeIfPresent(Bool.self, forKey: .phoneDiscoverable) ?? false
+        smsNotificationsEnabled = try container.decodeIfPresent(Bool.self, forKey: .smsNotificationsEnabled) ?? false
     }
 }
 
