@@ -1,9 +1,15 @@
 import SwiftUI
 
 enum AppLegal {
+    static let minimumAge = 13
     static let privacyPolicyURL = URL(string: "https://hwangus922.github.io/zuvaro-design/privacy.html")!
     static let termsOfServiceURL = URL(string: "https://hwangus922.github.io/zuvaro-design/terms.html")!
+    static let appleEULAURL = URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")!
     static let supportEmail = "support@zuvaro.app"
+
+    static var ageConfirmationLabel: String {
+        "I confirm I am at least \(minimumAge) years old. If I am under 18, I have permission from a parent or guardian where required. I agree to the Terms of Service and Privacy Policy and understand dares are user-generated."
+    }
 }
 
 struct TermsPrivacyFooter: View {
@@ -37,6 +43,7 @@ struct LegalLinksSection: View {
                 .foregroundStyle(ZuvaroTheme.textMute)
             legalRow("Privacy Policy", url: AppLegal.privacyPolicyURL)
             legalRow("Terms of Service", url: AppLegal.termsOfServiceURL)
+            legalRow("Apple Standard EULA", url: AppLegal.appleEULAURL)
         }
     }
 
@@ -65,7 +72,7 @@ struct AgeConfirmationGate: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Toggle(isOn: $confirmed) {
-                Text("I am 17 or older and agree to participate in user-generated dares at my own discretion.")
+                Text(AppLegal.ageConfirmationLabel)
                     .font(.system(size: 14))
                     .foregroundStyle(ZuvaroTheme.text)
             }

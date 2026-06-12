@@ -111,7 +111,8 @@ Before submitting to TestFlight / App Store:
 | Terms of Service URL | **https://hwangus922.github.io/zuvaro-design/terms.html** |
 | App icon | Replace placeholder in `Assets.xcassets/AppIcon` |
 | Screenshots | 6.7", 6.5", 5.5" iPhone sizes minimum |
-| Age rating | Likely 17+ due to user-generated dare content |
+| Age rating | **13+** — must match in-app age gate, Terms, Privacy Policy, and App Store questionnaire |
+| License Agreement | Apple **Standard EULA** (default); link Terms + Privacy URLs in metadata |
 | UGC moderation | Document admin review workflow in App Review notes |
 | Sign in with Apple | Required (you offer email auth) |
 | Photo library usage | Already declared in Info.plist |
@@ -120,7 +121,7 @@ Before submitting to TestFlight / App Store:
 
 ### App Review notes (suggested)
 
-> Zuvaro is a sponsored-dare marketplace. Brands fund missions and weekly regional prize pools; users earn points from approved photo proof and the top five split each pool. All proof is human-moderated before points count. Users can block others and report content via Help & Support. Test account: [provide email/password].
+> Zuvaro is a social dare app for users 13+. Brands sponsor missions and weekly regional prize pools; users earn points from human-moderated photo proof and the top five split each pool. Users confirm age at onboarding, accept Terms/Privacy in-app, can block/report in chat, and disable analytics in Settings → Privacy preferences. Catalog missions are family-friendly; custom crew dares are user-generated and moderated. Test account: [provide email/password].
 
 ## Sponsor onboarding (B2B)
 

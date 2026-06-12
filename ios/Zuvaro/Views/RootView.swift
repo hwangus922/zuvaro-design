@@ -17,6 +17,16 @@ struct RootView: View {
         }
         .preferredColorScheme(.light)
         .task { await appModel.bootstrap() }
+        .onChange(of: appModel.needsRegionSetup) { _, needsSetup in
+            if needsSetup {
+                appModel.trackScreen("region_onboarding")
+            }
+        }
+        .onChange(of: appModel.needsUsernameSetup) { _, needsSetup in
+            if needsSetup {
+                appModel.trackScreen("username_onboarding")
+            }
+        }
     }
 }
 
@@ -36,6 +46,12 @@ struct MainTabView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
 
                 ZuvaroTabBar(selection: $appModel.selectedTab)
+            }
+            .onAppear {
+                appModel.trackScreen("main_tabs")
+            }
+            .onChange(of: appModel.selectedTab) { _, tab in
+                appModel.trackTabSelected(tab)
             }
             .background(ZuvaroTheme.screenBg)
             .navigationBarHidden(true)

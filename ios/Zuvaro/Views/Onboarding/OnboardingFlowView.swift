@@ -47,8 +47,18 @@ struct OnboardingFlowView: View {
             }
         }
         .onAppear {
+            appModel.trackScreen("onboarding_splash")
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
                 if step == 0 { withAnimation { step = 1 } }
+            }
+        }
+        .onChange(of: step) { _, newStep in
+            switch newStep {
+            case 1: appModel.trackScreen("onboarding_welcome")
+            case 2: appModel.trackScreen("onboarding_sign_up")
+            case 3: appModel.trackScreen("onboarding_sign_in")
+            case 4: appModel.trackScreen("onboarding_email_auth")
+            default: break
             }
         }
     }
@@ -73,6 +83,9 @@ struct OnboardingFlowView: View {
                 .foregroundStyle(ZuvaroTheme.textMute)
                 .multilineTextAlignment(.center)
             AgeConfirmationGate(confirmed: $ageConfirmed)
+                .onChange(of: ageConfirmed) { _, confirmed in
+                    if confirmed { appModel.trackAgeConfirmed() }
+                }
             PrimaryButton(title: "Continue", enabled: ageConfirmed) { withAnimation { step = 2 } }
             SecondaryTextButton(title: "Sign in") { withAnimation { step = 3 } }
         }

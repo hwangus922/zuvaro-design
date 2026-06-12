@@ -87,6 +87,8 @@ final class AppModel: ObservableObject {
     }
 
     func bootstrap() async {
+        track(AnalyticsEvent(name: "app_opened", properties: [:]))
+
         if AppConfig.usesMockBackend {
             isAuthenticated = true
             showOnboarding = false
@@ -97,6 +99,7 @@ final class AppModel: ObservableObject {
         do {
             if let userId = try await services.auth.restoreSession() {
                 try await finishSignIn(userId: userId)
+                track(AnalyticsEvent(name: "session_restored", properties: [:]))
             }
         } catch {
             isAuthenticated = false
@@ -104,13 +107,15 @@ final class AppModel: ObservableObject {
     }
 
     func signUp(email: String, password: String) async {
-        await authenticate {
+        track(AnalyticsEvent(name: "sign_up_started", properties: ["method": "email"]))
+        await authenticate(method: "email", isSignUp: true) {
             try await services.auth.signUp(email: email, password: password)
         }
     }
 
     func signIn(email: String, password: String) async {
-        await authenticate {
+        track(AnalyticsEvent(name: "sign_in_started", properties: ["method": "email"]))
+        await authenticate(method: "email", isSignUp: false) {
             try await services.auth.signIn(email: email, password: password)
         }
     }
@@ -136,13 +141,18 @@ final class AppModel: ObservableObject {
                 authError = "Apple sign-in failed."
                 return
             }
-            await authenticate {
+            track(AnalyticsEvent(name: "sign_in_started", properties: ["method": "apple"]))
+            await authenticate(method: "apple", isSignUp: false) {
                 try await services.auth.signInWithApple(idToken: idToken, nonce: appleNonce)
             }
         }
     }
 
-    private func authenticate(userIdProvider: () async throws -> UUID) async {
+    private func authenticate(
+        method: String = "email",
+        isSignUp: Bool = false,
+        userIdProvider: () async throws -> UUID
+    ) async {
         authError = nil
         isAuthenticating = true
         defer { isAuthenticating = false }
@@ -150,8 +160,13 @@ final class AppModel: ObservableObject {
         do {
             let userId = try await userIdProvider()
             try await finishSignIn(userId: userId)
+            track(AnalyticsEvent.authCompleted(method: method, isSignUp: isSignUp))
         } catch {
             authError = error.localizedDescription
+            track(AnalyticsEvent(
+                name: "auth_failed",
+                properties: ["method": method, "is_sign_up": isSignUp ? "true" : "false"]
+            ))
         }
     }
 
@@ -235,6 +250,7 @@ final class AppModel: ObservableObject {
 
     func completeRegionSetup(regionCode: String, inviteCode: String?) async {
         regionError = nil
+        track(AnalyticsEvent(name: "region_selected", properties: ["region_code": regionCode]))
         do {
             let profile = try await services.profiles.setRegion(code: regionCode)
             currentProfile = profile
@@ -246,6 +262,7 @@ final class AppModel: ObservableObject {
                 let joinedGroup = try await services.profiles.joinGroup(inviteCode: inviteCode)
                 primaryGroup = joinedGroup
                 self.inviteCode = joinedGroup.inviteCode
+                track(AnalyticsEvent(name: "group_joined", properties: ["source": "invite_code"]))
             }
 
             await refreshAll()
@@ -255,6 +272,7 @@ final class AppModel: ObservableObject {
     }
 
     func signOut() async {
+        track(AnalyticsEvent(name: "sign_out", properties: [:]))
         submissionPollTask?.cancel()
         submissionPollTask = nil
         do {
@@ -272,6 +290,7 @@ final class AppModel: ObservableObject {
     /// Deletes the auth user and all associated data via the backend RPC.
     func deleteAccount() async {
         guard let userId = currentProfile?.id else { return }
+        track(AnalyticsEvent(name: "account_deleted", properties: [:]))
         do {
             try await services.profiles.deleteAccount(userId: userId)
             await signOut()
@@ -281,7 +300,30 @@ final class AppModel: ObservableObject {
     }
 
     func navigate(to route: AppRoute) {
+        trackNavigation(to: route)
         path.append(route)
+    }
+
+    func trackScreen(_ name: String) {
+        track(AnalyticsEvent.screen(name))
+    }
+
+    func trackTabSelected(_ tab: AppTab) {
+        track(AnalyticsEvent.tab(tab))
+    }
+
+    func trackAgeConfirmed() {
+        track(AnalyticsEvent(name: "age_confirmed", properties: [:]))
+    }
+
+    func trackAnalyticsPreference(enabled: Bool) {
+        let userId = services.auth.currentUserId ?? currentProfile?.id
+        Task {
+            await services.analytics.track(
+                AnalyticsEvent(name: "analytics_preference_changed", properties: ["enabled": enabled ? "true" : "false"]),
+                userId: userId
+            )
+        }
     }
 
     func pop() {
@@ -294,6 +336,14 @@ final class AppModel: ObservableObject {
     }
 
     func openChallenge(_ challenge: Challenge) {
+        track(AnalyticsEvent(
+            name: "challenge_opened",
+            properties: [
+                "challenge_id": challenge.id.uuidString,
+                "is_custom": challenge.isCustomChallenge ? "true" : "false",
+                "is_sponsored": challenge.isSponsored ? "true" : "false"
+            ]
+        ))
         navigate(to: .challenge(challenge))
     }
 
@@ -326,6 +376,7 @@ final class AppModel: ObservableObject {
             let profile = try await services.profiles.setUsername(username)
             currentProfile = profile
             applyProfile(profile)
+            track(AnalyticsEvent(name: "username_set", properties: [:]))
             await refreshAll()
             return true
         } catch {
@@ -383,6 +434,7 @@ final class AppModel: ObservableObject {
     func postCustomDare(text: String, points: Int) async {
         guard let groupId = primaryGroup?.id,
               let userId = services.auth.currentUserId ?? currentProfile?.id else { return }
+        track(AnalyticsEvent(name: "custom_dare_created", properties: ["points": "\(points)"]))
         do {
             try await services.chat.sendCustomDare(groupId: groupId, userId: userId, text: text, points: points)
             await refreshAll()
@@ -486,6 +538,13 @@ final class AppModel: ObservableObject {
 
     func submitProof(challenge: Challenge, imageData: Data, caption: String) async throws {
         guard let userId = services.auth.currentUserId ?? currentProfile?.id else { return }
+        track(AnalyticsEvent(
+            name: "proof_submitted",
+            properties: [
+                "challenge_id": challenge.id.uuidString,
+                "is_custom": challenge.isCustomChallenge ? "true" : "false"
+            ]
+        ))
         let submission = try await services.submissions.submitProof(
             userId: userId,
             challenge: challenge,
@@ -525,6 +584,39 @@ final class AppModel: ObservableObject {
                     }
                 }
             }
+        }
+    }
+
+    private func track(_ event: AnalyticsEvent) {
+        guard AnalyticsPreferences.isEnabled else { return }
+        let userId = services.auth.currentUserId ?? currentProfile?.id
+        Task {
+            await services.analytics.track(event, userId: userId)
+        }
+    }
+
+    private func trackNavigation(to route: AppRoute) {
+        switch route {
+        case .inProgress(let challenge):
+            track(AnalyticsEvent(
+                name: "challenge_started",
+                properties: [
+                    "challenge_id": challenge.id.uuidString,
+                    "is_custom": challenge.isCustomChallenge ? "true" : "false"
+                ]
+            ))
+        case .proofApproved(let challenge):
+            track(AnalyticsEvent(
+                name: "proof_reviewed",
+                properties: ["challenge_id": challenge.id.uuidString, "status": "approved"]
+            ))
+        case .proofRejected(let challenge):
+            track(AnalyticsEvent(
+                name: "proof_reviewed",
+                properties: ["challenge_id": challenge.id.uuidString, "status": "rejected"]
+            ))
+        default:
+            track(AnalyticsEvent.screen(route.analyticsScreenName))
         }
     }
 

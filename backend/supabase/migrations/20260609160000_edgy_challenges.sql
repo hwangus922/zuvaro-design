@@ -1,4 +1,4 @@
--- Spicier catalog entries (17+). Tame defaults remain for first-time / review flows.
+-- Optional spicier catalog entries. Tame defaults remain for App Store / 13+ review flows.
 
 insert into public.challenges (id, time_label, text, points, hook, minutes, rules, sort_order)
 values

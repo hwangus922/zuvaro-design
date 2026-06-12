@@ -35,8 +35,8 @@ struct PrizePool: Identifiable, Hashable, Codable {
     }
 
     func estimatedPayoutCents(for rank: Int) -> Int? {
-        guard rank >= 1, rank <= topFiveSplit.count else { return nil }
-        let share = topFiveSplit[rank - 1]
+        guard rank >= 1, rank <= Self.topFiveSplit.count else { return nil }
+        let share = Self.topFiveSplit[rank - 1]
         return Int((Double(totalCents) * share).rounded())
     }
 

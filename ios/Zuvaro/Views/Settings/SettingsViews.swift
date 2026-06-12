@@ -128,6 +128,7 @@ struct PrivacyView: View {
     @EnvironmentObject private var appModel: AppModel
     @AppStorage("zuvaro_public_profile") private var publicProfile = true
     @AppStorage("zuvaro_show_on_leaderboard") private var showOnBoard = true
+    @AppStorage(AnalyticsPreferences.enabledKey) private var analyticsEnabled = true
 
     var body: some View {
         ScrollView {
@@ -135,6 +136,20 @@ struct PrivacyView: View {
                 ScreenHeader(title: "Privacy preferences", onBack: { appModel.pop() })
                 Toggle("Public profile", isOn: $publicProfile).padding(14).background(ZuvaroTheme.card).clipShape(RoundedRectangle(cornerRadius: 16))
                 Toggle("Show on leaderboards", isOn: $showOnBoard).padding(14).background(ZuvaroTheme.card).clipShape(RoundedRectangle(cornerRadius: 16))
+                VStack(alignment: .leading, spacing: 6) {
+                    Toggle("Share usage analytics", isOn: $analyticsEnabled)
+                    Text("Helps us improve Zuvaro. We collect usage events such as screens viewed and dares started. Events may be linked to your account ID but never include dare text, photos, or chat messages. You can turn this off anytime.")
+                        .font(.system(size: 12))
+                        .foregroundStyle(ZuvaroTheme.textMute)
+                }
+                .padding(14)
+                .background(ZuvaroTheme.card)
+                .clipShape(RoundedRectangle(cornerRadius: 16))
+                .onChange(of: analyticsEnabled) { _, enabled in
+                    appModel.trackAnalyticsPreference(enabled: enabled)
+                }
+
+                LegalLinksSection()
             }
             .padding(24)
         }
