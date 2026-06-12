@@ -25,7 +25,7 @@ struct ZuvaroMark: View {
                     width: pillFrame.width * scale,
                     height: pillFrame.height * scale
                 )
-                var path = Path(roundedRect: rect, cornerRadius: pillRadius * scale, style: .continuous)
+                let path = Path(roundedRect: rect, cornerRadius: pillRadius * scale, style: .continuous)
                 var transform = CGAffineTransform(translationX: 50 * scale, y: 50 * scale)
                 transform = transform.rotated(by: CGFloat(degrees) * .pi / 180)
                 transform = transform.translatedBy(x: -50 * scale, y: -50 * scale)
